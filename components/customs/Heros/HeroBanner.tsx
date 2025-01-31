@@ -43,35 +43,36 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
       />
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/70" />
+      <div className="absolute inset-0 bg-black/20" />
 
       {/* Contenido */}
-      <div className="relative z-10 text-white text-center max-w-3xl px-6">
-        <h1 className="text-3xl sm:text-5xl font-bold leading-tight shadow-text">
-          {title}
-        </h1>
-        <p className="text-lg sm:text-2xl mt-4 shadow-text">{subtitle}</p>
-
-        {/* Botones */}
-        {actions}
-
+      <div className="relative z-10 text-white text-center  px-6  h-[full] w-full justify-center flex flex-col ">
+        <div className="  w-[40%] text-left mt-[20%] ml-[5%]">
+          <h1 className="text-3xl sm:text-5xl font-bold leading-tight shadow-text">
+            {title}
+          </h1>
+          <p className="text-lg sm:text-2xl mt-4 shadow-text">{subtitle}</p>
+          {actions}
+        </div>
       </div>
 
       {/* Redes sociales */}
       {socialLinks.length > 0 && (
-        <div className="absolute bottom-6 flex gap-4">
-          {socialLinks.map(({ icon, url, size = 50, color = "white"}, index) => (
-            <Link
-              key={index}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center hover:opacity-70"
-              style={{ width: size, height: size, color: color }}
-            >
-              {icon}
-            </Link>
-          ))}
+        <div className="absolute bottom-6 flex gap-4 cursor-pointer z-100">
+          {socialLinks.map(
+            ({ icon, url, size = 50, color = "white" }, index) => (
+              <Link
+                key={index}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center hover:opacity-70 cursor-pointer"
+                style={{ width: size, height: size, color: color }}
+              >
+                {icon}
+              </Link>
+            )
+          )}
         </div>
       )}
     </div>

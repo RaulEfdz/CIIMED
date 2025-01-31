@@ -23,7 +23,9 @@ export const SingleImage: React.FC<SingleImageProps> = ({
   features,
 }) => {
   return (
-    <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto bg-slate-50">
+    <div className="w-full px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto bg-transparent">
+          <div className="max-w-7xl mx-auto">
+
       {/* Grid */}
       <div className="md:grid md:grid-cols-2 md:items-center md:gap-12 xl:gap-32">
         <div>
@@ -47,7 +49,7 @@ export const SingleImage: React.FC<SingleImageProps> = ({
               <h2 className="font-bold text-3xl lg:text-4xl text-gray-800 dark:text-neutral-200">
                 {title}
               </h2>
-              <p className="text-gray-500 dark:text-neutral-500">
+              <p className="text-gray-500 dark:text-neutral-500 text-justify">
                 {description}
               </p>
             </div>
@@ -60,8 +62,8 @@ export const SingleImage: React.FC<SingleImageProps> = ({
                   <span className="mt-0.5 size-5 flex justify-center items-center rounded-full bg-blue-50 text-blue-600 dark:bg-blue-800/30 dark:text-blue-500">
                     {item.icon}
                   </span>
-                  <div className="grow">
-                    <span className="text-sm sm:text-base text-gray-500 dark:text-neutral-500">
+                  <div className="grow text-justify">
+                    <span className="text-sm sm:text-base text-gray-500 dark:text-neutral-500 ">
                       {item.bold ? (
                         <span className="font-bold">{item.bold}</span>
                       ) : null}{" "}
@@ -77,7 +79,7 @@ export const SingleImage: React.FC<SingleImageProps> = ({
         {/* End Col */}
       </div>
       {/* End Grid */}
-    </div>
+    </div>    </div>
   );
 };
 

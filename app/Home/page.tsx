@@ -5,14 +5,17 @@ import { SingleImage } from "../../components/customs/Features/SingleImage";
 import { HeroBanner } from "../../components/customs/Heros/HeroBanner";
 import { SiInstagram, SiLinkedin, SiSpotify, SiYoutube } from "react-icons/si";
 import { Button } from "@/components/ui/button";
+import News from "@/components/customs/Features/News";
+import { db } from "../data/db";
+import EventsContainer from "@/components/customs/Features/Events";
+import NoveltiesContainer from "@/components/customs/Features/Novelties";
 
 export default function Home() {
   const HeroSection = () => {
-
     const ActionsButtons = (
-      <div className="mt-6 flex flex-wrap gap-4 justify-center">
+      <div className="mt-6 flex flex-wrap gap-4 justify-left">
         <Button className="bg-orange-500 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-gray-200">
-        <SiYoutube className="w-6 h-6" /> Videos
+          <SiYoutube className="w-6 h-6" /> Videos
         </Button>
         <Button className="bg-green-800 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-200">
           <SiSpotify className="w-6 h-6" /> Podcast
@@ -77,15 +80,29 @@ export default function Home() {
     );
   };
 
-
   return (
     <div className="w-full h-full">
       <section>
         <HeroSection />
       </section>
-      <section className="mt-10">
+
+      <section className="bg-slate-50">
         <FeatureInit />
       </section>
+
+      <section className="bg-slate-100">
+        <NoveltiesContainer novelties={db.novelties} />
+      </section>
+
+      <section className="bg-slate-50">
+        <News news={db.news} />
+      </section>
+
+      <section className="bg-slate-100">
+        <EventsContainer events={db.events} />
+      </section>
+
+      
     </div>
   );
 }
