@@ -41,7 +41,7 @@ export const SingleImage: React.FC<SingleImageProps> = ({
           className="rounded-sm shadow-md"
         />
         <div className="space-y-6">
-          <h2 className="text-3xl lg:text-4xl font-bold" style={{ color: colors.primary }}>{title}</h2>
+          <h2 className="text-3xl lg:text-4xl font-bold" style={{ color: colors.primary , fontFamily: 'var(--font-harabara-mais)'}}>{title}</h2>
           <p className="text-justify" style={{ color: colors.dark }}>{description}</p>
           <ul className="space-y-4">
             {features.map((item, index) => (

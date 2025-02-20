@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import clsx from "clsx";
 import { motion } from "framer-motion";
 import HeroImagen from "@/components/customs/Features/HeroImage";
 import ResearchCard from "@/app/research-areas/ResearchCard";
@@ -77,25 +76,7 @@ async function getResearchData() {
   };
 }
 
-export const StatusBadge = ({ status }: { status: ResearchStatus }) => {
-  const statusColors: Record<ResearchStatus, string> = {
-    Completado: "bg-green-100 text-green-800",
-    "En curso": "bg-blue-100 text-blue-800",
-    "En reclutamiento": "bg-yellow-100 text-yellow-800",
-    "En análisis": "bg-purple-100 text-purple-800",
-  };
 
-  return (
-    <span
-      className={clsx(
-        "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium",
-        statusColors[status]
-      )}
-    >
-      {status}
-    </span>
-  );
-};
 
 const containerVariants = {
   hidden: {},

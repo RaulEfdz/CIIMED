@@ -5,7 +5,7 @@ import HeroImagen from "@/components/customs/Features/HeroImage";
 import CourseSection from "./TrainingCrads";
 import HireUs from "@/components/customs/feedBack/HireUs";
 
-export const HIGHLIGHT_COLOR = "#285C4D";
+ const HIGHLIGHT_COLOR = "#285C4D";
 
 const Hero = () => (
   <motion.div
