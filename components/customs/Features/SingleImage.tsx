@@ -1,10 +1,11 @@
-import React from "react";
+// components/customs/Features/SingleImage.tsx
 import { CldImage } from "next-cloudinary";
+import { ReactNode } from "react";
 
 interface Feature {
   text: string;
-  bold: string;
-  icon: React.ReactNode;
+  bold?: string;
+  icon: ReactNode;
 }
 
 interface SingleImageProps {
@@ -15,6 +16,13 @@ interface SingleImageProps {
   features: Feature[];
 }
 
+const colors = {
+  primary: "#285C4D",
+  secondary: "#F4633A",
+  dark: "#212322",
+  light: "#f2f2f2"
+};
+
 export const SingleImage: React.FC<SingleImageProps> = ({
   imageUrl,
   imageAlt,
@@ -23,63 +31,34 @@ export const SingleImage: React.FC<SingleImageProps> = ({
   features,
 }) => {
   return (
-    <div className="w-full px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto bg-transparent">
-          <div className="max-w-7xl mx-auto">
-
-      {/* Grid */}
-      <div className="md:grid md:grid-cols-2 md:items-center md:gap-12 xl:gap-32">
-        <div>
-          <CldImage
-           alt={imageAlt}
-            src={imageUrl} // Use this sample image or upload your own via the Media Explorer
-            width="2048" // Transform the image: auto-crop to square aspect_ratio
-            height="1365"
-            crop={{
-              type: "auto",
-              source: true,
-            }}
-          />
+    <div className="w-full px-6 py-12 lg:py-16 bg-transparent">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+        <CldImage
+          alt={imageAlt}
+          src={imageUrl}
+          width="2048"
+          height="1365"
+          className="rounded-sm shadow-md"
+        />
+        <div className="space-y-6">
+          <h2 className="text-3xl lg:text-4xl font-bold" style={{ color: colors.primary }}>{title}</h2>
+          <p className="text-justify" style={{ color: colors.dark }}>{description}</p>
+          <ul className="space-y-4">
+            {features.map((item, index) => (
+              <li key={index} className="flex items-center gap-3">
+                <div className="flex items-center justify-center size-12 rounded-full mb-4" style={{ backgroundColor: colors.light }}>
+                  {item.icon}
+                </div>
+                <span className="text-sm sm:text-base" style={{ color: colors.dark }}>
+                  {item.bold && <strong className="font-bold">{item.bold} </strong>}
+                  {item.text}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
-        {/* End Col */}
-
-        <div className="mt-5 sm:mt-10 lg:mt-0">
-          <div className="space-y-6 sm:space-y-8">
-            {/* Title */}
-            <div className="space-y-2 md:space-y-4">
-              <h2 className="font-bold text-3xl lg:text-4xl text-gray-800 dark:text-neutral-200">
-                {title}
-              </h2>
-              <p className="text-gray-500 dark:text-neutral-500 text-justify">
-                {description}
-              </p>
-            </div>
-            {/* End Title */}
-
-            {/* List */}
-            <ul className="space-y-2 sm:space-y-4">
-              {features.map((item, index) => (
-                <li key={index} className="flex gap-x-3">
-                  <span className="mt-0.5 size-5 flex justify-center items-center rounded-full bg-blue-50 text-blue-600 dark:bg-blue-800/30 dark:text-blue-500">
-                    {item.icon}
-                  </span>
-                  <div className="grow text-justify">
-                    <span className="text-sm sm:text-base text-gray-500 dark:text-neutral-500 ">
-                      {item.bold ? (
-                        <span className="font-bold">{item.bold}</span>
-                      ) : null}{" "}
-                      {item.text}
-                    </span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            {/* End List */}
-          </div>
-        </div>
-        {/* End Col */}
       </div>
-      {/* End Grid */}
-    </div>    </div>
+    </div>
   );
 };
 

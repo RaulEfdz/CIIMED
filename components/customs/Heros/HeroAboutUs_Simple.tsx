@@ -50,7 +50,7 @@ const AboutUs: React.FC<AboutUsProps> = ({
             <div className="pt-8 border-t border-gray-300">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Misión */}
-                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
+                <div className="bg-white p-6 rounded-sm shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
                   <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
                     <Briefcase className="h-5 w-5 text-blue-600" /> Misión
                   </h2>
@@ -58,7 +58,7 @@ const AboutUs: React.FC<AboutUsProps> = ({
                 </div>
 
                 {/* Visión */}
-                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
+                <div className="bg-white p-6 rounded-sm shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
                   <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
                     <Building2 className="h-5 w-5 text-blue-600" /> Visión
                   </h2>
@@ -71,7 +71,7 @@ const AboutUs: React.FC<AboutUsProps> = ({
             <div className="mt-8">
               <a
                 href="/contact"
-                className="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all"
+                className="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-sm shadow-md hover:bg-blue-700 transition-all"
               >
                 Conócenos más
               </a>
@@ -81,7 +81,7 @@ const AboutUs: React.FC<AboutUsProps> = ({
           {/* Imagen destacada con animación de entrada */}
           <div className="lg:w-1/2">
             <CldImage
-              className="w-full h-auto rounded-lg shadow-lg transition-transform duration-300 hover:scale-105 opacity-0 animate-fade-in"
+              className="w-full h-auto rounded-sm shadow-lg transition-transform duration-300 hover:scale-105 opacity-0 animate-fade-in"
               src={imageUrl}
               alt={imageAlt}
               width={imgW}

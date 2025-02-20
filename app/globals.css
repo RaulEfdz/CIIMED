@@ -2,8 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Gogh-ExtraBold';
+  src: url('/font/Gogh ExtraBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Harabara-Mais';
+  src: url('/font/Harabara Mais.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Harabara-Mais-Light';
+  src: url('/font/Harabara Mais Light.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Harabara-Mais-Bold';
+  src: url('/font/Harabara Mais Bold.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'HarabaraMais', sans-serif; /* Fuente base para el body */
 }
 
 @layer base {

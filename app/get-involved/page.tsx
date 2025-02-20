@@ -1,18 +1,37 @@
-"use client";
+import HireUs, { HireUsContent } from "@/components/customs/feedBack/HireUs";
+import Hero from "./Hero";
 
-import { Construction } from "lucide-react";
+const FormContact = () => {
+  const participationContent: HireUsContent = {
+    title: "Participa con Nosotros",
+    subtitle: "Únete a nuestra comunidad y haz crecer tu futuro",
+    description:
+      "Explora nuestras oportunidades laborales, convocatorias de investigación y pasantías para impulsar tu desarrollo profesional y académico.",
+    expectations: [
+      "Oportunidades laborales",
+      "Convocatorias de investigación",
+      "Pasantías: Adquiere experiencia colaborando con nosotros.",
+    ],
+    form: {
+      title: "Formulario de Participación",
+      namePlaceholder: "Tu Nombre",
+      lastNamePlaceholder: "Tu Apellido",
+      emailPlaceholder: "Tu Correo Electrónico",
+      messagePlaceholder: "Cuéntanos en qué área te gustaría participar",
+      submitButton: "Enviar Solicitud",
+    },
+  };
 
-export default function AboutPage() {
+  return <HireUs content={participationContent} />;
+};
+
+const Page = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 text-center">
-        <Construction className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold">{"Página 'getInvolved' en Construcción"}</h1>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">
-          Estamos trabajando en esta sección. ¡Vuelve pronto para más
-          información!
-        </p>
-      </div>
-    </div>
+    <>
+      <Hero />
+      <FormContact />
+    </>
   );
-}
+};
+
+export default Page;

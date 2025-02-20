@@ -3,6 +3,13 @@ import { Calendar, Clock, MapPin } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { CldImage } from 'next-cloudinary';
 
+const teamColors = {
+  primary: "#285C4D",
+  secondary: "#F4633A",
+  dark: "#212322",
+  light: "#f2f2f2"
+};
+
 export interface EventCardProps {
   title: string;
   description: string;
@@ -33,7 +40,7 @@ const EventCard: React.FC<EventCardProps> = ({
   category
 }) => {
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col rounded-none">
+    <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-200 dark:border-neutral-700 rounded-sm">
       <div className="relative h-48">
         <CldImage
           className="w-full h-full absolute inset-0 object-cover transform hover:scale-105 transition-transform duration-300"
@@ -47,26 +54,26 @@ const EventCard: React.FC<EventCardProps> = ({
           }}
         />
         {category && (
-          <span className="absolute top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded-none text-sm">
+          <span className="absolute top-2 right-2 bg-secondary text-white px-3 py-1 rounded-sm text-sm" style={{ backgroundColor: teamColors.secondary }}>
             {category}
           </span>
         )}
       </div>
       
-      <CardContent className="p-4 flex-1 flex flex-col">
-        <h3 className="text-xl font-semibold mb-2 line-clamp-2">{title}</h3>
+      <CardContent className="p-6 bg-white dark:bg-neutral-900">
+        <h3 className="text-2xl font-bold mb-2 line-clamp-2" style={{ color: teamColors.primary }}>{title}</h3>
         
-        <div className="space-y-2 text-sm text-gray-600 mb-4">
+        <div className="space-y-2 text-sm text-gray-700 dark:text-neutral-300 mb-4">
           <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
+            <Calendar className="h-4 w-4 text-gray-500 dark:text-neutral-400" />
             <span>{date}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4" />
+            <Clock className="h-4 w-4 text-gray-500 dark:text-neutral-400" />
             <span>{time}</span>
           </div>
           <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
+            <MapPin className="h-4 w-4 text-gray-500 dark:text-neutral-400" />
             <span>{location}</span>
           </div>
           {speaker && (
@@ -77,14 +84,15 @@ const EventCard: React.FC<EventCardProps> = ({
           )}
         </div>
 
-        <p className="text-gray-600 line-clamp-2 mb-4 flex-1">{description}</p>
+        <p className="text-gray-700 dark:text-neutral-300 line-clamp-2 mb-4">{description}</p>
         
-        <div className="mt-auto">
+        <div className="mt-4">
           <a 
-            href={link}
-            className="inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 rounded-none text-white  hover:bg-blue-700 transition-colors duration-300"
+            href={link} 
+            className="inline-flex items-center justify-center w-full px-4 py-2 font-medium hover:underline"
+            style={{ color: teamColors.secondary }}
           >
-            Ver detalles del evento
+            Ver detalles del evento →
           </a>
         </div>
       </CardContent>

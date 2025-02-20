@@ -115,7 +115,7 @@ const EventsContainer: React.FC<EventsContainerProps> = ({ events, search }) => 
           <div className="mt-8 text-center">
             <button
               onClick={handleShowMore}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md hover:shadow-lg"
+              className="px-6 py-3 bg-blue-600 text-white rounded-sm hover:bg-blue-700 transition-colors duration-300 shadow-md hover:shadow-lg"
             >
               Cargar más eventos
             </button>

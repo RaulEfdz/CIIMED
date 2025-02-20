@@ -23,7 +23,7 @@ const HorizCard: React.FC<HorizCardProps> = ({
   return (
     <a
       href={link}
-      className="block border border-gray-200 rounded-lg hover:shadow-sm focus:outline-none dark:border-neutral-700"
+      className="block border border-gray-200 rounded-sm hover:shadow-sm focus:outline-none dark:border-neutral-700"
     >
       <div className="relative flex items-center overflow-hidden">
         <CldImage

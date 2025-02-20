@@ -66,7 +66,7 @@ const NoveltiesContainer: React.FC<NoveltiesContainerProps> = ({
         {/* Cabecera y Filtros */}
         <div className="mb-8 space-y-4">
           <h2 className="text-3xl font-bold text-gray-900">
-            Últimas Novedades
+            Últimas Noticias
           </h2>
           {search && (
             <div className="flex flex-col md:flex-row gap-4">
@@ -123,7 +123,7 @@ const NoveltiesContainer: React.FC<NoveltiesContainerProps> = ({
           <div className="mt-8 text-center">
             <button
               onClick={handleShowMore}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md hover:shadow-lg"
+              className="px-6 py-3 bg-blue-600 text-white rounded-sm hover:bg-blue-700 transition-colors duration-300 shadow-md hover:shadow-lg"
             >
               Cargar más novedades
             </button>

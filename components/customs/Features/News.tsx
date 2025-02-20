@@ -4,7 +4,7 @@ import NewsCard, { NewsCardProps } from "../Cards/NewsCard";
 
 interface NewsContainerProps {
   news: NewsCardProps[];
-  search?: boolean
+  search?: boolean;
 }
 
 const NewsContainer: React.FC<NewsContainerProps> = ({ news, search }) => {
@@ -13,7 +13,6 @@ const NewsContainer: React.FC<NewsContainerProps> = ({ news, search }) => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
-  // Debounce para evitar búsqueda en cada pulsación
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
@@ -21,43 +20,44 @@ const NewsContainer: React.FC<NewsContainerProps> = ({ news, search }) => {
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
-  // Filtrar noticias (ignorando mayúsculas y acentos)
   const filteredNews = useMemo(() => {
-    if (!debouncedSearchTerm) return news; // Si no hay búsqueda, mostrar todas las noticias disponibles
+    if (!debouncedSearchTerm) return news;
 
     const normalizedSearch = debouncedSearchTerm
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
+      .replace(/[̀-ͯ]/g, "");
 
     return news.filter((item) => {
       const normalizedTitle = item.title
         .toLowerCase()
         .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
+        .replace(/[̀-ͯ]/g, "");
       const normalizedDesc = item.description
         .toLowerCase()
         .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
+        .replace(/[̀-ͯ]/g, "");
 
-      return normalizedTitle.includes(normalizedSearch) || normalizedDesc.includes(normalizedSearch);
+      return (
+        normalizedTitle.includes(normalizedSearch) ||
+        normalizedDesc.includes(normalizedSearch)
+      );
     });
   }, [news, debouncedSearchTerm]);
 
-  // Mostrar noticias limitadas
-  const displayedNews = useMemo(() => filteredNews.slice(0, visibleNews), [filteredNews, visibleNews]);
+  const displayedNews = useMemo(
+    () => filteredNews.slice(0, visibleNews),
+    [filteredNews, visibleNews]
+  );
 
-  // Manejar mostrar más noticias
   const handleShowMore = () => {
     setVisibleNews((prev) => prev + 6);
   };
 
-  // Manejar scroll para botón "Volver arriba"
   const handleScroll = useCallback(() => {
     setShowScrollTop(window.scrollY > 300);
   }, []);
 
-  // Volver arriba
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -70,29 +70,34 @@ const NewsContainer: React.FC<NewsContainerProps> = ({ news, search }) => {
   return (
     <div className="h-auto bg-transparent p-6 pb-10">
       <div className="max-w-7xl mx-auto">
-        {/* Cabecera y Búsqueda */}
         <div className="mb-8 space-y-4">
-          <h2 className="text-3xl font-bold text-gray-900">Noticias y Actualizaciones</h2>
+          <div className="mb-16 text-center">
+            <span className="inline-block px-4 py-1 rounded-full text-sm font-medium bg-[#285C4D] text-white mb-4">
+              Informacion
+            </span>
+            <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-4">
+              Noticias y Actualizaciones
+            </h1>
+            <div className="w-24 h-1 bg-[#285C4D] mx-auto rounded-full"></div>
+          </div>
 
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Barra de búsqueda */}
-            {search && (  <div className="relative flex-1">
+          {search && (
+            <div className="relative flex justify-center">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
                 placeholder="Buscar noticias..."
-                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full max-w-lg pl-10 pr-4 py-2 border rounded-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 aria-label="Buscar noticias"
               />
-            </div>)}
-          </div>
+            </div>
+          )}
         </div>
 
-        {/* Grid de noticias */}
         {displayedNews.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center">
             {displayedNews.map((item, index) => (
               <div key={index} className="opacity-100 transition-opacity duration-300">
                 <NewsCard {...item} />
@@ -103,12 +108,11 @@ const NewsContainer: React.FC<NewsContainerProps> = ({ news, search }) => {
           <p className="text-gray-500 text-center py-10">No se encontraron noticias.</p>
         )}
 
-        {/* Botón Ver más */}
         {visibleNews < filteredNews.length && (
-          <div className="mt-8 text-center">
+          <div className="mt-8 flex justify-center">
             <button
               onClick={handleShowMore}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md hover:shadow-lg"
+              className="px-6 py-3 bg-blue-600 text-white rounded-sm hover:bg-blue-700 transition-colors duration-300 shadow-md hover:shadow-lg"
               aria-label="Cargar más noticias"
             >
               Cargar más noticias
@@ -116,7 +120,6 @@ const NewsContainer: React.FC<NewsContainerProps> = ({ news, search }) => {
           </div>
         )}
 
-        {/* Botón Scroll to Top */}
         {showScrollTop && (
           <button
             onClick={scrollToTop}

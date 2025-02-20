@@ -4,7 +4,7 @@ import { MiniHeader } from "@/components/customs/Headers/MiniHeader";
 export const Header = () => {
     return (
       <MiniHeader
-        logoUrl={"/logo.jpg"}
+        logoUrl={"/logo.png"}
         logoHref="/"
         navLinks={[
           {
@@ -32,9 +32,18 @@ export const Header = () => {
             href: "/get-involved",
           },
           {
+            label:"Divulgación Cientifica",
+            href:"/scientificDissemination"
+          },
+          {
+            label: "Asistente FAQ",
+            href: "/FAQ",
+          },
+          {
             label: "Contacto",
             href: "/contact",
           },
+
         ]}
         
       />
