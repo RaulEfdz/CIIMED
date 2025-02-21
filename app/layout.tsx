@@ -1,7 +1,8 @@
+// app/layout.js
 import type { Metadata } from "next";
 import "./globals.css";
+import Opening from "./opening/Opening";
 import { Footer, Header } from "./config/inital";
-
 
 export const metadata: Metadata = {
   title: "CIIMED",
@@ -16,10 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body style={{ fontFamily: 'var(--font-harabara-mais)' }}
-        
-      >
-        <Header />
+      <body>
+        <Opening /> {/* Añade el componente Opening aquí */}
+        <Header/>
         {children}
         <Footer/>
       </body>

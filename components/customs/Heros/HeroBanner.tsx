@@ -91,7 +91,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
               transition={{ duration: 1 }}
               className="text-left max-w-2xl"
             >
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-4">
                 {title}
               </h1>
               <p className="text-xl md:text-2xl text-gray-200 mb-6">

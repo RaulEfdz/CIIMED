@@ -15,6 +15,7 @@ interface HeroImagenProps {
     link: string;
     disabled?: boolean;
   };
+  highlight: string;
 }
 
 export default function HeroImagen({
@@ -24,6 +25,7 @@ export default function HeroImagen({
   overlayColor,
   primaryButton,
   secondaryButton,
+  highlight
 }: HeroImagenProps) {
   return (
     <section className="min-h-96 relative flex flex-1 shrink-0 items-center justify-center overflow-hidden rounded-none bg-gray-100 py-16 shadow-lg md:py-20 xl:py-48">
@@ -45,6 +47,8 @@ export default function HeroImagen({
 
       {/* Text - start */}
       <div className="relative flex flex-col items-center p-4 sm:max-w-xl">
+      {highlight && <Image className="w-24 h-24" src={highlight} alt={"Highlight"} height={100} width={100}/> }
+
       <h1 className="mb-8 text-center text-4xl font-bold text-white sm:text-5xl md:mb-12 md:text-6xl uppercase">
           {title}
         </h1>

@@ -1,9 +1,9 @@
 import { FooterContact } from "@/components/customs/Footer/FooterContact";
-import { MiniHeader } from "@/components/customs/Headers/MiniHeader";
+import { ResponsiveHeader } from "@/components/customs/Headers/ResponsiveHeader";
 
 export const Header = () => {
     return (
-      <MiniHeader
+      <ResponsiveHeader
         logoUrl={"/logo.png"}
         logoHref="/"
         navLinks={[

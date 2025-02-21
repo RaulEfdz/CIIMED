@@ -30,9 +30,23 @@
   font-style: normal;
 }
 
-body {
-  font-family: 'HarabaraMais', sans-serif; /* Fuente base para el body */
+/* Tipografías base */
+.font-gogh-extrabold {
+  font-family: 'Gogh-ExtraBold', sans-serif !important;
 }
+
+.font-harabara-mais-normal {
+  font-family: 'Harabara-Mais', sans-serif !important;
+}
+
+.font-harabara-mais-light {
+  font-family: 'Harabara-Mais-Light', sans-serif !important;
+}
+
+.font-harabara-mais-bold {
+  font-family: 'Harabara-Mais-Bold', sans-serif !important;
+}
+
 
 @layer base {
   :root {
@@ -97,4 +111,54 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+/* Asignación de tipografías a elementos HTML */
+
+
+
+/* Elementos comunes de texto: se utiliza Harabara-Mais-Light */
+label, span, div, li, a, button {
+  font-family: 'Harabara-Mais', sans-serif !important;
+  font-weight: 500;
+}
+p,span{
+  font-family: 'Harabara-Mais-Light', sans-serif !important;
+  font-weight: 500;
+}
+
+/* Opcionales: para otros elementos de texto */
+
+/* Subtítulos más pequeños: usando también Gogh-ExtraBold */
+h4, h5, h6 {
+  font-family: 'Gogh-ExtraBold', sans-serif !important;
+  font-weight: 600 !important;
+}
+
+/* Listas, bloque de citas, y formularios: consistencia con Harabara-Mais-Light */
+ul, ol, blockquote, textarea, input[type="text"],
+input[type="email"], input[type="search"], select, option {
+  font-family: 'Harabara-Mais-Light', sans-serif !important;
+}
+
+/* Clases específicas */
+
+/* Tagline y subtítulos: se usa Harabara-Mais (estilo normal) */
+.tagline,
+.subtitulo {
+  font-family: 'Harabara-Mais', sans-serif !important;
+}
+
+/* Resaltado en negrita para enfatizar texto dentro de párrafos u otros elementos */
+.resaltado-bold {
+  font-family: 'Harabara-Mais-Bold', sans-serif !important;
+}
+
+/* Titulares y elementos destacados: se utiliza Gogh-ExtraBold */
+h1,
+h2,
+h3 {
+  font-family: 'Gogh-ExtraBold', sans-serif !important;
+  font-weight: 900 !important;
 }

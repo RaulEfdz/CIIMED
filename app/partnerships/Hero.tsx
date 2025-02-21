@@ -17,8 +17,8 @@ const Hero = () => (
       imageUrl="https://cdn.pixabay.com/photo/2017/02/01/13/52/analysis-2030261_1280.jpg"
       primaryButton={{ text: "Comenzar ahora", link: "#", disabled: true }}
       secondaryButton={{ text: "Ver tour", link: "#", disabled: true }}
-      overlayColor={HIGHLIGHT_COLOR}
-    />
+      overlayColor={HIGHLIGHT_COLOR} 
+      highlight={"/highlights/Comunidad.png"}    />
   </motion.div>
 );
 

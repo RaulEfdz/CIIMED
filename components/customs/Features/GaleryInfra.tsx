@@ -31,7 +31,7 @@ const images: ImageData[] = [
 const GalleryInfra = () => {
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl mb-4">Infrastruttura</h2>
+      <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl mb-4">Infraestrutura</h2>
       <p className="text-gray-600 leading-relaxed mb-4">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at velit maximus, molestie est a, tempor magna.
       </p>

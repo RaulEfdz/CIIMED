@@ -72,10 +72,10 @@ const NewsContainer: React.FC<NewsContainerProps> = ({ news, search }) => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 space-y-4">
           <div className="mb-16 text-center">
-            <span className="inline-block px-4 py-1 rounded-full text-sm font-medium bg-[#285C4D] text-white mb-4">
+            <span className="inline-block px-4 py-1 rounded-full text-sm bg-[#285C4D] text-white mb-4">
               Informacion
             </span>
-            <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-4">
+            <h1 className="text-4xl sm:text-5xl mb-4 font-gogh-extrabold">
               Noticias y Actualizaciones
             </h1>
             <div className="w-24 h-1 bg-[#285C4D] mx-auto rounded-full"></div>

@@ -100,6 +100,7 @@ const Hero = () => (
       primaryButton={{ text: "Comenzar ahora", link: "#", disabled: true }}
       secondaryButton={{ text: "Ver tour", link: "#", disabled: true }}
       overlayColor={"#285C4D"}
+      highlight={"/highlights/LineasdeInvestigación.png"} 
     />
   </motion.div>
 );

@@ -3,7 +3,6 @@ import React from "react";
 import NewsContainer from "@/components/customs/Features/News";
 import { motion } from "framer-motion"; // Importación de Framer Motion
 import { db } from "../data/db";
-import CourseSection from "../training/TrainingCrads";
 import { VideoGallery } from "./VideoGallery";
 import { InstagramGallery } from "./InstagramGallery";
 import { SpotifyGallery } from "./SpotifyGallery";
@@ -21,11 +20,12 @@ export default function scientificDisseminationPage() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
-        <NewsContainer news={db.news} />
-        <CourseSection />
+                <SpotifyGallery/>
+
         <VideoGallery />
-        <SpotifyGallery/>
         <InstagramGallery />
+        <NewsContainer news={db.news} />
+
       </motion.section>
     </div>
   );

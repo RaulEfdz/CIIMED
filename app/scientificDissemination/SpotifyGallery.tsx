@@ -38,13 +38,13 @@ export const SpotifyGallery: React.FC<SpotifyGalleryProps> = ({ podcasts = mockP
   return (
     <div className="flex flex-col mt-24">
       <div className="mb-16 text-center">
-        <span className="inline-block px-4 py-1 rounded-full text-sm font-medium bg-[#1DB954] text-white mb-4">
+        <span className="inline-block px-4 py-1 rounded-full text-sm font-medium bg-[#285C4D] text-white mb-4">
           Nuestro Podcast
         </span>
         <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-4">
           Spotify Podcasts
         </h1>
-        <div className="w-24 h-1 bg-[#1DB954] mx-auto rounded-full"></div>
+        <div className="w-24 h-1 bg-[#285C4D] mx-auto rounded-full"></div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
         {podcasts.map((podcast) => (
