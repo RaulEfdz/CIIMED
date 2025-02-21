@@ -18,6 +18,7 @@ export const Hero = () => (
         primaryButton={{ text: "Haz una pregunta", link: "#", disabled: false }}
         secondaryButton={{ text: "Explorar más", link: "#", disabled: false }}
         overlayColor={HIGHLIGHT_COLOR}
+        highlight="/highlights/Actividades.png"
       />
     </motion.div>
   );
