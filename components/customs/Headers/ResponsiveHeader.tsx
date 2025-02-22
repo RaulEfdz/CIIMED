@@ -41,7 +41,7 @@ export const ResponsiveHeader: React.FC<ResponsiveHeaderProps> = ({ logoUrl, log
   const activeLabel = activeLink ? activeLink.label : "";
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 w-full text-sm justify-center align-middle items-center lg:flex">
+    <header className="fixed top-0 inset-x-0 z-40 w-full text-sm justify-center align-middle items-center lg:flex">
       <nav className="shadow mt-4 mb-3 relative lg:w-[75vw] bg-[#F2F2F2] border border-none rounded-[1.5rem] mx-2 py-2 dark:bg-neutral-900 dark:border-neutral-700">
         <div className="px-4 flex justify-between items-center w-full">
           {/* Logo */}

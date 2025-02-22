@@ -6,13 +6,18 @@ import { db } from "../data/db";
 import { VideoGallery } from "./VideoGallery";
 import { InstagramGallery } from "./InstagramGallery";
 import { SpotifyGallery } from "./SpotifyGallery";
+import Hero from "./Hero";
 
 export default function scientificDisseminationPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:pt-28">
-      {/* <h1 className="text-3xl font-bold text-center mb-8 text-gray-900">
-        Divulgación y Comunicación Científica
-      </h1> */}
+    <motion.main
+      className="min-h-screen bg-gradient-to-b from-[#f2f2f2] via-white to-[#f2f2f2]"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
+      <Hero />
+      <main className="max-w-6xl mx-auto px-4 w-full sm:px-6 py-16"> 
 
       <motion.section
         className=""
@@ -20,13 +25,13 @@ export default function scientificDisseminationPage() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
-                <SpotifyGallery/>
+        <SpotifyGallery />
 
         <VideoGallery />
         <InstagramGallery />
         <NewsContainer news={db.news} />
-
       </motion.section>
-    </div>
+      </main>
+      </motion.main>
   );
 }

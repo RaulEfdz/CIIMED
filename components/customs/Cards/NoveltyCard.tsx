@@ -9,7 +9,7 @@ export interface NoveltyCardProps {
 
 const NoveltyCard: React.FC<NoveltyCardProps> = ({ title, description, category, date }) => {
   return (
-    <div className="bg-white shadow-md rounded-none
+    <div className="bg-[#F2F2F2] shadow-md rounded-none
      p-4 border border-gray-200">
       <h3 className="text-xl font-bold text-gray-900">{title}</h3>
       <p className="text-gray-600 mt-2">{description}</p>

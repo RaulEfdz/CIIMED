@@ -60,7 +60,7 @@ const EventCard: React.FC<EventCardProps> = ({
         )}
       </div>
       
-      <CardContent className="p-6 bg-white dark:bg-neutral-900">
+      <CardContent className="p-6 bg-[#F2F2F2] dark:bg-neutral-900">
         <h3 className="text-2xl font-bold mb-2 line-clamp-2" style={{ color: teamColors.primary }}>{title}</h3>
         
         <div className="space-y-2 text-sm text-gray-700 dark:text-neutral-300 mb-4">

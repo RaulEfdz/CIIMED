@@ -49,7 +49,7 @@ export default function HireUs({ content }: HireUsProps) {
           </div>
         </div>
         <div className="relative">
-          <Card className="rounded-sm shadow-md bg-white">
+          <Card className="rounded-sm shadow-md bg-[#F2F2F2]">
             <CardContent className="p-6">
               <h2 className="text-2xl font-semibold text-gray-900">
                 {content.form.title}

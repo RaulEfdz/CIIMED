@@ -134,7 +134,7 @@ const NoveltiesContainer: React.FC<NoveltiesContainerProps> = ({
         {showScrollTop && (
           <button
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 bg-white p-2 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
+            className="fixed bottom-8 right-8 bg-[#F2F2F2] p-2 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
             aria-label="Volver arriba"
           >
             <ArrowUpCircle className="h-6 w-6 text-blue-600" />

@@ -47,7 +47,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
         />
       </div>
 
-      <CardContent className="p-6 bg-white dark:bg-neutral-900">
+      <CardContent className="p-6 bg-[#F2F2F2] dark:bg-neutral-900">
         {/* Información de Autor y Tiempo de Lectura */}
         <div className="flex items-center justify-between bg-gray-100 dark:bg-neutral-800 p-2 rounded-sm text-sm text-gray-600 dark:text-neutral-300 mb-4">
           <p className="font-medium" style={{ color: teamColors.dark }}>{author}</p>

@@ -48,7 +48,7 @@ const Testimonials: FC = () => {
     <div className="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {testimonials.map((testimonial) => (
-          <Card key={testimonial.id} className="flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl p-6">
+          <Card key={testimonial.id} className="flex flex-col bg-[#F2F2F2] border border-gray-200 shadow-sm rounded-xl p-6">
             <div className="flex-auto">
               <Image
                 src={testimonial.logo}

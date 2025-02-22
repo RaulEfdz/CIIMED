@@ -49,7 +49,7 @@ export default function ChatBotUI() {
 
   return (
     <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-28">
-      <Card className="rounded-sm shadow-md bg-white ">
+      <Card className="rounded-sm shadow-md bg-[#F2F2F2] ">
         <CardContent className="p-6 flex flex-col gap-4 h-[75vh]">
           <div className="overflow-y-auto space-y-3 p-2 border border-gray-300 rounded-sm h-[75vh]">
             {messages.map((msg) => (

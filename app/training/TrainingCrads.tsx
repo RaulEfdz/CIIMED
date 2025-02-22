@@ -19,7 +19,7 @@ interface CourseCardProps {
 
 const CourseCard = ({ imageUrl, title, description, duration, modality, category }: CourseCardProps) => (
   <div className="transform transition-all duration-300 hover:scale-105 hover:shadow-xl w-full">
-    <Card className="rounded-sm overflow-hidden cursor-pointer bg-white">
+    <Card className="rounded-sm overflow-hidden cursor-pointer bg-[#F2F2F2]">
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="relative w-full md:w-1/3 h-48 md:h-52 shrink-0 bg-gray-200 rounded-sm overflow-hidden">

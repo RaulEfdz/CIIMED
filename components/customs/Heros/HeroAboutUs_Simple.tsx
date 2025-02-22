@@ -50,7 +50,7 @@ const AboutUs: React.FC<AboutUsProps> = ({
             <div className="pt-8 border-t border-gray-300">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Misión */}
-                <div className="bg-white p-6 rounded-sm shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
+                <div className="bg-[#F2F2F2] p-6 rounded-sm shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
                   <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
                     <Briefcase className="h-5 w-5 text-blue-600" /> Misión
                   </h2>
@@ -58,7 +58,7 @@ const AboutUs: React.FC<AboutUsProps> = ({
                 </div>
 
                 {/* Visión */}
-                <div className="bg-white p-6 rounded-sm shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
+                <div className="bg-[#F2F2F2] p-6 rounded-sm shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
                   <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
                     <Building2 className="h-5 w-5 text-blue-600" /> Visión
                   </h2>

@@ -42,7 +42,7 @@ const SocialCardsSection: React.FC = () => {
         {socialPlatforms.map((platform) => (
           <div
             key={platform.name}
-            className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl"
+            className="group flex flex-col h-full bg-[#F2F2F2] border border-gray-200 shadow-sm rounded-xl"
           >
             <div
               className={`h-52 flex flex-col justify-center items-center ${platform.bgColor} rounded-t-xl`}
