@@ -36,10 +36,6 @@ export const Header = () => {
             href:"/scientificDissemination"
           },
           {
-            label: "Asistente FAQ",
-            href: "/FAQ",
-          },
-          {
             label: "Contacto",
             href: "/contact",
           },
