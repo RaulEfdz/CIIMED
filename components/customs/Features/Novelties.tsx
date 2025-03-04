@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
-import { Search, Filter, ArrowUpCircle } from "lucide-react";
+import { Search, Filter } from "lucide-react";
 import NoveltyCard, { NoveltyCardProps } from "../Cards/NoveltyCard";
+import { TopScroll } from "../TopScroll";
 
 interface NoveltiesContainerProps {
   novelties: NoveltyCardProps[];
@@ -51,10 +52,6 @@ const NoveltiesContainer: React.FC<NoveltiesContainerProps> = ({
     setShowScrollTop(window.scrollY > 300);
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   React.useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -65,9 +62,7 @@ const NoveltiesContainer: React.FC<NoveltiesContainerProps> = ({
       <div className="max-w-7xl mx-auto">
         {/* Cabecera y Filtros */}
         <div className="mb-8 space-y-4">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Últimas Noticias
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-900">Últimas Noticias</h2>
           {search && (
             <div className="flex flex-col md:flex-row gap-4">
               <div className="relative flex-1">
@@ -132,13 +127,7 @@ const NoveltiesContainer: React.FC<NoveltiesContainerProps> = ({
 
         {/* Botón Scroll to Top */}
         {showScrollTop && (
-          <button
-            onClick={scrollToTop}
-            className="fixed bottom-8 right-8 bg-[#F2F2F2] p-2 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
-            aria-label="Volver arriba"
-          >
-            <ArrowUpCircle className="h-6 w-6 text-blue-600" />
-          </button>
+      <TopScroll />
         )}
       </div>
     </div>

@@ -201,6 +201,7 @@ export default function ResearchPage() {
             ))}
           </motion.div>
         </section>
+
       </div>
     </motion.main>
   );

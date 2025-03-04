@@ -1,3 +1,4 @@
+"app/page.tsx"
 import Home from "./Home/page";
 
 export default function App() {

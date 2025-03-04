@@ -9,13 +9,13 @@ const baseThemes: ThemeVariant[] = ["dark", "orange"];
 const themes: ThemeVariant[] = [...baseThemes, "green"];
 
 // Duración total de la animación (incluyendo el último color "green")
-const t = (themes.length + 1) * 1000; // Agregamos 1 más para garantizar que el último color sea "green"
+const t = (themes.length + 1) * 100; // Agregamos 1 más para garantizar que el último color sea "green"
 
 interface OpeningProps {
   themeVariant?: ThemeVariant;
 }
 
-const Opening: React.FC<OpeningProps> = ({ themeVariant = "multi" }) => {
+const Opening: React.FC<OpeningProps> = ({ themeVariant = "green" }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [currentTheme, setCurrentTheme] = useState<ThemeVariant>(themeVariant);
 

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Filter, ArrowUpCircle } from 'lucide-react';
+import { Search, Filter } from 'lucide-react';
 import EventCard, { EventCardProps } from '../Cards/EventCard';
+import { TopScroll } from '../TopScroll';
 
 interface EventsContainerProps {
   events: EventCardProps[];
@@ -47,10 +48,7 @@ const EventsContainer: React.FC<EventsContainerProps> = ({ events, search }) => 
     setShowScrollTop(window.scrollY > 300);
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
+ 
   React.useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -124,13 +122,7 @@ const EventsContainer: React.FC<EventsContainerProps> = ({ events, search }) => 
 
         {/* Botón Scroll to Top */}
         {showScrollTop && (
-          <button
-            onClick={scrollToTop}
-            className="fixed bottom-8 right-8 bg-[#F2F2F2] p-2 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
-            aria-label="Volver arriba"
-          >
-            <ArrowUpCircle className="h-6 w-6 text-blue-600" />
-          </button>
+                <TopScroll />
         )}
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { Search, ArrowUpCircle } from "lucide-react";
+import { Search } from "lucide-react";
 import NewsCard, { NewsCardProps } from "../Cards/NewsCard";
+import { TopScroll } from "../TopScroll";
 
 interface NewsContainerProps {
   news: NewsCardProps[];
@@ -57,10 +58,6 @@ const NewsContainer: React.FC<NewsContainerProps> = ({ news, search }) => {
   const handleScroll = useCallback(() => {
     setShowScrollTop(window.scrollY > 300);
   }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -121,13 +118,7 @@ const NewsContainer: React.FC<NewsContainerProps> = ({ news, search }) => {
         )}
 
         {showScrollTop && (
-          <button
-            onClick={scrollToTop}
-            className="fixed bottom-8 right-8 bg-[#F2F2F2] p-2 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
-            aria-label="Volver arriba"
-          >
-            <ArrowUpCircle className="h-6 w-6 text-blue-600" />
-          </button>
+               <TopScroll />
         )}
       </div>
     </div>
