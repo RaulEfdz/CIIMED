@@ -1,7 +1,8 @@
 "use client";
-import React, { useState, useCallback, useEffect } from "react";
+import React from "react";
 import { BotIcon } from "lucide-react";
 import { brandColors } from "@/tools/robotipa-bot/brand/brand";
+import useDrag from "@/tools/robotipa-bot/hooks/useDrag";
 
 interface FloatingIconProps {
   onClick: () => void;
@@ -16,52 +17,21 @@ const FloatingIcon: React.FC<FloatingIconProps> = ({
   initialPosition,
   onPositionChange,
 }) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState({
+  const startingPosition = {
     x: initialPosition?.x ?? (side === "right" ? window.innerWidth - 100 : 100),
     y: initialPosition?.y ?? window.innerHeight - 100,
-  });
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  };
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    setIsDragging(true);
-    setDragOffset({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    });
-  }, [position.x, position.y]);
-
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (isDragging) {
-      const newX = e.clientX - dragOffset.x;
-      const newY = e.clientY - dragOffset.y;
-      setPosition({ x: newX, y: newY });
-      onPositionChange?.({ x: newX, y: newY });
-    }
-  }, [isDragging, dragOffset.x, dragOffset.y, onPositionChange]);
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
-  useEffect(() => {
-    if (isDragging) {
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-    }
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isDragging, handleMouseMove, handleMouseUp]);
+  const { position, handleMouseDown } = useDrag(startingPosition, onPositionChange);
 
   return (
-    <div className="fixed z-50"
+    <div
+      className="fixed z-50"
       style={{
         left: position.x,
         top: position.y,
-      }}>
+      }}
+    >
       <button
         onMouseDown={handleMouseDown}
         onClick={onClick}
@@ -70,7 +40,8 @@ const FloatingIcon: React.FC<FloatingIconProps> = ({
           backgroundColor: brandColors.primary,
           cursor: "move",
         }}
-        aria-label="Abrir chat">
+        aria-label="Abrir chat"
+      >
         <BotIcon className="h-8 w-8" style={{ color: brandColors.onPrimary }} />
       </button>
     </div>
