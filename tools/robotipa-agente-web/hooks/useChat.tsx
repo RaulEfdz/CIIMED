@@ -30,9 +30,9 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
       timestamp: Date.now(),
     };
     addMessage(userMessage);
-
+  
     try {
-      const botResponse = await sendChatMessage(messageText);
+      const botResponse = await sendChatMessage([...messages, userMessage]);
       addMessage(botResponse);
     } catch {
       addMessage({
@@ -43,6 +43,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
       });
     }
   };
+  
 
   return (
     <ChatContext.Provider
@@ -60,3 +61,4 @@ export const useChat = (): ChatContextProps => {
   }
   return context;
 };
+//MODIFICADO aqui
