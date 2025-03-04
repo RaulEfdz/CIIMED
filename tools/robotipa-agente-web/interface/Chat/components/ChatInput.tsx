@@ -2,6 +2,7 @@
 import React, { useState, FormEvent } from 'react';
 import { useChat } from '@/tools/robotipa-agente-web/hooks/useChat';
 import { brandColors } from '@/tools/robotipa-agente-web/brand/brand';
+import { SendIcon } from 'lucide-react';
 
 const ChatInput: React.FC = () => {
   const { sendMessage } = useChat();
@@ -33,14 +34,14 @@ const ChatInput: React.FC = () => {
         className="flex-1 border rounded-l px-4 py-2 focus:outline-none"
         disabled={isSending}
       />
-      <button
+      {input.length>0 && <button
         type="submit"
         disabled={isSending || !input.trim()}
         style={{ backgroundColor: brandColors.primary }}
         className="text-white px-4 py-2 rounded-r focus:outline-none transition-colors disabled:opacity-50"
       >
-        {isSending ? 'Enviando...' : 'Enviar'}
-      </button>
+        {isSending ? 'Enviando...' : <SendIcon size={18} />}
+      </button>}
     </form>
   );
 };
