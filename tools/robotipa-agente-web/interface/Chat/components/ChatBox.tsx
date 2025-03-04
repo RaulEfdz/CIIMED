@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import ChatHistory from "./ChatHistory";
 import ChatInput from "./ChatInput";
 import { X, MessageCircle, Minimize2, Maximize2 } from "lucide-react";
-import { brandColors } from "@/tools/robotipa-bot/brand/brand";
-import useDrag from "@/tools/robotipa-bot/hooks/useDrag";
+import { brandColors } from "@/tools/robotipa-agente-web/brand/brand";
+import useDrag from "@/tools/robotipa-agente-web/hooks/useDrag";
 
 interface ChatBoxProps {
   onClose: () => void;
@@ -23,7 +23,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
 
   const startingPosition = {
     x: initialPosition?.x ?? window.innerWidth - 400,
-    y: initialPosition?.y ?? window.innerHeight - 500,
+    y: initialPosition?.y ?? window.innerHeight - 100,
   };
 
   // Extraemos la función handleMouseDown del hook useDrag

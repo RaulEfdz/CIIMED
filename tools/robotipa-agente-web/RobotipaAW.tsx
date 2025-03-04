@@ -7,17 +7,23 @@ import { ChatProvider } from "./hooks/useChat";
 
 interface RobotipaBotProps {
   sharedPositions?: boolean;
+  alignment: "TL" | "TR" | "BL" | "BR" | "CENTER";
+  initialChatOpen?: boolean;
 }
 
-const RobotipaBot: React.FC<RobotipaBotProps> = ({ sharedPositions = false }) => {
-  const [isChatOpen, setIsChatOpen] = useState(false);
+const RobotipaBot: React.FC<RobotipaBotProps> = ({
+  sharedPositions = false,
+  alignment,
+  initialChatOpen = false,
+}) => {
+  const [isChatOpen, setIsChatOpen] = useState(initialChatOpen);
 
   const {
     buttonPosition,
     chatPosition,
     handleButtonPositionChange,
     handleChatPositionChange,
-  } = usePositions(sharedPositions);
+  } = usePositions(sharedPositions, alignment);
 
   const handleToggleChat = () => setIsChatOpen((prev) => !prev);
 

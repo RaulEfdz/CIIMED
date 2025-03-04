@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useEffect } from 'react';
-import { useChat } from '@/tools/robotipa-bot/hooks/useChat';
-import { brandColors } from '@/tools/robotipa-bot/brand/brand';
+import { useChat } from '@/tools/robotipa-agente-web/hooks/useChat';
+import { brandColors } from '@/tools/robotipa-agente-web/brand/brand';
 
 const ChatHistory: React.FC = () => {
   const { messages } = useChat();

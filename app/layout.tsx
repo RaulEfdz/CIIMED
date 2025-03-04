@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-// import Opening from "./opening/Opening";
 import { Footer, Header } from "./config/inital";
-import RobotipaBot from "@/tools/robotipa-bot/RobotipaBot";
+import RobotipaAW from "@/tools/robotipa-agente-web/RobotipaAW";
 
 export const metadata: Metadata = {
   title: "CIIMED",
@@ -16,15 +15,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body>
-
-
-          {/* <Opening /> */}
-          <Header />
-          {children}
-          <RobotipaBot />
-          <Footer />
+        <Header />
+        {children}
+        <RobotipaAW
+          initialChatOpen={false}
+          sharedPositions={false}
+          alignment="BR" 
+        />
+        <Footer />
       </body>
     </html>
   );

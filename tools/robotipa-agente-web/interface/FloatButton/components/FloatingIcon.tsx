@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import { BotIcon } from "lucide-react";
-import { brandColors } from "@/tools/robotipa-bot/brand/brand";
-import useDrag from "@/tools/robotipa-bot/hooks/useDrag";
+import { brandColors } from "@/tools/robotipa-agente-web/brand/brand";
+import useDrag from "@/tools/robotipa-agente-web/hooks/useDrag";
 
 interface FloatingIconProps {
   onClick: () => void;
