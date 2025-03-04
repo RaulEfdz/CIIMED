@@ -2,9 +2,10 @@
 import React, { useState, useEffect } from "react";
 import ChatHistory from "./ChatHistory";
 import ChatInput from "./ChatInput";
-import { X, MessageCircle, Minimize2, Maximize2 } from "lucide-react";
+import { X, Minimize2, Maximize2 } from "lucide-react";
 import { brandColors } from "@/tools/robotipa-agente-web/brand/brand";
 import useDrag from "@/tools/robotipa-agente-web/hooks/useDrag";
+import { WebAgentLink } from "./WebAgentLink";
 
 interface ChatBoxProps {
   onClose: () => void;
@@ -27,7 +28,10 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   };
 
   // Extraemos la función handleMouseDown del hook useDrag
-  const { position, handleMouseDown: originalHandleMouseDown } = useDrag(startingPosition, onPositionChange);
+  const { position, handleMouseDown: originalHandleMouseDown } = useDrag(
+    startingPosition,
+    onPositionChange
+  );
 
   // Nueva función que activa el estado de arrastre y llama a la función original
   const handleMouseDown = (event: React.MouseEvent) => {
@@ -90,10 +94,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({
             cursor: "move",
           }}
         >
-          <div className="flex items-center space-x-2">
-            <MessageCircle size={18} />
-            <h3 className="text-lg font-medium">Asistente Virtual</h3>
-          </div>
+         <WebAgentLink />
+
           <div className="flex items-center space-x-2">
             <button
               onClick={toggleMinimize}

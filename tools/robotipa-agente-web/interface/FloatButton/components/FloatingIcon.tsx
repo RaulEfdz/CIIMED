@@ -35,14 +35,14 @@ const FloatingIcon: React.FC<FloatingIconProps> = ({
       <button
         onMouseDown={handleMouseDown}
         onClick={onClick}
-        className="p-2 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
+        className="p-2 rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 "
         style={{
           backgroundColor: brandColors.primary,
           cursor: "move",
         }}
         aria-label="Abrir chat"
       >
-        <BotIcon className="h-8 w-8" style={{ color: brandColors.onPrimary }} />
+        <BotIcon className="h-8 w-8 cursor-pointer " style={{ color: brandColors.onPrimary }} />
       </button>
     </div>
   );

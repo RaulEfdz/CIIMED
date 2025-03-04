@@ -1,31 +1,15 @@
-/**
- * Archivo de definición de colores de marca.
- * Aquí definimos la paleta de colores utilizada en la aplicación.
- */
-
 export const brandColors = {
-    // Color principal para botones, encabezados y elementos destacados.
-    primary: '#285C4D',
-  
-    // Color para textos que se muestran sobre fondos primarios (por ejemplo, botones).
-    onPrimary: '#FFFFFF',
-  
-    // Color para fondos y superficies generales.
-    surface: '#F9F9F9',
-  
-    // Color alternativo para fondos, utilizado en etiquetas o secciones secundarias.
-    backgroundAlt: '#E2E2E2',
-  
-    // Color principal para textos en componentes.
-    textPrimary: '#333333',
-  
-    // Color secundario para textos, ideal para subtítulos o información adicional.
-    textSecondary: '#777777',
-  
-    // Color para textos o elementos en estado deshabilitado o menos importantes.
-    muted: '#AAAAAA',
-  
-    // Color para bordes y líneas divisorias.
-    border: '#CCCCCC',
-  };
-  
+  primary: '#F4633A', // PANTONE 2026 C - Naranja brillante
+  onPrimary: '#FFFFFF', // Color de texto sobre primary
+  secondary: '#285C4D', // PANTONE 326 C - Verde oscuro
+  onSecondary: '#FFFFFF', // Color de texto sobre secondary
+  tertiary: '#212322', // PANTONE 419 C - Gris oscuro
+  onTertiary: '#FFFFFF', // Color de texto sobre tertiary
+  surface: '#F9F9F9', // Fondo de superficie
+  background: '#F2F2F2', // Fondo principal
+  backgroundAlt: '#E2E2E2', // Fondo alternativo
+  textPrimary: '#212322', // Texto principal (oscuro para contraste)
+  textSecondary: '#285C4D', // Texto secundario (verde oscuro)
+  muted: '#AAAAAA', // Texto atenuado
+  border: '#CCCCCC', // Bordes
+};

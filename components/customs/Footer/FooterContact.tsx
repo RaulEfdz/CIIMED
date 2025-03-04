@@ -1,5 +1,6 @@
 import React from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { PoweredBy } from "@/common/powerBy";
 
 interface NavLinkProps {
   label: string;
@@ -18,9 +19,10 @@ interface FooterProps {
   contact: ContactInfo;
 }
 
+
 export const FooterContact: React.FC<FooterProps> = ({ navLinks, contact }) => {
   return (
-    <footer className="w-full py-10 px-4 sm:px-6 lg:px-8 bg-[#285C4D] text-white flex justify-center">
+    <footer className="w-full py-10 px-4 sm:px-6 lg:px-8 bg-[#285C4D] text-white flex flex-col items-center">
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 max-w-[85rem] w-full">
         {/* Marca */}
         <div className="lg:col-span-1 flex flex-col">
@@ -69,6 +71,8 @@ export const FooterContact: React.FC<FooterProps> = ({ navLinks, contact }) => {
           </div>
         </div>
       </div>
+      {/* Etiqueta Power by Robotipa */}
+      <PoweredBy />
     </footer>
   );
 };

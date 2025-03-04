@@ -42,7 +42,7 @@ const ChatHistory: React.FC = () => {
       {messages.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full text-center p-6">
           <p className="mb-2" style={{ color: brandColors.textSecondary }}>
-            No hay mensajes todavía.
+            Pregunta lo que quieras sobre nosotros.
           </p>
           <p className="text-sm" style={{ color: brandColors.muted }}>
             Escribe un mensaje para comenzar la conversación.
