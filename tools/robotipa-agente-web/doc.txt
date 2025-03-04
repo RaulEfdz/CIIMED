@@ -1,0 +1,16 @@
+/*
+actualizacienes furturas 
+1. Que el diseño se pueda rediemnsionar por el usuario
+2. Mjeores animaciones al enviar
+3. Sonido al enviar y a recibir con funcion de desactivar
+4. Preguntas sugeridas en tugles
+5. predictor de textos
+
+FUnciones
+1. que pueda llevarte a cual queir parte d ela pagina con una confirmacion dinamientacemnte, 
+ejemplo : usurio pregunta, Que noticias nuvas hay ?  y el bot lresponda : Te llevare a la seccion donde habalmos sobre las noticias, esta de acurdo ?  y si responde que si lo lleva cmabiando el link actua de la pagi apor el de la pagian correspondiente
+2. LOs chats se gaurdan en el local estorage una copia hasta de 25 mensajes, para no perder context
+3. El usuario anonnko tendra un id unico de seguimeitno,
+4 tendremos eun sitema de filtrado de grocesiar etc.
+5. EL AGente tiene conocimeito toda la informacion de la pagina dinmaicamente
+*/
