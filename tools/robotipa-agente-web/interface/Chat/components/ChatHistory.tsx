@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useChat } from '@/tools/robotipa-agente-web/hooks/useChat';
 import { brandColors } from '@/tools/robotipa-agente-web/brand/brand';
 
@@ -10,21 +10,22 @@ interface Message {
   timestamp: number;
 }
 
-const ChatHistory: React.FC = () => {
+interface ChatHistoryProps {
+  ref: React.Ref<HTMLDivElement>; // Ref pasada desde ChatBox
+}
+
+const ChatHistory: React.ForwardRefExoticComponent<ChatHistoryProps & React.RefAttributes<HTMLDivElement>> = React.forwardRef<HTMLDivElement, ChatHistoryProps>(({}, ref) => {
   const { messages } = useChat();
   const bottomRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isScrolling, setIsScrolling] = useState(false);
 
   useEffect(() => {
-    // Scroll to the bottom when messages change
-    if (bottomRef.current && !isScrolling) {
-      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+    // Cada vez que se actualicen los mensajes se hace scroll hacia el fondo
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
-  }, [messages, isScrolling]);
+  }, [messages]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    // Prevent scroll event from propagating
     e.stopPropagation();
   };
 
@@ -62,24 +63,18 @@ const ChatHistory: React.FC = () => {
         };
 
     return (
-      <div 
-        key={msg.id} 
-        className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-2`}
-      >
+      <div key={msg.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-2`}>
         <div
           className={`
-            max-w-xs md:max-w-md lg:max-w-lg 
-            rounded-lg px-4 py-2 
+            max-w-xs md:max-w-md lg:max-w-lg
+            rounded-lg px-4 py-2
             ${isUser ? 'rounded-br-none' : 'rounded-bl-none'}
             ${prevSenderIsSame ? (isUser ? 'mr-4' : 'ml-4') : ''}
           `}
           style={bubbleStyle}
         >
           <div className="break-words">{msg.message}</div>
-          <div 
-            className="text-xs mt-1" 
-            style={{ color: brandColors.textSecondary }}
-          >
+          <div className="text-xs mt-1" style={{ color: brandColors.textSecondary }}>
             {formatTime(msg.timestamp)}
           </div>
         </div>
@@ -114,40 +109,36 @@ const ChatHistory: React.FC = () => {
 
   return (
     <div
-      ref={containerRef}
+      ref={ref}
       onScroll={handleScroll}
       className="flex-1 overflow-y-auto p-4 space-y-4 rounded-b-lg"
-      style={{ 
+      style={{
         backgroundColor: brandColors.surface,
-        height: '100%', 
+        maxHeight: '50vh', // Altura máxima de 50vh
         overflowY: 'auto',
         position: 'relative',
-        willChange: 'scroll-position'
+        willChange: 'scroll-position',
+        msOverflowY: 'auto',
+        scrollbarWidth: 'thin',
+        scrollbarColor: `${brandColors.border} ${brandColors.surface}`,
       }}
     >
-      <div>
-        {messages.length === 0 ? (
-          renderEmptyState()
-        ) : (
-          Object.entries(messageGroups).map(([date, msgs]) => (
-            <div key={date} className="space-y-3">
-              {renderDateGroupHeader(date)}
-              {msgs.map((msg, index, array) => renderMessageBubble(msg, index, array))}
-            </div>
-          ))
-        )}
-        <div 
-          ref={bottomRef} 
-          className="h-1 w-full" 
-          style={{ 
-            position: 'absolute', 
-            bottom: 0, 
-            left: 0 
-          }} 
-        />
-      </div>
+      {messages.length === 0 ? (
+        renderEmptyState()
+      ) : (
+        Object.entries(messageGroups).map(([date, msgs]) => (
+          <div key={date} className="space-y-3">
+            {renderDateGroupHeader(date)}
+            {msgs.map((msg, index, array) => renderMessageBubble(msg, index, array))}
+          </div>
+        ))
+      )}
+      {/* Elemento vacío que nos ayuda a hacer scroll hasta el final */}
+      <div ref={bottomRef} />
     </div>
   );
-};
+});
+
+ChatHistory.displayName = 'ChatHistory';
 
 export default ChatHistory;
