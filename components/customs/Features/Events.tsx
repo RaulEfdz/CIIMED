@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useMemo } from 'react';
 import { Search, Filter } from 'lucide-react';
 import EventCard, { EventCardProps } from '../Cards/EventCard';

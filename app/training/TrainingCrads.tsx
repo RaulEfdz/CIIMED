@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ClockIcon } from "lucide-react";
 
-// const HIGHLIGHT_COLOR = "#285C4D";
+// const = "#285C4D";
 
 interface CourseCardProps {
   imageUrl: string;

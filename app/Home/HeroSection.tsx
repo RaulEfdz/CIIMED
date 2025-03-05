@@ -1,8 +1,7 @@
 import HeroBanner from "@/components/customs/Heros/HeroBanner";
 import { SiInstagram, SiLinkedin, SiSpotify, SiYoutube } from "react-icons/si";
 import { motion } from "framer-motion"; // Importación de Framer Motion
-import { HIGHLIGHT_COLOR } from "./page";
-
+const HIGHLIGHT_COLOR = "#ffffff";
 
 export const HeroSection = () => {
     return (

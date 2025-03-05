@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import { useState, useEffect } from "react";
 
 export interface Position {
@@ -16,8 +16,12 @@ export interface UsePositionsReturn {
 // Función para mapear la posición textual a coordenadas
 const getDefaultPosition = (alignment: string): Position => {
   const margin = 20;
-  // Se asume un tamaño aproximado de 100 para el ancho/alto del componente,
-  // puedes ajustar este valor según sea necesario
+  
+  // Check if window is defined (client-side only)
+  if (typeof window === "undefined") {
+    return { x: 0, y: 0 }; // Fallback value during SSR
+  }
+  
   switch (alignment.toUpperCase()) {
     case "TL":
       return { x: margin, y: margin };

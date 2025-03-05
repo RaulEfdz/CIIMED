@@ -8,7 +8,7 @@ import { motion } from "framer-motion"; // Importación de Framer Motion
 import { HeroSection } from "./HeroSection";
 import { FeatureInit } from "./FeatureInit";
 
-export const HIGHLIGHT_COLOR = "#ffffff";
+// export const HIGHLIGHT_COLOR = "#ffffff";
 
 export default function Home() {
   

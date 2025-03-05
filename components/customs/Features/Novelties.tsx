@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useMemo } from "react";
 import { Search, Filter } from "lucide-react";
 import NoveltyCard, { NoveltyCardProps } from "../Cards/NoveltyCard";

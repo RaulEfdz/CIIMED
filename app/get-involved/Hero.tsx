@@ -3,7 +3,7 @@
 // components/Hero.tsx
 import { motion } from "framer-motion";
 import HeroImagen from "@/components/customs/Features/HeroImage";
-export const HIGHLIGHT_COLOR = "#285C4D";
+const HIGHLIGHT_COLOR = "#285C4D";
 
 const Hero = () => (
   <motion.div

@@ -1,5 +1,6 @@
 
 // components/customs/Features/Teams.tsx
+"use client"
 import Image from "next/image";
 import { db } from "@/app/data/db";
 

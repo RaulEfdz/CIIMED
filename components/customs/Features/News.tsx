@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { Search } from "lucide-react";
 import NewsCard, { NewsCardProps } from "../Cards/NewsCard";
