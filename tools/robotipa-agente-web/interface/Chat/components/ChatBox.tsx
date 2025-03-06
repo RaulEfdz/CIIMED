@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import ChatHistory from "./ChatHistory";
 import ChatInput from "./ChatInput";
 import { X, Minimize2, Maximize2 } from "lucide-react";
@@ -13,29 +13,25 @@ interface ChatBoxProps {
   onPositionChange?: (pos: { x: number; y: number }) => void;
 }
 
-const ChatBox: React.FC<ChatBoxProps> = ({
-  onClose,
-  initialPosition,
-  onPositionChange,
-}) => {
-  // useRef for timer and for the div with onWheel
+const DEFAULT_MARGIN = 20;
+const CHAT_BOX_DEFAULT_HEIGHT = 400; // Altura estimada para posicionar el chat
+
+const ChatBox: React.FC<ChatBoxProps> = ({ onClose, initialPosition, onPositionChange }) => {
   const isLoadedTimer = useRef<number | null>(null);
-  const chatBoxDivRef = useRef<HTMLDivElement>(null); // Ref for the div with onWheel
-  const chatHistoryRef = useRef<HTMLDivElement>(null); // Ref for ChatHistory scroll container
+  const chatBoxDivRef = useRef<HTMLDivElement>(null);
+  const chatHistoryRef = useRef<HTMLDivElement>(null);
 
   const [isMinimized, setIsMinimized] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
-  const startingPosition = {
-    x: initialPosition?.x ?? window.innerWidth - 400,
-    y: initialPosition?.y ?? window.innerHeight - 600,
-  };
+  // Posición inicial: por defecto en la parte inferior izquierda
+  const startingPosition = useMemo(() => ({
+    x: initialPosition?.x ?? DEFAULT_MARGIN,
+    y: initialPosition?.y ?? (window.innerHeight - CHAT_BOX_DEFAULT_HEIGHT - DEFAULT_MARGIN),
+  }), [initialPosition]);
 
-  const { position, handleMouseDown: originalHandleMouseDown } = useDrag(
-    startingPosition,
-    onPositionChange
-  );
+  const { position, handleMouseDown: originalHandleMouseDown } = useDrag(startingPosition, onPositionChange);
 
   const handleMouseDown = (event: React.MouseEvent) => {
     setIsDragging(true);
@@ -43,20 +39,15 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   };
 
   useEffect(() => {
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
+    const handleMouseUp = () => setIsDragging(false);
     document.addEventListener("mouseup", handleMouseUp);
     return () => document.removeEventListener("mouseup", handleMouseUp);
   }, []);
 
   useEffect(() => {
-    // Consider using requestAnimationFrame for smoother transitions, but for a simple opacity, setTimeout is fine.
-    isLoadedTimer.current = window.setTimeout(() => setIsLoaded(true), 10); // Increased to 10ms for better visibility, though very short durations are often ineffective. Consider removing or increasing further if transition is not noticeable.
+    isLoadedTimer.current = window.setTimeout(() => setIsLoaded(true), 10);
     return () => {
-      if (isLoadedTimer.current) {
-        clearTimeout(isLoadedTimer.current);
-      }
+      if (isLoadedTimer.current) clearTimeout(isLoadedTimer.current);
     };
   }, []);
 
@@ -68,55 +59,35 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  const toggleMinimize = () => setIsMinimized((prev) => !prev);
+  const toggleMinimize = () => setIsMinimized(prev => !prev);
 
   const preventBackgroundScroll = (e: React.WheelEvent) => {
     e.stopPropagation();
-
     if (chatBoxDivRef.current) {
-      // Access scrollHeight and clientHeight from the div
-      const scrollHeightValue = chatBoxDivRef.current.scrollHeight;
-      const clientHeightValue = chatBoxDivRef.current.clientHeight;
-
-      console.log("scrollHeight:", scrollHeightValue);
-      console.log("clientHeight:", clientHeightValue);
-
-      // You can now use scrollHeightValue and clientHeightValue for
-      // your logic, for example, to check if there is overflow or
-      // to implement custom scrolling behavior.
-      if (scrollHeightValue > clientHeightValue) {
-        console.log("The content is scrollable (scrollHeight > clientHeight)");
-        // Perform actions when the content is scrollable within the ChatBox div
-      } else {
-        console.log(
-          "The content is NOT scrollable (scrollHeight <= clientHeight)"
-        );
-        // Perform actions when the content is NOT scrollable within the ChatBox div
-      }
+      const { scrollHeight, clientHeight } = chatBoxDivRef.current;
+      // Aquí se puede agregar lógica adicional si se requiere comportamiento personalizado en el scroll
     }
   };
 
   return (
     <div
-      className="z-50 transition-opacity duration-200 overflow-hidden" // More semantic class name and duration
+      className="z-50 transition-opacity duration-200 overflow-hidden shadow-2xl"
       style={{
         position: "fixed",
         left: position.x,
         top: position.y,
         opacity: isLoaded ? 1 : 0,
-        transform: isLoaded ? "translateY(0)" : "translateY(1px)", // Consider removing translateY if opacity transition is sufficient
+        transform: isLoaded ? "translateY(0)" : "translateY(1px)",
       }}
-      ref={chatBoxDivRef} // Attach the ref to the div
+      ref={chatBoxDivRef}
     >
       <div
         style={{
-         scrollBehavior: "smooth",
+          scrollBehavior: "smooth",
           backgroundColor: brandColors.surface,
           width: isMinimized ? "16rem" : "22rem",
           height: isMinimized ? "4rem" : "auto",
-          border: isDragging
-            ? "2px dashed red"
-            : `1px solid ${brandColors.border}`, // Template literals are cleaner for string concatenation with variables in styles.
+          border: isDragging ? "2px dashed red" : `1px solid ${brandColors.border}`,
           position: "relative",
           overflow: "hidden",
         }}
@@ -126,15 +97,12 @@ const ChatBox: React.FC<ChatBoxProps> = ({
           onMouseDown={handleMouseDown}
           className="flex justify-between items-center p-3 rounded-t-lg"
           style={{
-            backgroundColor: isDragging
-              ? `${brandColors.primary}88`
-              : brandColors.primary, // Template literals for clarity
+            backgroundColor: isDragging ? `${brandColors.primary}88` : brandColors.primary,
             color: brandColors.onPrimary,
             cursor: "move",
           }}
         >
           <WebAgentLink />
-
           <div className="flex items-center space-x-2">
             <button
               onClick={toggleMinimize}
@@ -157,12 +125,10 @@ const ChatBox: React.FC<ChatBoxProps> = ({
         {!isMinimized && (
           <>
             <div
-              className="flex flex-col flex-1 overflow-hidden "
+              className="flex flex-col flex-1 overflow-hidden"
               onWheel={preventBackgroundScroll}
-
             >
-              <ChatHistory ref={chatHistoryRef} />{" "}
-              {/* Pass ref to ChatHistory */}
+              <ChatHistory ref={chatHistoryRef} />
             </div>
             <ChatInput />
           </>
