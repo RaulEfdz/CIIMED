@@ -1,8 +1,7 @@
 "use client"
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Search } from "lucide-react";
 import NewsCard, { NewsCardProps } from "../Cards/NewsCard";
-import { TopScroll } from "../TopScroll";
 
 interface NewsContainerProps {
   news: NewsCardProps[];
@@ -12,7 +11,6 @@ interface NewsContainerProps {
 const NewsContainer: React.FC<NewsContainerProps> = ({ news, search }) => {
   const [visibleNews, setVisibleNews] = useState(6);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showScrollTop, setShowScrollTop] = useState(false);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
   useEffect(() => {
@@ -56,14 +54,7 @@ const NewsContainer: React.FC<NewsContainerProps> = ({ news, search }) => {
     setVisibleNews((prev) => prev + 6);
   };
 
-  const handleScroll = useCallback(() => {
-    setShowScrollTop(window.scrollY > 300);
-  }, []);
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
 
   return (
     <div className="h-auto bg-transparent p-6 pb-10">
@@ -118,9 +109,6 @@ const NewsContainer: React.FC<NewsContainerProps> = ({ news, search }) => {
           </div>
         )}
 
-        {showScrollTop && (
-               <TopScroll />
-        )}
       </div>
     </div>
   );

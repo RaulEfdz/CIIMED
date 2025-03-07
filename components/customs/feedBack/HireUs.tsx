@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { MessageCircleIcon } from "lucide-react";
+// import { Card, CardContent } from "@/components/ui/card";
+// import { MessageCircleIcon } from "lucide-react";
 
 // Definición del modelo para el contenido
 export interface HireUsContent {
@@ -25,9 +25,10 @@ interface HireUsProps {
 }
 
 export default function HireUs({ content }: HireUsProps) {
+  console.log(content)
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="grid md:grid-cols-2 items-center gap-12">
+      {/* <div className="grid md:grid-cols-2 items-center gap-12">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl mb-4">
             {content.title}
@@ -87,7 +88,7 @@ export default function HireUs({ content }: HireUsProps) {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }

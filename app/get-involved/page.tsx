@@ -1,8 +1,10 @@
-import HireUs, { HireUsContent } from "@/components/customs/feedBack/HireUs";
+import HireUs from "@/components/customs/feedBack/HireUs";
 import Hero from "./Hero";
+import React from "react";
+
 
 const FormContact = () => {
-  const participationContent: HireUsContent = {
+  const participationContent = {
     title: "Participa con Nosotros",
     subtitle: "Únete a nuestra comunidad y haz crecer tu futuro",
     description:

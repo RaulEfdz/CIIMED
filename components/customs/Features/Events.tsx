@@ -2,7 +2,6 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Filter } from 'lucide-react';
 import EventCard, { EventCardProps } from '../Cards/EventCard';
-import { TopScroll } from '../TopScroll';
 
 interface EventsContainerProps {
   events: EventCardProps[];
@@ -10,10 +9,10 @@ interface EventsContainerProps {
 }
 
 const EventsContainer: React.FC<EventsContainerProps> = ({ events, search }) => {
+
   const [visibleEvents, setVisibleEvents] = useState(6);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
-  const [showScrollTop, setShowScrollTop] = useState(false);
 
   // Obtener categorías únicas
   const categories = useMemo(() => {
@@ -45,15 +44,8 @@ const EventsContainer: React.FC<EventsContainerProps> = ({ events, search }) => 
     setVisibleEvents((prev) => prev + 6);
   };
 
-  const handleScroll = () => {
-    setShowScrollTop(window.scrollY > 300);
-  };
 
  
-  React.useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
     <div className="h-auto bg-transparent p-6 pb-10">
@@ -121,10 +113,7 @@ const EventsContainer: React.FC<EventsContainerProps> = ({ events, search }) => 
           </div>
         )}
 
-        {/* Botón Scroll to Top */}
-        {showScrollTop && (
-                <TopScroll />
-        )}
+
       </div>
     </div>
   );

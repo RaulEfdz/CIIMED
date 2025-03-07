@@ -1,7 +1,6 @@
 "use client"
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { CldImage } from "next-cloudinary";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
@@ -35,32 +34,18 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   title,
   subtitle,
   actions,
-  socialLinks = [],
   scrollToNextSection,
 }) => {
-  const [isVisible, setIsVisible] = useState(true);
-  const [scrollPosition, setScrollPosition] = useState(0);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const position = window.scrollY;
-      setScrollPosition(position);
-      setIsVisible(position < 100);
-    };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
-  const parallaxOffset = scrollPosition * 0.5;
 
   return (
     <header className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden">
       {/* Background Image with Parallax */}
       <motion.div 
         className="absolute inset-0 w-full h-full"
-        style={{ y: parallaxOffset }}
-      >
+        initial={{ y: 0 }}>
         <CldImage
           alt={imageAlt}
           src={imageUrl}
@@ -105,35 +90,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
 
             {/* Social Links - Right side */}
             <AnimatePresence>
-              {isVisible && socialLinks.length > 0 && (
-                <motion.nav 
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex gap-4"
-                  aria-label="Enlaces a redes sociales"
-                >
-                  {socialLinks.map(({ icon, url, size = 40, color = "white", label }, index) => (
-                    <motion.div
-                      key={index}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Link
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={label}
-                        className="flex items-center justify-center hover:opacity-80 transition-opacity duration-200 border-b-2 border-white/70"
-                        style={{ width: size, height: size, color }}
-                      >
-                        {icon}
-                      </Link>
-                    </motion.div>
-                  ))}
-                </motion.nav>
-              )}
+           
             </AnimatePresence>
           </div>
         </div>
@@ -142,7 +99,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
       {/* Scroll Indicator - Centered */}
       <motion.button
         initial={{ opacity: 0 }}
-        animate={{ opacity: isVisible ? 1 : 0 }}
+        animate={{ opacity:  1 }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={scrollToNextSection}

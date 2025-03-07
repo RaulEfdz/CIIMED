@@ -2,7 +2,6 @@
 import React, { useState, useMemo } from "react";
 import { Search, Filter } from "lucide-react";
 import NoveltyCard, { NoveltyCardProps } from "../Cards/NoveltyCard";
-import { TopScroll } from "../TopScroll";
 
 interface NoveltiesContainerProps {
   novelties: NoveltyCardProps[];
@@ -16,7 +15,6 @@ const NoveltiesContainer: React.FC<NoveltiesContainerProps> = ({
   const [visibleNovelties, setVisibleNovelties] = useState(6);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
-  const [showScrollTop, setShowScrollTop] = useState(false);
 
   // Obtener categorías únicas
   const categories = useMemo(() => {
@@ -49,14 +47,7 @@ const NoveltiesContainer: React.FC<NoveltiesContainerProps> = ({
     setVisibleNovelties((prev) => prev + 6);
   };
 
-  const handleScroll = () => {
-    setShowScrollTop(window.scrollY > 300);
-  };
 
-  React.useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <div className="h-auto bg-transparent p-6 pb-10">
@@ -125,11 +116,7 @@ const NoveltiesContainer: React.FC<NoveltiesContainerProps> = ({
             </button>
           </div>
         )}
-
-        {/* Botón Scroll to Top */}
-        {showScrollTop && (
-      <TopScroll />
-        )}
+      
       </div>
     </div>
   );

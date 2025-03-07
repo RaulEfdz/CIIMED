@@ -24,19 +24,22 @@ export const ResponsiveHeader: React.FC<ResponsiveHeaderProps> = ({ logoUrl, log
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth < 768);
+      }
     };
 
     handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    if (typeof window !== 'undefined') {
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
   }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
-  // Obtener la ruta activa para mostrar su label
   const activeLink = navLinks.find((link) => link.href === pathname);
   const activeLabel = activeLink ? activeLink.label : "";
 

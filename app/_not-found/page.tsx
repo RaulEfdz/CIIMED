@@ -1,6 +1,9 @@
+"use client"
+import React from "react";
+
 import Link from 'next/link'
- 
-export default function NotFound() {
+
+const NotFound=()=> {
   return (
     <div>
       <h2>Not Found</h2>
@@ -9,3 +12,5 @@ export default function NotFound() {
     </div>
   )
 }
+
+export default NotFound

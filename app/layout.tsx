@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Footer, Header } from "./config/inital";
-import RobotipaAW from "@/tools/robotipa-agente-web/RobotipaAW";
 
 export const metadata: Metadata = {
   title: "CIIMED",
@@ -19,11 +18,7 @@ export default function RootLayout({
       <body>
         <Header />
         {children}
-        <RobotipaAW
-          initialChatOpen={false}
-          sharedPositions={false}
-          alignment="BR" 
-        />
+
         <Footer />
       </body>
     </html>

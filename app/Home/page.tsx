@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import News from "@/components/customs/Features/News";
 import { db } from "../data/db";
 import EventsContainer from "@/components/customs/Features/Events";
