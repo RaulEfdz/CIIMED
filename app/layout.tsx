@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Footer, Header } from "./config/inital";
-import RobotipaAW from "@/tools/robotipa-agente-web/RobotipaAW";
+import RobotipaAW from "@/app/tools/robotipa-agente-web/RobotipaAW";
 
 export const metadata: Metadata = {
   title: "CIIMED",

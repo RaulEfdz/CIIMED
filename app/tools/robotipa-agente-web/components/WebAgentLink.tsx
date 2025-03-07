@@ -9,7 +9,7 @@ import {
 
 export const WebAgentLink: React.FC = () => {
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2 text-white">
       <BotIcon size={18} />
       <TooltipProvider>
         <Tooltip>

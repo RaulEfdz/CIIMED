@@ -1,5 +1,3 @@
-
-
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createChains, formatVercelMessages } from "./logic";
@@ -13,7 +11,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const messages = body.messages ?? [];
     const previousMessages = messages.slice(0, -1);
-    const currentMessageContent = messages[messages.length - 1].content;
+    const currentMessageContent = messages[messages.length - 1]?.content || "";
 
     console.log("Received messages", messages);
     console.log("Previous messages", previousMessages);
@@ -37,6 +35,21 @@ export async function POST(req: NextRequest) {
       chat_history: formatVercelMessages(previousMessages),
     });
 
+    const readableStream = new ReadableStream({
+      start(controller) {
+        (async () => {
+          for await (const chunk of stream) {
+            if (typeof chunk === "string" || chunk instanceof Buffer || chunk instanceof Uint8Array) {
+              controller.enqueue(chunk);
+            } else if (chunk?.content) {
+              controller.enqueue(chunk.content);
+            }
+          }
+          controller.close();
+        })().catch((err) => controller.error(err));
+      },
+    });
+
     const documents = await documentPromise;
     const serializedSources = Buffer.from(
       JSON.stringify(
@@ -47,7 +60,7 @@ export async function POST(req: NextRequest) {
       )
     ).toString("base64");
 
-    return new Response(stream, {
+    return new Response(readableStream, {
       headers: {
         "x-message-index": (previousMessages.length + 1).toString(),
         "x-sources": serializedSources,

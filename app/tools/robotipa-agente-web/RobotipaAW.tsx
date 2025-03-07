@@ -1,6 +1,7 @@
 // puedes optimizar este codigo sin dañarlo , lo puedes optimizar la su version en celualr, actualmente cuando el chat se ahbre en el celualr el teclado el celualr lo cubre y ya no se ve el chat :
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import { WebAgentLink } from "./components/WebAgentLink";
 
 // Tipos para los mensajes del chat
 interface ChatMessage {
@@ -198,7 +199,6 @@ const RobotipaAW = () => {
     setUseMockMode(!useMockMode);
   };
 
-
   return (
     <div className="fixed bottom-6 right-6 z-50 font-sans">
       {/* Ventana del Chat */}
@@ -215,18 +215,7 @@ const RobotipaAW = () => {
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-3 flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <div className="bg-white h-6 w-6 rounded-full flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 text-blue-500"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
-                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
-              </svg>
-            </div>
-            <h3 className="font-medium text-white text-sm">Asistente</h3>
+            <WebAgentLink />
           </div>
 
           <div className="flex items-center">
@@ -273,9 +262,9 @@ const RobotipaAW = () => {
         </div>
 
         {/* Contenedor de Mensajes */}
-        <div className="flex-1 p-3 overflow-y-auto bg-gray-50 space-y-3">
+        <div className="flex-1 p-3 overflow-y-auto bg-gray-50 space-y-3 min-h-52">
           {messages.length === 0 ? (
-            <div className="flex items-center justify-center h-full">
+            <div className="flex items-center justify-center h-ful ">
               <div className="text-gray-400 text-sm">
                 Inicia una conversación
               </div>

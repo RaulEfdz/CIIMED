@@ -1,5 +1,5 @@
 // app/tools/robotipa-agente-web/interface/services/chatService.ts
-import { ChatMessage } from "../../types/chat";
+import { ChatMessage } from "../types/chat";
 
 export async function sendChatMessage(messages: ChatMessage[]): Promise<ChatMessage> {
   try {
