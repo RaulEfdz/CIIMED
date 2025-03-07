@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
+import React, {  useMemo } from "react";
 import { BotIcon } from "lucide-react";
-import { brandColors } from "@/tools/robotipa-agente-web/brand/brand";
+import { brandColors } from "../../../brand/brand";
 
 interface FloatingIconProps {
   onClick: () => void;
@@ -17,10 +17,6 @@ const FloatingIcon: React.FC<FloatingIconProps> = ({
   side = "right", // Por defecto el botón estará en el lado derecho
   initialPosition,
 }) => {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const position = useMemo(() => {
     if (typeof window !== "undefined") {

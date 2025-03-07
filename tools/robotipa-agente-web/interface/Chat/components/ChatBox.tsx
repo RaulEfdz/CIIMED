@@ -3,9 +3,10 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import ChatHistory from "./ChatHistory";
 import ChatInput from "./ChatInput";
 import { X, Minimize2, Maximize2 } from "lucide-react";
-import { brandColors } from "@/tools/robotipa-agente-web/brand/brand";
-import useDrag from "@/tools/robotipa-agente-web/hooks/useDrag";
+
 import { WebAgentLink } from "./WebAgentLink";
+import useDrag from "../../../hooks/useDrag";
+import { brandColors } from "../../../brand/brand";
 
 interface ChatBoxProps {
   onClose: () => void;
@@ -64,8 +65,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose, initialPosition, onPositionC
   const preventBackgroundScroll = (e: React.WheelEvent) => {
     e.stopPropagation();
     if (chatBoxDivRef.current) {
-      const { scrollHeight, clientHeight } = chatBoxDivRef.current;
-      // Aquí se puede agregar lógica adicional si se requiere comportamiento personalizado en el scroll
+      // const { scrollHeight, clientHeight } = chatBoxDivRef.current;
+      // // Aquí se puede agregar lógica adicional si se requiere comportamiento personalizado en el scroll
     }
   };
 

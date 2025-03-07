@@ -10,7 +10,7 @@ const DEFAULT_MARGIN = 20;
 const BUTTON_HEIGHT = 56; // Tamaño aproximado del botón
 const CHAT_BOX_DEFAULT_HEIGHT = 400; // Altura estimada para el chat
 
-const usePositions = (sharedPositions: boolean, alignment: "TL" | "TR" | "BL" | "BR" | "CENTER") => {
+const usePositions = (sharedPositions: boolean) => {
   // Para este ejemplo, la posición inicial se define según la opción "BL" (bottom left)
   const [buttonPosition, setButtonPosition] = useState<Position>({
     x: DEFAULT_MARGIN,

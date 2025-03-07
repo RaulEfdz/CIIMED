@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, FormEvent } from 'react';
-import { useChat } from '@/tools/robotipa-agente-web/hooks/useChat';
-import { brandColors } from '@/tools/robotipa-agente-web/brand/brand';
+import { useChat } from '../../../hooks/useChat';
+import { brandColors } from '../../../brand/brand';
 import { SendIcon } from 'lucide-react';
 
 const ChatInput: React.FC = () => {

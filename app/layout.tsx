@@ -19,11 +19,7 @@ export default function RootLayout({
       <body>
         <Header />
         {children}
-        <RobotipaAW
-          initialChatOpen={false}
-          sharedPositions={false}
-          alignment="BR" 
-        />
+       <RobotipaAW/>
         <Footer />
       </body>
     </html>
