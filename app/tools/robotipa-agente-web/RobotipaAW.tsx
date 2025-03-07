@@ -169,7 +169,7 @@ const RobotipaAW = () => {
         className={`${
           isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
         } transform transition-all duration-300 ${
-          isMobile ? "left-0 max-h-[50vh] h-1/2 w-full fixed top-0" : "max-h-[70vh] w-80"
+          isMobile ? "left-0 max-h-[45vh] h-full min-h-[30vh] w-full fixed top-0" : "max-h-[70vh] w-80"
         } bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden`}
       >
         <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-4 flex justify-between items-center">
