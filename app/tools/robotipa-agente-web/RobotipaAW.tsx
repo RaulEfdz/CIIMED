@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { WebAgentLink } from "./components/WebAgentLink";
@@ -10,16 +9,9 @@ interface ChatMessage {
   timestamp: number;
 }
 
-const DEBUG: boolean = process.env.NEXT_PUBLIC_DEBUG === "true";
+const DEBUG: boolean = process.env.NEXT_PUBLIC_DEBUG === "false";
 
-const MOBILE_CONFIG = {
-  keyboardOpenTop: 0,
-  keyboardOpenMaxHeight: "90vh",
-  normalBottom: 6,
-  normalRight: 6,
-  buttonBottom: 4,
-  buttonRight: 4,
-};
+
 
 const chatService = {
   sendChatMessageAPI: async (messages: ChatMessage[]): Promise<ChatMessage> => {
@@ -38,7 +30,7 @@ const chatService = {
       });
 
       if (!response.ok) throw new Error("Error en el servidor");
-      
+
       const contentType = response.headers.get("content-type");
       if (contentType?.includes("application/json")) {
         return await response.json();
@@ -69,17 +61,20 @@ const chatService = {
   ],
 
   sendChatMessageMock: async (userMessage: string): Promise<ChatMessage> => {
-    await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000 + 500));
-    
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.random() * 1000 + 500)
+    );
+
     let response: string;
     if (userMessage.toLowerCase().includes("hola")) {
       response = "¡Hola! ¿Cómo puedo ayudarte?";
     } else if (userMessage.toLowerCase().includes("gracias")) {
       response = "¡De nada!";
     } else {
-      response = chatService.mockResponses[
-        Math.floor(Math.random() * chatService.mockResponses.length)
-      ];
+      response =
+        chatService.mockResponses[
+          Math.floor(Math.random() * chatService.mockResponses.length)
+        ];
     }
 
     return {
@@ -91,115 +86,44 @@ const chatService = {
   },
 };
 
-const VirtualKeyboard = ({ onKeyPress }: { onKeyPress: (key: string) => void }) => {
-  const [isShift, setIsShift] = useState(false);
-  const [isSymbols, setIsSymbols] = useState(false);
-
-  const handleKey = (key: string) => {
-    if (key === '⇧') {
-      setIsShift(!isShift);
-      return;
-    }
-    if (key === '?123') {
-      setIsSymbols(!isSymbols);
-      return;
-    }
-    if (key === '⌫') {
-      onKeyPress('BACKSPACE');
-      return;
-    }
-    onKeyPress(isShift ? key.toUpperCase() : key.toLowerCase());
-    if (isShift) setIsShift(false);
-  };
-
-  const rows = isSymbols ? [
-    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-    ['-', '/', ':', ';', '(', ')', '$', '&', '@', '"'],
-    ['?123', '.', ',', '?', '!', "'", '💶', '⌫']
-  ] : [
-    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ñ'],
-    ['⇧', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.'],
-    ['?123', '🌐', '✅', '⌫']
-  ];
-
-  return (
-    <div className="bg-gray-100 p-2 safe-area-bottom">
-      {rows.map((row, i) => (
-        <div key={i} className="flex justify-center mb-2 gap-1">
-          {row.map((key) => (
-            <button
-              key={key}
-              onClick={() => handleKey(key)}
-              className={`min-w-[2.5rem] h-12 px-2 rounded-lg flex items-center justify-center
-                ${key === '⇧' && isShift ? 'bg-blue-200' : 'bg-white'}
-                ${key === '✅' ? 'bg-green-500 text-white' : ''}
-                ${key.length > 1 ? 'text-sm' : ''}`}
-            >
-              {key === '⌫' ? '⌫' : 
-               key === '⇧' ? '⇧' : 
-               key === '✅' ? 'Enviar' : key}
-            </button>
-          ))}
-        </div>
-      ))}
-    </div>
-  );
-};
-
 const RobotipaAW = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [useMockMode, setUseMockMode] = useState(false);
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatInputRef = useRef<HTMLInputElement>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const userAgent = navigator.userAgent.toLowerCase();
+      const isMobileUA = /iphone|ipad|ipod|android/.test(userAgent);
+      const isMobileViewport = window.innerWidth <= 768;
+      setIsMobile(isMobileUA || isMobileViewport);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, keyboardVisible]);
-
-  useEffect(() => {
-    const handleFocus = () => setKeyboardVisible(true);
-    const handleBlur = () => setKeyboardVisible(false);
-    
-    const input = chatInputRef.current;
-    if (input) {
-      input.addEventListener('focus', handleFocus);
-      input.addEventListener('blur', handleBlur);
-    }
-    return () => {
-      if (input) {
-        input.removeEventListener('focus', handleFocus);
-        input.removeEventListener('blur', handleBlur);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (isMobile && window.visualViewport) {
-      const handleResize = () => {
-        const viewportHeight = window.visualViewport?.height || 0;
-        setKeyboardVisible(window.innerHeight - viewportHeight > 100);
-      };
-      window.visualViewport?.addEventListener('resize', handleResize);
-      return () => window.visualViewport?.removeEventListener('resize', handleResize);
-    }
-  }, []);
+  }, [messages]);
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
     if (!isOpen && messages.length === 0) {
-      setMessages([{
-        id: "welcome",
-        sender: "bot",
-        message: "¡Hola! Soy tu asistente virtual",
-        timestamp: Date.now(),
-      }]);
+      setMessages([
+        {
+          id: "welcome",
+          sender: "bot",
+          message: "¡Hola! Soy tu asistente virtual",
+          timestamp: Date.now(),
+        },
+      ]);
     }
   };
 
@@ -214,92 +138,107 @@ const RobotipaAW = () => {
       timestamp: Date.now(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInputText("");
     setIsLoading(true);
 
     try {
-      const response = useMockMode 
+      const response = useMockMode
         ? await chatService.sendChatMessageMock(userMessage.message)
         : await chatService.sendChatMessageAPI([...messages, userMessage]);
-      
-      setMessages(prev => [...prev, response]);
+
+      setMessages((prev) => [...prev, response]);
     } catch {
-      setMessages(prev => [...prev, {
-        id: `error-${Date.now()}`,
-        sender: "bot",
-        message: "Error al procesar",
-        timestamp: Date.now(),
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `error-${Date.now()}`,
+          sender: "bot",
+          message: "Error al procesar",
+          timestamp: Date.now(),
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const chatContainerStyles = keyboardVisible ? {
-    position: 'fixed',
-    top: '10vh',
-    bottom: '0',
-    width: '100%',
-    maxHeight: '90vh',
-    borderRadius: '0',
-    zIndex: 9999
-  } : {};
-
   return (
-    <div className="fixed bottom-6 right-6 z-50 font-sans">
+    <div className={`fixed bottom-6 right-6 z-50 font-sans`}>
       <div
-        ref={chatContainerRef}
         className={`${
           isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
-        } transform transition-all duration-300 max-h-96 w-72 md:w-80 bg-white rounded-2xl shadow-xl mb-4 flex flex-col overflow-hidden`}
-        style={chatContainerStyles as React.CSSProperties}
+        } transform transition-all duration-300 ${
+          isMobile ? "left-0 max-h-[50vh] h-1/2 w-full fixed top-0" : "max-h-[70vh] w-80"
+        } bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden`}
       >
-        <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-3 flex justify-between items-center">
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-4 flex justify-between items-center">
           <WebAgentLink />
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             {DEBUG && (
-              <div className="mr-2 flex items-center">
-                <span className="text-xs text-white mr-1">Mock</span>
-                <button
-                  onClick={() => setUseMockMode(!useMockMode)}
-                  className="relative inline-flex items-center h-4 w-8 rounded-full"
-                >
-                  <span className={`${useMockMode ? "bg-gray-300" : "bg-green-400"} absolute h-4 w-8 rounded-full`} />
-                  <span className={`${useMockMode ? "translate-x-0" : "translate-x-4"} inline-block h-4 w-4 bg-white rounded-full transform`} />
-                </button>
-                <span className="text-xs text-white ml-1">API</span>
-              </div>
+              <button
+                onClick={() => setUseMockMode(!useMockMode)}
+                className={`px-2 py-1 rounded-full text-xs ${
+                  useMockMode ? "bg-yellow-400" : "bg-green-400"
+                } text-white`}
+              >
+                {useMockMode ? "Mock" : "API"}
+              </button>
             )}
-            <button onClick={toggleChat} className="text-white p-1 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+            <button
+              onClick={toggleChat}
+              className="text-white hover:bg-white/10 p-1 rounded-full"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
               </svg>
             </button>
           </div>
         </div>
 
-        <div className="flex-1 p-3 overflow-y-auto bg-gray-50 space-y-3">
+        <div className={`flex-1 p-4 overflow-y-auto bg-gray-50 ${
+          isMobile ? "h-[calc(100vh-180px)]" : "max-h-[50vh]"
+        }`}>
           {messages.map((msg) => (
-            <div key={msg.id} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-3/4 p-2 rounded-lg ${
-                msg.sender === "user" 
-                  ? "bg-blue-500 text-white rounded-tr-none" 
-                  : "bg-white border border-gray-200 rounded-tl-none shadow-sm"}`}>
+            <div
+              key={msg.id}
+              className={`flex ${
+                msg.sender === "user" ? "justify-end" : "justify-start"
+              } mb-4`}
+            >
+              <div
+                className={`max-w-[85%] p-3 rounded-lg ${
+                  msg.sender === "user"
+                    ? "bg-blue-500 text-white rounded-br-none"
+                    : "bg-white border border-gray-200 rounded-bl-none shadow-sm"
+                }`}
+              >
                 <p className="text-sm">{msg.message}</p>
-                <span className="text-xs text-gray-500">
-                  {new Date(msg.timestamp).toLocaleTimeString()}
+                <span className="text-xs text-gray-500/80 mt-1 block">
+                  {new Date(msg.timestamp).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </span>
               </div>
             </div>
           ))}
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-white p-2 rounded-tl-none border border-gray-200 shadow-sm">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-300 rounded-full animate-bounce delay-100"></div>
-                  <div className="w-2 h-2 bg-gray-300 rounded-full animate-bounce delay-200"></div>
+              <div className="bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
+                <div className="flex space-x-2">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
                 </div>
               </div>
             </div>
@@ -307,56 +246,67 @@ const RobotipaAW = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        <form onSubmit={handleSendMessage} className="bg-white border-t border-gray-100 sticky bottom-0">
-          <div className="p-2 relative">
+        <form
+          onSubmit={handleSendMessage}
+          className="bg-white border-t border-gray-100 p-4"
+        >
+          <div className="flex gap-2">
             <input
               ref={chatInputRef}
               type="text"
-              className="absolute opacity-0 -z-10"
+              className="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Escribe tu mensaje..."
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
+              autoFocus={isOpen}
             />
-            <div className="min-h-[2.5rem] p-2 border border-gray-200 rounded-lg mb-2">
-              {inputText || <span className="text-gray-400">Escribe tu mensaje...</span>}
-            </div>
-            {keyboardVisible && (
-              <VirtualKeyboard
-                onKeyPress={(key) => {
-                  if (key === 'BACKSPACE') {
-                    setInputText(prev => prev.slice(0, -1));
-                  } else if (key === '✅') {
-                    handleSendMessage(new Event('submit') as unknown as React.FormEvent);
-                  } else {
-                    setInputText(prev => prev + key);
-                  }
-                }}
-              />
-            )}
+            <button
+              type="submit"
+              className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors disabled:opacity-50"
+              disabled={isLoading}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+              </svg>
+            </button>
           </div>
         </form>
       </div>
 
       <button
         onClick={toggleChat}
-        className={`${isOpen ? "bg-gray-600" : "bg-blue-500 hover:bg-blue-600"} text-white p-3 rounded-full shadow-md ${
-          keyboardVisible ? "fixed bottom-4 right-4 z-50" : ""
+        className={`fixed bottom-6 right-6 bg-blue-500 text-white p-4 rounded-full shadow-xl hover:bg-blue-600 transition-all ${
+          isOpen ? "rotate-90" : ""
         }`}
-        style={keyboardVisible ? {
-          position: 'fixed',
-          bottom: `${MOBILE_CONFIG.buttonBottom}rem`,
-          right: `${MOBILE_CONFIG.buttonRight}rem`,
-          zIndex: 9999
-        } : {}}
+        style={{ boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)" }}
       >
-        {isOpen ? (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-          </svg>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
-          </svg>
-        )}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          {isOpen ? (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          ) : (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+            />
+          )}
+        </svg>
       </button>
     </div>
   );
