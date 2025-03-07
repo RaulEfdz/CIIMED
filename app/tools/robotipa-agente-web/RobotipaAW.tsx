@@ -253,7 +253,7 @@ const RobotipaAW = () => {
         className={`${
           isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
         } transform transition-all duration-300 max-h-96 w-72 md:w-80 bg-white rounded-2xl shadow-xl mb-4 flex flex-col overflow-hidden`}
-        style={chatContainerStyles}
+        style={chatContainerStyles as React.CSSProperties}
       >
         <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-3 flex justify-between items-center">
           <WebAgentLink />

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { WebAgentLink } from "./components/WebAgentLink";
+import { WebAgentLink } from "../components/WebAgentLink";
 
 // Tipos para los mensajes del chat
 interface ChatMessage {
