@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { WebAgentLink } from "./components/WebAgentLink";
+import { useRouter } from "next/navigation";
 
 interface ChatMessage {
   id: string;
@@ -87,6 +88,7 @@ const chatService = {
 };
 
 const RobotipaAW = () => {
+  const Routert = useRouter()
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState("");
@@ -127,6 +129,44 @@ const RobotipaAW = () => {
     }
   };
 
+  // const handleSendMessage = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!inputText.trim() || isLoading) return;
+
+  //   const userMessage: ChatMessage = {
+  //     id: `user-${Date.now()}`,
+  //     sender: "user",
+  //     message: inputText,
+  //     timestamp: Date.now(),
+  //   };
+
+  //   setMessages((prev) => [...prev, userMessage]);
+  //   setInputText("");
+  //   setIsLoading(true);
+
+  //   try {
+  //     const response = useMockMode
+  //       ? await chatService.sendChatMessageMock(userMessage.message)
+  //       : await chatService.sendChatMessageAPI([...messages, userMessage]);
+
+  //     setMessages((prev) => [...prev, response]);
+  //   } catch {
+  //     setMessages((prev) => [
+  //       ...prev,
+  //       {
+  //         id: `error-${Date.now()}`,
+  //         sender: "bot",
+  //         message: "Error al procesar",
+  //         timestamp: Date.now(),
+  //       },
+  //     ]);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  
+
+  
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim() || isLoading) return;
@@ -148,6 +188,16 @@ const RobotipaAW = () => {
         : await chatService.sendChatMessageAPI([...messages, userMessage]);
 
       setMessages((prev) => [...prev, response]);
+
+      // Expresión regular para detectar URLs
+      const urlRegex = new RegExp(`${window.location.origin}/[\\w-/]+`, "g");
+      const foundUrls = response.message.match(urlRegex);
+
+      // Si hay una URL en el mensaje, redirige automáticamente
+      if (foundUrls && foundUrls.length > 0) {
+        Routert.push(foundUrls[0])
+        // window.location.href = foundUrls[0]; // Redirigir a la primera URL encontrada
+      }
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -161,7 +211,8 @@ const RobotipaAW = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+};
+
 
   return (
     <div className={`fixed bottom-6 right-6 z-50 font-sans`}>
