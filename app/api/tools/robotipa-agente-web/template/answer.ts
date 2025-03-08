@@ -1,3 +1,4 @@
+// app/api/tools/robotipa-agente-web/template/answer.ts
 const INSTITUTION_NAME = "CIIMED"; // Placeholder variable
 
 export const ANSWER_TEMPLATE = `
