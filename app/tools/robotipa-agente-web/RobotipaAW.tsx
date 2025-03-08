@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { WebAgentLink } from "./components/WebAgentLink";
+import { useRouter } from "next/navigation";
 
 interface ChatMessage {
   id: string;
@@ -11,10 +12,8 @@ interface ChatMessage {
 
 const DEBUG: boolean = process.env.NEXT_PUBLIC_DEBUG === "false";
 
-
-
 const chatService = {
-  sendChatMessageAPI: async (messages: ChatMessage[]): Promise<ChatMessage> => {
+  sendChatMessageAPI: async (messages: ChatMessage[]): Promise<any> => {
     try {
       const formattedMessages = messages.map((msg) => ({
         role: msg.sender === "user" ? "user" : "assistant",
@@ -28,6 +27,9 @@ const chatService = {
         },
         body: JSON.stringify({ messages: formattedMessages }),
       });
+      const textResponse = await JSON.stringify(response)
+      console.log("Texto recibido:", textResponse);
+      
 
       if (!response.ok) throw new Error("Error en el servidor");
 
@@ -95,6 +97,7 @@ const RobotipaAW = () => {
   const [isMobile, setIsMobile] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -147,8 +150,21 @@ const RobotipaAW = () => {
         ? await chatService.sendChatMessageMock(userMessage.message)
         : await chatService.sendChatMessageAPI([...messages, userMessage]);
 
-      setMessages((prev) => [...prev, response]);
-    } catch {
+      // Si la respuesta contiene un comando de navegación, se asume que es un objeto con action y url
+      if (
+        response &&
+        typeof response === "object" &&
+        "action" in response &&
+        response.action === "navigate" &&
+        "url" in response
+      ) {
+        // Redirige al usuario usando el router
+        router.push(response.url);
+      } else {
+        // Si no es un comando de navegación, se agrega el mensaje al chat
+        setMessages((prev) => [...prev, response]);
+      }
+    } catch (error) {
       setMessages((prev) => [
         ...prev,
         {
@@ -164,12 +180,14 @@ const RobotipaAW = () => {
   };
 
   return (
-    <div className={`fixed bottom-6 right-6 z-50 font-sans`}>
+    <div className="fixed bottom-6 right-6 z-50 font-sans">
       <div
         className={`${
           isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
         } transform transition-all duration-300 ${
-          isMobile ? "left-0 max-h-[45vh] h-full min-h-[30vh] w-full fixed top-0" : "max-h-[70vh] w-80"
+          isMobile
+            ? "left-0 max-h-[45vh] h-full min-h-[30vh] w-full fixed top-0"
+            : "max-h-[70vh] w-80"
         } bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden`}
       >
         <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-4 flex justify-between items-center">
@@ -205,9 +223,11 @@ const RobotipaAW = () => {
           </div>
         </div>
 
-        <div className={`flex-1 p-4 overflow-y-auto bg-gray-50 ${
-          isMobile ? "h-[calc(100vh-180px)]" : "max-h-[50vh]"
-        }`}>
+        <div
+          className={`flex-1 p-4 overflow-y-auto bg-gray-50 ${
+            isMobile ? "h-[calc(100vh-180px)]" : "max-h-[50vh]"
+          }`}
+        >
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -279,31 +299,29 @@ const RobotipaAW = () => {
       </div>
 
       {!isOpen && (
-  <button
-    onClick={toggleChat}
-    className={`fixed bottom-6 right-6 bg-blue-500 text-white p-4 rounded-full shadow-xl hover:bg-blue-600 transition-all ${
-      isOpen ? "rotate-0" : ""
-    }`}
-    style={{ boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)" }}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-6 w-6"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-      />
-    </svg>
-  </button>
-)}
-
-
+        <button
+          onClick={toggleChat}
+          className={`fixed bottom-6 right-6 bg-blue-500 text-white p-4 rounded-full shadow-xl hover:bg-blue-600 transition-all ${
+            isOpen ? "rotate-0" : ""
+          }`}
+          style={{ boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)" }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+            />
+          </svg>
+        </button>
+      )}
     </div>
   );
 };

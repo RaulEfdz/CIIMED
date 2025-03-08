@@ -1,4 +1,3 @@
-// app/api/tools/robotipa-agente-web/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createChains, formatVercelMessages } from "./logic";
@@ -29,25 +28,46 @@ export async function POST(req: NextRequest) {
       queryName: "match_documents",
     });
 
-    const { conversationalRetrievalQAChain, documentPromise } = createChains(model, vectorstore);
+    const { conversationalRetrievalQAChain, documentPromise } = createChains(
+      model,
+      vectorstore
+    );
 
     const stream = await conversationalRetrievalQAChain.stream({
       question: currentMessageContent,
       chat_history: formatVercelMessages(previousMessages),
     });
 
+    let navigationCommand: string | null = null;
+
     const readableStream = new ReadableStream({
-      start(controller) {
-        (async () => {
+      async start(controller) {
+        try {
           for await (const chunk of stream) {
-            if (typeof chunk === "string" || chunk instanceof Buffer || chunk instanceof Uint8Array) {
-              controller.enqueue(chunk);
-            } else if (chunk?.content) {
-              controller.enqueue(chunk.content);
+            let textChunk: string;
+            if (typeof chunk === "string") {
+              textChunk = chunk;
+            } else if (chunk && typeof chunk.content === "string") {
+              textChunk = chunk.content;
+            } else {
+              textChunk = String(chunk);
+            }
+            try {
+              const parsed = JSON.parse(textChunk);
+              if (parsed.action === "navigate" && parsed.url) {
+                navigationCommand = JSON.stringify(parsed);
+                controller.enqueue(navigationCommand);
+              } else {
+                controller.enqueue(textChunk);
+              }
+            } catch {
+              controller.enqueue(textChunk);
             }
           }
           controller.close();
-        })().catch((err) => controller.error(err));
+        } catch (err) {
+          controller.error(err);
+        }
       },
     });
 
@@ -65,6 +85,7 @@ export async function POST(req: NextRequest) {
       headers: {
         "x-message-index": (previousMessages.length + 1).toString(),
         "x-sources": serializedSources,
+        "x-navigation-command": navigationCommand || "",
       },
     });
   } catch (e: unknown) {
