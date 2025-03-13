@@ -1,16 +1,7 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-
-interface InstagramPost {
-  id: string;
-  caption: string;
-  postUrl: string;
-}
-
-interface InstagramGalleryProps {
-  posts?: InstagramPost[];
-}
+import { InstagramPost, mockPosts } from "./data";
 
 export const InstagramEmbed: React.FC<{ postUrl: string }> = ({ postUrl }) => {
   const [isLoading, setIsLoading] = React.useState(true);
@@ -36,7 +27,7 @@ export const InstagramEmbed: React.FC<{ postUrl: string }> = ({ postUrl }) => {
   );
 };
 
-export const InstagramGallery: React.FC<InstagramGalleryProps> = ({
+export const InstagramGallery: React.FC<{ posts?: InstagramPost[] }> = ({
   posts = mockPosts,
 }) => {
   return (
@@ -81,29 +72,5 @@ export const InstagramGallery: React.FC<InstagramGalleryProps> = ({
     </section>
   );
 };
-
-export const mockPosts: InstagramPost[] = [
-  {
-    id: "1",
-    caption: "¡Nueva publicación en nuestro Instagram! 📸✨",
-    postUrl:
-      "https://www.instagram.com/reel/DBjTpwERplD/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
-  },
-
-  {
-    id: "3",
-    caption: "Síguenos para más contenido exclusivo. 🚀",
-    postUrl:
-      "https://www.instagram.com/reel/DFOXWQUpSUP/?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA==",
-  },
-
-  {
-    id: "2",
-    caption: "Síguenos para más contenido exclusivo. 🚀",
-    postUrl:
-      "https://www.instagram.com/reel/DBzc8MLpDlW/?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA==",
-  },
-
-];
 
 export default InstagramGallery;

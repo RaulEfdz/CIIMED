@@ -2,14 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-
-// Definimos los tipos para las variantes de tema
-type ThemeVariant = "orange" | "dark" | "light" | "green" | "multi";
-const baseThemes: ThemeVariant[] = ["dark", "orange"];
-const themes: ThemeVariant[] = [...baseThemes, "green"];
-
-// Duración total de la animación (incluyendo el último color "green")
-const t = (themes.length + 1) * 100; // Agregamos 1 más para garantizar que el último color sea "green"
+import { openingData, ThemeVariant } from "./data"; // Importar datos
 
 interface OpeningProps {
   themeVariant?: ThemeVariant;
@@ -22,22 +15,22 @@ const Opening: React.FC<OpeningProps> = ({ themeVariant = "green" }) => {
   useEffect(() => {
     if (themeVariant === "multi") {
       let index = 0;
-      const intervalDuration = t / (themes.length + 1); // +1 para la última transición forzada a "green"
+      const intervalDuration = openingData.animationDuration / (openingData.themes.length + 1);
 
       const changeTheme = setInterval(() => {
-        if (index < baseThemes.length) {
-          setCurrentTheme(themes[index]);
+        if (index < openingData.baseThemes.length) {
+          setCurrentTheme(openingData.themes[index]);
           index++;
         } else {
           setCurrentTheme("green");
-          clearInterval(changeTheme); // Detener cambios después de llegar a "green"
+          clearInterval(changeTheme);
         }
       }, intervalDuration);
 
       const timer = setTimeout(() => {
         setIsVisible(false);
         clearInterval(changeTheme);
-      }, t);
+      }, openingData.animationDuration);
 
       return () => {
         clearTimeout(timer);
@@ -46,23 +39,15 @@ const Opening: React.FC<OpeningProps> = ({ themeVariant = "green" }) => {
     } else {
       const timer = setTimeout(() => {
         setIsVisible(false);
-      }, t);
+      }, openingData.animationDuration);
       return () => clearTimeout(timer);
     }
   }, [themeVariant]);
 
-  const themeColors: Record<ThemeVariant, string> = {
-    green: "#285C4D",
-    orange: "#F4633A",
-    dark: "#212322",
-    light: "#F2F2F2",
-    multi: "#285C4D", // Valor inicial para evitar errores
-  };
-
   return isVisible ? (
     <motion.div
       className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center z-50"
-      style={{ backgroundColor: themeColors[currentTheme] }}
+      style={{ backgroundColor: openingData.themeColors[currentTheme] }}
       initial={{ opacity: 1, scale: 1 }}
       animate={{
         opacity: 1,
@@ -73,7 +58,7 @@ const Opening: React.FC<OpeningProps> = ({ themeVariant = "green" }) => {
         opacity: 0,
         scale: 1.1,
         transition: { duration: 2, ease: "easeInOut", delay: 0.3 },
-      }} // Salida más suave con una leve expansión
+      }}
     >
       <motion.div
         className="flex justify-center items-center"
@@ -87,13 +72,13 @@ const Opening: React.FC<OpeningProps> = ({ themeVariant = "green" }) => {
           scale: 0.9,
           opacity: 0,
           transition: { duration: 2, ease: "easeInOut", delay: 0.3 },
-        }} // Suavizamos la salida
+        }}
       >
         <Image
-          src="/logo_blanco.png"
-          alt="Logo"
-          width={64}
-          height={64}
+          src={openingData.logoSrc}
+          alt={openingData.logoAlt}
+          width={openingData.logoWidth}
+          height={openingData.logoHeight}
           className="w-16 h-16"
         />
       </motion.div>

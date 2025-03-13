@@ -1,16 +1,14 @@
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-
-export interface SocialLink {
-  platform: string;
-  url: string;
-}
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { SocialLink } from "./data";
 
 export interface SocialMediaSectionProps {
   links: SocialLink[];
 }
 
-export const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ links }) => {
+export const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({
+  links,
+}) => {
   return (
     <Card className="mb-10 shadow-md">
       <CardContent>
@@ -34,4 +32,4 @@ export const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ links })
   );
 };
 
-SocialMediaSection.displayName = 'SocialMediaSection';
+SocialMediaSection.displayName = "SocialMediaSection";

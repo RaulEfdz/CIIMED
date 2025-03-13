@@ -1,3 +1,4 @@
+// app/partnerships/Testimonials.tsx
 'use client';
 
 import { FC } from 'react';

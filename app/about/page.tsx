@@ -8,11 +8,12 @@ import Team from "@/components/customs/Features/Teams";
 import GaleryInfra from "@/components/customs/Features/GaleryInfra";
 import Hero from "./Hero";
 import AboutUs from "./AboutUs";
+import { historyData } from "./data";
 
 const About = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 space-y-2">
-      <AboutUs    />
+      <AboutUs />
 
       <HistoryHero
         title="Historia"
@@ -22,14 +23,8 @@ const About = () => {
         imageAlt="CIIMED Instalaciones"
         imgW={800}
         imgH={600}
-        foundation={{
-          description:
-            "Historia del Centro de Investigación e Innovación Médica. El CIIM se ha posicionado como un referente en la investigación científica y la innovación en el ámbito de la salud en Panamá. Este centro, inaugurado recientemente, busca abordar las necesidades de salud pública a través de la investigación avanzada y la colaboración con diversas instituciones.",
-          objectives: [
-            "Proporcionar un entorno propicio para que médicos y científicos desarrollen proyectos de investigación que beneficien a la comunidad local e internacional.",
-            "Fortalecer la capacidad investigativa en el país, especialmente en áreas críticas como enfermedades crónicas y salud pública.",
-          ],
-        }}   />
+        foundation={historyData}
+      />
 
       <section className="gradient  py-12">
         <Team />

@@ -1,35 +1,13 @@
 "use client";
 
 import React from "react";
-import { Card, } from "@/components/ui/card";
-import { Users, GraduationCap, FlaskConical } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
-
-const achievements = [
-  {
-    icon: FlaskConical,
-    title: "Investigaciones",
-    value: "150+",
-    description: "Proyectos de investigación completados",
-  },
-  {
-    icon: Users,
-    title: "Pacientes",
-    value: "10000+",
-    description: "Personas beneficiadas",
-  },
-  {
-    icon: GraduationCap,
-    title: "Publicaciones",
-    value: "75+",
-    description: "Artículos científicos publicados",
-  },
-];
+import { achievements } from "./data";
 
 const AboutUsHero: React.FC = () => {
   return (
     <section className="max-w-7xl mx-auto px-6 pt-0 pb-10">
-
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

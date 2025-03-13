@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import HeroImagen from "@/components/customs/Features/HeroImage";
-import { heroData } from "./data"; // Importar datos
+import { heroTrainingData } from "./data";
 
 const Hero = () => (
   <motion.div
@@ -10,7 +10,7 @@ const Hero = () => (
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.8 }}
   >
-    <HeroImagen {...heroData} /> { /* Usar datos importados */ }
+    <HeroImagen {...heroTrainingData} />
   </motion.div>
 );
 

@@ -1,8 +1,8 @@
 import HireUs from "@/components/customs/feedBack/HireUs";
-import { allianceContent } from "./data";
+import { trainingContactContent } from "./data";
 
 const FormContact = () => {
-  return <HireUs content={allianceContent} />;
+  return <HireUs content={trainingContactContent} />;
 };
 
 export default FormContact;

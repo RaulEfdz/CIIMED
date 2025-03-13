@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ResearchItem } from "@/app/research-areas/page";
+import { ResearchItem } from "./ProyectosSection";
 
 interface ResearchCardProps {
   item: ResearchItem;

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import NewsContainer from "@/components/customs/Features/News";
-import { motion } from "framer-motion"; // Importación de Framer Motion
+import { motion } from "framer-motion";
 import { db } from "../data/db";
 import { VideoGallery } from "./VideoGallery";
 import { InstagramGallery } from "./InstagramGallery";
@@ -17,21 +17,20 @@ export default function scientificDisseminationPage() {
       transition={{ duration: 0.6 }}
     >
       <Hero />
-      <main className="max-w-6xl mx-auto px-4 w-full sm:px-6 py-16"> 
+      <main className="max-w-6xl mx-auto px-4 w-full sm:px-6 py-16">
+        <motion.section
+          className=""
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
+          <SpotifyGallery />
 
-      <motion.section
-        className=""
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <SpotifyGallery />
-
-        <VideoGallery />
-        <InstagramGallery />
-        <NewsContainer news={db.news} />
-      </motion.section>
+          <VideoGallery />
+          <InstagramGallery />
+          <NewsContainer news={db.news} />
+        </motion.section>
       </main>
-      </motion.main>
+    </motion.main>
   );
 }

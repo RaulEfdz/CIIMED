@@ -186,17 +186,22 @@ const RobotipaAW = () => {
       const response = useMockMode
         ? await chatService.sendChatMessageMock(userMessage.message)
         : await chatService.sendChatMessageAPI([...messages, userMessage]);
-
-      setMessages((prev) => [...prev, response]);
+        const modifiedResponse = {
+          ...response,
+          // message: response.message.replace(/https?:\/\/192\.168\.0\.197:\d+/, "Te llevare!"),
+          message: response.message.includes("http://192.168.0.197:3000") ? "Te llevare!" : response.message
+        };
+        // Ahora puedes usar 'modifiedResponse' con la propiedad 'message' modificada.
+      setMessages((prev) => [...prev, modifiedResponse]);
 
       // Expresión regular para detectar URLs
-      const urlRegex = new RegExp(`${window.location.origin}/[\\w-/]+`, "g");
+      const urlRegex = new RegExp(`${"http://192.168.0.197:3000"}/[\\w-/]+`, "g");
       const foundUrls = response.message.match(urlRegex);
 
       // Si hay una URL en el mensaje, redirige automáticamente
       if (foundUrls && foundUrls.length > 0) {
-        Routert.push(foundUrls[0])
-        // window.location.href = foundUrls[0]; // Redirigir a la primera URL encontrada
+        // Routert.push(foundUrls[0].replace("192.168.0.197:3000"))
+        Routert.push(foundUrls[0].replace(/https?:\/\/192\.168\.0\.197:\d+/, window.location.origin));        // window.location.href = foundUrls[0]; // Redirigir a la primera URL encontrada
       }
     } catch {
       setMessages((prev) => [

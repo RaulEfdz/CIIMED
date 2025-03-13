@@ -4,22 +4,15 @@ import News from "@/components/customs/Features/News";
 import { db } from "../data/db";
 import EventsContainer from "@/components/customs/Features/Events";
 import Team from "@/components/customs/Features/Teams";
-import { motion } from "framer-motion"; // Importación de Framer Motion
+import { motion } from "framer-motion";
 import { HeroSection } from "./HeroSection";
 import { FeatureInit } from "./FeatureInit";
 
-// export const HIGHLIGHT_COLOR = "#ffffff";
-
 export default function Home() {
-  
-
-
   return (
     <div className="w-full h-full bg-gradient-to-b from-[#f2f2f2] via-white to-[#f2f2f2]">
-        <HeroSection />
-
-        <FeatureInit />
-
+      <HeroSection />
+      <FeatureInit />
       <motion.section
         className=""
         initial={{ opacity: 0 }}
@@ -28,7 +21,6 @@ export default function Home() {
       >
         <Team />
       </motion.section>
-
       <motion.section
         className=""
         initial={{ opacity: 0 }}
@@ -37,7 +29,6 @@ export default function Home() {
       >
         <News news={db.news} />
       </motion.section>
-
       <motion.section
         className=""
         initial={{ opacity: 0, y: 20 }}

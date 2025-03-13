@@ -1,3 +1,4 @@
+// app/scientificDissemination/VideoGallery.tsx
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
@@ -45,7 +46,9 @@ export const VideoGallery: React.FC<VideoGalleryProps> = ({ videos = mockVideos 
           <span className="w-2 h-2 rounded-full bg-[#F4633A]"></span>
           Canal de divulgacion
         </span>
-        <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-4">YouTube</h1>
+        <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-4">
+          YouTube
+        </h1>
         <div className="w-24 h-1 bg-[#285C4D] mx-auto rounded-full"></div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">

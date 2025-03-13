@@ -4,14 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-
-interface Feature {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ElementType;
-  imageUrl: string;
-}
+import { Feature } from "./data";
 
 interface AboutUsMissionVisionProps {
   features: Feature[];
