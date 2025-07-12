@@ -1,0 +1,100 @@
+// Esquema Prisma para conexión con Supabase (PostgreSQL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+}
+
+model Servicio {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  precio      Float?
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model Noticia {
+  id        Int      @id @default(autoincrement())
+  titulo    String
+  contenido String
+  imagen    String?
+  publicado Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Staff {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  puesto    String
+  bio       String?
+  foto      String?
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Sucursal {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  direccion String
+  telefono  String?
+  horario   String?
+  mapaUrl   String?
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Banner {
+  id        Int      @id @default(autoincrement())
+  titulo    String?
+  imagen    String
+  link      String?
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Testimonio {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  mensaje   String
+  foto      String?
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model FAQ {
+  id        Int      @id @default(autoincrement())
+  pregunta  String
+  respuesta String
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Documento {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  url       String
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Promocion {
+  id        Int      @id @default(autoincrement())
+  titulo    String
+  descripcion String?
+  imagen    String?
+  vigente   Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
