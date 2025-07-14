@@ -1,26 +1,25 @@
+"use client";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Footer, Header } from "./config/inital";
 import RobotipaAW from "@/app/tools/robotipa-agente-web/RobotipaAW";
-
-export const metadata: Metadata = {
-  title: "CIIMED",
-  description:
-    "Ubicado en la Ciudad de la Salud, este centro es un referente en investigación y desarrollo en el ámbito de la salud en Panamá.",
-};
+import { usePathname } from "next/navigation";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isAdminPage = pathname ? pathname.startsWith("/admin") : false;
+
   return (
     <html lang="es">
       <body>
-        <Header />
+        {!isAdminPage && <Header />}
         {children}
-       <RobotipaAW/>
-        <Footer />
+        {!isAdminPage && <RobotipaAW />}
+        {!isAdminPage && <Footer />}
       </body>
     </html>
   );
