@@ -35,7 +35,7 @@ model Noticia {
   createdAt DateTime @default(now())
 }
 
-model Staff {
+model EquipoDeTrabajo {
   id        Int      @id @default(autoincrement())
   nombre    String
   puesto    String

@@ -3,6 +3,7 @@
 "use client"
 import Image from "next/image";
 import { db } from "@/app/data/db";
+import TeamMemberCard from "@/components/customs/Cards/TeamMemberCard";
 
 // models/TeamModel.ts
 
@@ -13,6 +14,7 @@ export interface TeamMember {
   category: string;
   linkedinUrl: string;
   personalWebsite: string;
+  bio?: string;
 }
 
 export interface TeamData {
@@ -41,49 +43,15 @@ export default function Team() {
             {db.team
               .filter((member) => member.category === category)
               .map((member, index) => (
-                <div
+                <TeamMemberCard
                   key={index}
-                  className="flex flex-col  dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-sm p-6 shadow-md "
-                >
-                  <div className="flex items-center gap-4">
-                    <Image
-                      src={member.imageUrl}
-                      alt={`Imagen de ${member.name}`}
-                      width={80}
-                      height={80}
-                      className="rounded-full object-cover"
-                    />
-                    <div>
-                      <h3 className="font-medium" style={{ color: teamColors.dark }}>{member.name}</h3>
-                      <p className="text-xs uppercase text-gray-500 dark:text-neutral-400">
-                        {member.role}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="mt-3" style={{ color: teamColors.dark }}>
-                    I am an ambitious workaholic, but apart from that, pretty simple person.
-                  </p>
-                  <div className="mt-3 flex gap-3">
-                    <a
-                      href={member.linkedinUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline"
-                      style={{ color: teamColors.secondary }}
-                    >
-                      LinkedIn
-                    </a>
-                    <a
-                      href={member.personalWebsite}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline"
-                      style={{ color: teamColors.secondary }}
-                    >
-                      Website
-                    </a>
-                  </div>
-                </div>
+                  name={member.name}
+                  role={member.role}
+                  imageUrl={member.imageUrl}
+                  linkedinUrl={member.linkedinUrl}
+                  personalWebsite={member.personalWebsite}
+                  bio={member.bio}
+                />
               ))}
           </div>
         </div>

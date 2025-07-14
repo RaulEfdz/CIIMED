@@ -13,13 +13,13 @@ export const config = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
-    const staff = await prisma.staff.findMany({ orderBy: { id: 'desc' } });
-    return res.status(200).json(staff);
+    const equipoDeTrabajo = await prisma.equipoDeTrabajo.findMany({ orderBy: { id: 'desc' } });
+    return res.status(200).json(equipoDeTrabajo);
   }
   if (req.method === 'POST') {
     const { nombre, puesto, bio, foto, activo } = req.body;
     if (!nombre || !puesto) return res.status(400).json({ error: 'Nombre y puesto requeridos' });
-    const staff = await prisma.staff.create({
+    const equipoDeTrabajo = await prisma.equipoDeTrabajo.create({
       data: {
         nombre,
         puesto,
@@ -28,21 +28,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         activo: activo !== false,
       }
     });
-    return res.status(201).json(staff);
+    return res.status(201).json(equipoDeTrabajo);
   }
   if (req.method === 'PUT') {
     const { id, nombre, puesto, bio, foto, activo } = req.body;
     if (!id) return res.status(400).json({ error: 'ID requerido' });
-    const staff = await prisma.staff.update({
+    const equipoDeTrabajo = await prisma.equipoDeTrabajo.update({
       where: { id: Number(id) },
       data: { nombre, puesto, bio: bio || null, foto: foto || null, activo: activo !== false },
     });
-    return res.status(200).json(staff);
+    return res.status(200).json(equipoDeTrabajo);
   }
   if (req.method === 'DELETE') {
     const { id } = req.body;
     if (!id) return res.status(400).json({ error: 'ID requerido' });
-    await prisma.staff.delete({ where: { id: Number(id) } });
+    await prisma.equipoDeTrabajo.delete({ where: { id: Number(id) } });
     return res.status(204).end();
   }
   res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);

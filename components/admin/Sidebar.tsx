@@ -20,12 +20,12 @@ import {
 
 const sidebarNavLinks = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+    { name: "Equipo de trabajo", href: "/admin/staff", icon: Users },
     { name: "Banners", href: "/admin/banners", icon: Image },
     { name: "Documentos", href: "/admin/documentos", icon: FileText },
     { name: "Noticias", href: "/admin/noticias", icon: Newspaper },
     { name: "Servicios", href: "/admin/servicios", icon: Briefcase },
     { name: "Promociones", href: "/admin/promociones", icon: Tags },
-    { name: "Staff", href: "/admin/staff", icon: Users },
     { name: "Sucursales", href: "/admin/sucursales", icon: MapPin },
     { name: "Testimonios", href: "/admin/testimonios", icon: BookUser },
     { name: "FAQ", href: "/admin/faq", icon: FileQuestion },

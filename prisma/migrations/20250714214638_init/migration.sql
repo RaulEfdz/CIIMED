@@ -1,4 +1,14 @@
 -- CreateTable
+CREATE TABLE "User" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "name" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Servicio" (
     "id" SERIAL NOT NULL,
     "nombre" TEXT NOT NULL,
@@ -23,7 +33,7 @@ CREATE TABLE "Noticia" (
 );
 
 -- CreateTable
-CREATE TABLE "Staff" (
+CREATE TABLE "EquipoDeTrabajo" (
     "id" SERIAL NOT NULL,
     "nombre" TEXT NOT NULL,
     "puesto" TEXT NOT NULL,
@@ -32,7 +42,7 @@ CREATE TABLE "Staff" (
     "activo" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Staff_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "EquipoDeTrabajo_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -106,3 +116,6 @@ CREATE TABLE "Promocion" (
 
     CONSTRAINT "Promocion_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
