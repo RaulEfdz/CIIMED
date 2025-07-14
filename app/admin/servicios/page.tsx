@@ -1,13 +1,15 @@
+"use client";
 import { Servicio } from '@prisma/client';
 import React, { useEffect, useState } from 'react';
-
-// Nota: En Next.js 13+ (app router), para llamadas server-side se recomienda usar API routes o server actions. Aquí se muestra un ejemplo simple client-side.
-
-type ServicioEditable = Servicio & { editando?: boolean };
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import Link from 'next/link';
 
 function ServicioItem({ servicio, onChange, onDelete }: {
-  servicio: ServicioEditable,
-  onChange: (srv: ServicioEditable) => void,
+  servicio: Servicio,
+  onChange: (s: Servicio) => void,
   onDelete: (id: number) => void,
 }) {
   const [editando, setEditando] = useState(false);
@@ -52,22 +54,33 @@ function ServicioItem({ servicio, onChange, onDelete }: {
   };
   if (editando) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <input name="nombre" value={form.nombre} onChange={handleChange} />
-        <textarea name="descripcion" value={form.descripcion} onChange={handleChange} />
-        <input name="precio" type="number" value={form.precio} onChange={handleChange} />
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={handleSave} disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button>
-          <button onClick={handleCancel} disabled={loading}>Cancelar</button>
-        </div>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Editando Servicio</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <Input name="nombre" value={form.nombre} onChange={handleChange} placeholder="Nombre" />
+          <Textarea name="descripcion" value={form.descripcion} onChange={handleChange} placeholder="Descripción" />
+          <Input name="precio" type="number" value={form.precio} onChange={handleChange} placeholder="Precio" />
+        </CardContent>
+        <CardFooter className="flex gap-2">
+          <Button onClick={handleSave} disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</Button>
+          <Button onClick={handleCancel} disabled={loading} variant="outline">Cancelar</Button>
+        </CardFooter>
+      </Card>
     );
   }
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span><b>{servicio.nombre}</b> — {servicio.descripcion} — ${servicio.precio ?? '-'}</span>
-      <button onClick={handleEdit}>Editar</button>
-      <button onClick={handleDelete} disabled={loading}>Eliminar</button>
+    <div className="flex items-start gap-4">
+      <div>
+        <p className="font-bold">{servicio.nombre}</p>
+        <p>{servicio.descripcion}</p>
+        <p className="text-sm text-gray-500">${servicio.precio ?? '-'}</p>
+      </div>
+      <div className="flex flex-col gap-2 ml-auto">
+        <Button onClick={handleEdit}>Editar</Button>
+        <Button onClick={handleDelete} disabled={loading} variant="destructive">Eliminar</Button>
+      </div>
     </div>
   );
 }
@@ -107,40 +120,49 @@ export default function AdminServicios() {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: '2rem auto', padding: 24, background: '#fff', borderRadius: 8 }}>
-      <h1>Administrar Servicios</h1>
-      <form onSubmit={handleSubmit} style={{ marginBottom: 32 }}>
-        <input
-          name="nombre"
-          placeholder="Nombre del servicio"
-          value={nuevo.nombre}
-          onChange={handleChange}
-          required
-          style={{ width: '100%', marginBottom: 8 }}
-        />
-        <textarea
-          name="descripcion"
-          placeholder="Descripción"
-          value={nuevo.descripcion}
-          onChange={handleChange}
-          style={{ width: '100%', marginBottom: 8 }}
-        />
-        <input
-          name="precio"
-          placeholder="Precio"
-          type="number"
-          value={nuevo.precio}
-          onChange={handleChange}
-          style={{ width: '100%', marginBottom: 8 }}
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Guardando...' : 'Agregar Servicio'}
-        </button>
-      </form>
-      <h2>Lista de Servicios</h2>
-      <ul>
+    <div className="container mx-auto py-10">
+      <Link href="/admin">
+        <Button variant="outline" className="mb-4">Volver al Dashboard</Button>
+      </Link>
+      <h1 className="text-4xl font-bold mb-4">Administrar Servicios</h1>
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle>Agregar Nuevo Servicio</CardTitle>
+        </CardHeader>
+        <form onSubmit={handleSubmit}>
+          <CardContent className="flex flex-col gap-4">
+            <Input
+              name="nombre"
+              placeholder="Nombre del servicio"
+              value={nuevo.nombre}
+              onChange={handleChange}
+              required
+            />
+            <Textarea
+              name="descripcion"
+              placeholder="Descripción"
+              value={nuevo.descripcion}
+              onChange={handleChange}
+            />
+            <Input
+              name="precio"
+              placeholder="Precio"
+              type="number"
+              value={nuevo.precio}
+              onChange={handleChange}
+            />
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" disabled={loading}>
+              {loading ? 'Guardando...' : 'Agregar Servicio'}
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
+      <h2 className="text-2xl font-bold mb-4">Lista de Servicios</h2>
+      <ul className="space-y-4">
         {servicios.map(s => (
-          <li key={s.id} style={{ marginBottom: 12, borderBottom: '1px solid #eee', paddingBottom: 8 }}>
+          <li key={s.id} className="p-4 border rounded-md">
             <ServicioItem servicio={s} onChange={srv => {
               setServicios(servicios.map(ss => ss.id === srv.id ? srv : ss));
             }} onDelete={id => {
