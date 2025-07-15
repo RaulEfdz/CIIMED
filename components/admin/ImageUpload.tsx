@@ -43,8 +43,9 @@ export default function ImageUpload({ onUpload, initialImageUrl }: ImageUploadPr
         showToast(errorMsg, 'error');
         setPreview(initialImageUrl || null); 
       }
-    } catch (err) {
-      showToast('Error de red al subir la imagen', 'error');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error de red al subir la imagen';
+      showToast(errorMessage, 'error');
       setPreview(initialImageUrl || null);
     } finally {
       setUploading(false);

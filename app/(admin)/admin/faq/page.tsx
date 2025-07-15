@@ -6,6 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
+import { Tabs, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 function FAQItem({ faq, onChange, onDelete }: {
   faq: FAQ,
@@ -89,85 +90,102 @@ function FAQItem({ faq, onChange, onDelete }: {
 
 export default function AdminFAQ() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const [nuevo, setNuevo] = useState({ pregunta: '', respuesta: '', activo: true });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [newFAQ, setNewFAQ] = useState({ pregunta: '', respuesta: '', activo: true });
 
   useEffect(() => {
-    fetch('/api/admin/faq')
-      .then(res => res.json())
-      .then(data => setFaqs(data));
+    fetchFaqs();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-    const isChecked = (e.target as HTMLInputElement).checked;
-    setNuevo({ ...nuevo, [name]: type === 'checkbox' ? isChecked : value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    await fetch('/api/admin/faq', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(nuevo)
-    });
-    setNuevo({ pregunta: '', respuesta: '', activo: true });
-    fetch('/api/admin/faq')
-      .then(res => res.json())
-      .then(data => setFaqs(data));
+  const fetchFaqs = async () => {
+    const res = await fetch('/api/admin/faq');
+    const data = await res.json();
+    setFaqs(data);
     setLoading(false);
   };
 
+  const handleAddFAQ = async () => {
+    if (!newFAQ.pregunta || !newFAQ.respuesta) return;
+    const res = await fetch('/api/admin/faq', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newFAQ)
+    });
+    const data = await res.json();
+    setFaqs([...faqs, data]);
+    setNewFAQ({ pregunta: '', respuesta: '', activo: true });
+    setEditing(false);
+  };
+
+  if (loading) return <div>Cargando...</div>;
+
   return (
-    <div className="container mx-auto py-10">
-      <Link href="/admin">
-        <Button variant="outline" className="mb-4">Volver al Dashboard</Button>
-      </Link>
-      <h1 className="text-4xl font-bold mb-4">Administrar Preguntas Frecuentes (FAQ)</h1>
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Agregar Nueva Pregunta</CardTitle>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="flex flex-col gap-4">
-            <Input
-              name="pregunta"
-              placeholder="Pregunta"
-              value={nuevo.pregunta}
-              onChange={handleChange}
-              required
-            />
-            <Textarea
-              name="respuesta"
-              placeholder="Respuesta"
-              value={nuevo.respuesta}
-              onChange={handleChange}
-              required
-            />
-            <label className="flex items-center gap-2">
-              <input type="checkbox" name="activo" checked={nuevo.activo} onChange={handleChange} /> Activo
-            </label>
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Guardando...' : 'Agregar Pregunta'}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
-      <h2 className="text-2xl font-bold mb-4">Lista de Preguntas</h2>
-      <ul className="space-y-4">
-        {faqs.map(f => (
-          <li key={f.id} className="p-4 border rounded-md">
-            <FAQItem faq={f} onChange={ff => {
-              setFaqs(faqs.map(fff => fff.id === ff.id ? ff : fff));
-            }} onDelete={id => {
-              setFaqs(faqs.filter(fff => fff.id !== id));
-            }} />
-          </li>
-        ))}
-      </ul>
+    <div className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Administrar Preguntas Frecuentes (FAQ)</h1>
+        <Link href="/admin" className="text-blue-500 hover:text-blue-700">
+          Volver al Dashboard
+        </Link>
+      </div>
+
+      <div className="w-full">
+        <Tabs value="agregar" onValueChange={() => {}}>
+          <div className="grid w-full grid-cols-2">
+            <TabsTrigger value="agregar">Agregar Nueva Pregunta</TabsTrigger>
+            <TabsTrigger value="lista">Lista de Preguntas</TabsTrigger>
+          </div>
+          <TabsContent value="agregar">
+            <Card>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Pregunta</label>
+                    <Input
+                      placeholder="Escribe tu pregunta..."
+                      value={newFAQ.pregunta}
+                      onChange={(e) => setNewFAQ({ ...newFAQ, pregunta: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Respuesta</label>
+                    <Textarea
+                      placeholder="Escribe la respuesta..."
+                      value={newFAQ.respuesta}
+                      onChange={(e) => setNewFAQ({ ...newFAQ, respuesta: e.target.value })}
+                      className="min-h-[100px]"
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <label className="mr-2">Activo</label>
+                    <input
+                      type="checkbox"
+                      checked={newFAQ.activo}
+                      onChange={(e) => setNewFAQ({ ...newFAQ, activo: e.target.checked })}
+                    />
+                  </div>
+                  <Button onClick={handleAddFAQ}>Guardar</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="lista">
+            <div className="space-y-4">
+              {faqs.map((faq) => (
+                <FAQItem
+                  key={faq.id}
+                  faq={faq}
+                  onChange={(updated) => {
+                    setFaqs(faqs.map(f => f.id === updated.id ? updated : f));
+                  }}
+                  onDelete={(id) => {
+                    setFaqs(faqs.filter(f => f.id !== id));
+                  }}
+                />
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }

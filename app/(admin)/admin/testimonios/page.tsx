@@ -1,181 +1,244 @@
 "use client";
+import React, { useState, useEffect } from 'react';
 import { Testimonio } from '@prisma/client';
-import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import Link from 'next/link';
+import { useToast } from '@/components/ui/toast';
+import TestimonialCard from '@/components/customs/Cards/TestimonialCard';
+import { PlusCircle, Edit, Trash2, Star, CheckCircle, XCircle } from 'lucide-react';
+import { faker } from '@faker-js/faker';
 
-function TestimonioItem({ testimonio, onChange, onDelete }: {
-  testimonio: Testimonio,
-  onChange: (t: Testimonio) => void,
-  onDelete: (id: number) => void,
-}) {
-  const [editando, setEditando] = useState(false);
-  const [form, setForm] = useState({ nombre: testimonio.nombre, mensaje: testimonio.mensaje, foto: testimonio.foto || '', activo: testimonio.activo });
-  const [loading, setLoading] = useState(false);
-
-  const handleEdit = () => setEditando(true);
-  const handleCancel = () => {
-    setEditando(false);
-    setForm({ nombre: testimonio.nombre, mensaje: testimonio.mensaje, foto: testimonio.foto || '', activo: testimonio.activo });
-  };
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-    const isChecked = (e.target as HTMLInputElement).checked;
-    setForm({ ...form, [name]: type === 'checkbox' ? isChecked : value });
-  };
-  const handleSave = async () => {
-    setLoading(true);
-    const res = await fetch('/api/admin/testimonios', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: testimonio.id,
-        ...form
-      })
-    });
-    const data = await res.json();
-    setEditando(false);
-    setLoading(false);
-    onChange(data);
-  };
-  const handleDelete = async () => {
-    if (!window.confirm('¿Eliminar este testimonio?')) return;
-    setLoading(true);
-    await fetch('/api/admin/testimonios', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: testimonio.id })
-    });
-    setLoading(false);
-    onDelete(testimonio.id);
-  };
-  if (editando) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Editando Testimonio</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <Input name="nombre" value={form.nombre} onChange={handleChange} placeholder="Nombre" />
-          <Textarea name="mensaje" value={form.mensaje} onChange={handleChange} placeholder="Mensaje" />
-          <Input name="foto" value={form.foto} onChange={handleChange} placeholder="URL de foto" />
-          <label className="flex items-center gap-2">
-            <input type="checkbox" name="activo" checked={form.activo} onChange={handleChange} /> Activo
-          </label>
-        </CardContent>
-        <CardFooter className="flex gap-2">
-          <Button onClick={handleSave} disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</Button>
-          <Button onClick={handleCancel} disabled={loading} variant="outline">Cancelar</Button>
-        </CardFooter>
-      </Card>
-    );
-  }
-  return (
-    <div className="flex items-start gap-4">
-      <div>
-        <p className="font-bold">{testimonio.nombre}</p>
-        <p>{testimonio.mensaje}</p>
-        {testimonio.foto && <img src={testimonio.foto} alt="img" className="max-w-xs rounded-md my-2" />}
-        <p className="text-sm text-gray-500">{testimonio.activo ? 'Activo' : 'Inactivo'}</p>
-      </div>
-      <div className="flex flex-col gap-2 ml-auto">
-        <Button onClick={handleEdit}>Editar</Button>
-        <Button onClick={handleDelete} disabled={loading} variant="destructive">Eliminar</Button>
-      </div>
-    </div>
-  );
-}
-
-export default function AdminTestimonios() {
+const AdminTestimonios = () => {
   const [testimonios, setTestimonios] = useState<Testimonio[]>([]);
-  const [nuevo, setNuevo] = useState({ nombre: '', mensaje: '', foto: '', activo: true });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentTestimonio, setCurrentTestimonio] = useState<Partial<Testimonio> | null>(null);
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
+
+  const fetchTestimonios = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/testimonios');
+      if (!res.ok) throw new Error('Error al cargar los testimonios');
+      const data = await res.json();
+      setTestimonios(data);
+    } catch (error) {
+      showToast((error as Error).message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch('/api/admin/testimonios')
-      .then(res => res.json())
-      .then(data => setTestimonios(data));
+    fetchTestimonios();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-    const isChecked = (e.target as HTMLInputElement).checked;
-    setNuevo({ ...nuevo, [name]: type === 'checkbox' ? isChecked : value });
+  const handleOpenModal = (testimonio: Partial<Testimonio> | null = null) => {
+    setCurrentTestimonio(testimonio);
+    setModalOpen(true);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setCurrentTestimonio(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!currentTestimonio || !currentTestimonio.nombre || !currentTestimonio.mensaje) {
+      showToast('El nombre y el mensaje son obligatorios.', 'error');
+      return;
+    }
+
     setLoading(true);
-    await fetch('/api/admin/testimonios', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(nuevo)
-    });
-    setNuevo({ nombre: '', mensaje: '', foto: '', activo: true });
-    fetch('/api/admin/testimonios')
-      .then(res => res.json())
-      .then(data => setTestimonios(data));
-    setLoading(false);
+    const method = currentTestimonio.id ? 'PUT' : 'POST';
+    const endpoint = '/api/admin/testimonios';
+    
+    try {
+      const res = await fetch(endpoint, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentTestimonio),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || `Error al ${currentTestimonio.id ? 'actualizar' : 'crear'} el testimonio`);
+      }
+
+      showToast(`Testimonio ${currentTestimonio.id ? 'actualizado' : 'creado'} correctamente.`, 'success');
+      
+      fetchTestimonios();
+      handleCloseModal();
+
+    } catch (error) {
+      showToast((error as Error).message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('¿Estás seguro de que quieres eliminar este testimonio?')) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/testimonios', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Error al eliminar el testimonio');
+      }
+
+      showToast('Testimonio eliminado correctamente.', 'success');
+      
+      fetchTestimonios();
+
+    } catch (error) {
+      showToast((error as Error).message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAutorrellenar = () => {
+    setCurrentTestimonio(prev => ({
+      ...prev,
+      nombre: faker.person.fullName(),
+      mensaje: faker.lorem.sentence(),
+      foto: faker.image.avatar(),
+      activo: faker.datatype.boolean(),
+    }));
+  };
+
+  const stats = {
+    total: testimonios.length,
+    activos: testimonios.filter(t => t.activo).length,
+    inactivos: testimonios.filter(t => !t.activo).length,
   };
 
   return (
-    <div className="container mx-auto py-10">
-      <Link href="/admin">
-        <Button variant="outline" className="mb-4">Volver al Dashboard</Button>
-      </Link>
-      <h1 className="text-4xl font-bold mb-4">Administrar Testimonios</h1>
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Agregar Nuevo Testimonio</CardTitle>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="flex flex-col gap-4">
-            <Input
-              name="nombre"
-              placeholder="Nombre"
-              value={nuevo.nombre}
-              onChange={handleChange}
-              required
-            />
-            <Textarea
-              name="mensaje"
-              placeholder="Mensaje"
-              value={nuevo.mensaje}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              name="foto"
-              placeholder="URL de foto"
-              value={nuevo.foto}
-              onChange={handleChange}
-            />
-            <label className="flex items-center gap-2">
-              <input type="checkbox" name="activo" checked={nuevo.activo} onChange={handleChange} /> Activo
-            </label>
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Guardando...' : 'Agregar Testimonio'}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
-      <h2 className="text-2xl font-bold mb-4">Lista de Testimonios</h2>
-      <ul className="space-y-4">
-        {testimonios.map(t => (
-          <li key={t.id} className="p-4 border rounded-md">
-            <TestimonioItem testimonio={t} onChange={tt => {
-              setTestimonios(testimonios.map(ttt => ttt.id === tt.id ? tt : ttt));
-            }} onDelete={id => {
-              setTestimonios(testimonios.filter(ttt => ttt.id !== id));
-            }} />
-          </li>
-        ))}
-      </ul>
-    </div>
+      <div className="container mx-auto py-10">
+        <header className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold">Administrar Testimonios</h1>
+          <Button onClick={() => handleOpenModal({})}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Agregar Testimonio
+          </Button>
+        </header>
+
+        {/* Estadísticas */}
+        <div className="grid gap-4 md:grid-cols-3 mb-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total de Testimonios</CardTitle>
+              <Star className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.total}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Activos</CardTitle>
+              <CheckCircle className="h-4 w-4 text-green-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.activos}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Inactivos</CardTitle>
+              <XCircle className="h-4 w-4 text-red-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.inactivos}</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Lista de Testimonios */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {testimonios.map(testimonio => (
+            <div key={testimonio.id} className="relative group">
+              <div className="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button size="icon" variant="outline" onClick={() => handleOpenModal(testimonio)}>
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button size="icon" variant="destructive" onClick={() => handleDelete(testimonio.id)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+              <TestimonialCard
+                nombre={testimonio.nombre}
+                mensaje={testimonio.mensaje}
+                foto={testimonio.foto}
+                activo={testimonio.activo}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Modal de Edición/Creación */}
+        <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>{currentTestimonio?.id ? 'Editar' : 'Crear'} Testimonio</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="grid gap-4 py-4">
+              <div>
+                <label htmlFor="nombre">Nombre <span className="text-red-500">*</span></label>
+                <Input
+                  id="nombre"
+                  value={currentTestimonio?.nombre || ''}
+                  onChange={(e) => setCurrentTestimonio({ ...currentTestimonio, nombre: e.target.value })}
+                  className={!currentTestimonio?.nombre ? 'border-red-500' : ''}
+                />
+              </div>
+              <div>
+                <label htmlFor="mensaje">Mensaje <span className="text-red-500">*</span></label>
+                <Textarea
+                  id="mensaje"
+                  value={currentTestimonio?.mensaje || ''}
+                  onChange={(e) => setCurrentTestimonio({ ...currentTestimonio, mensaje: e.target.value })}
+                  className={!currentTestimonio?.mensaje ? 'border-red-500' : ''}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label htmlFor="foto">URL de Foto</label>
+                <Input
+                  id="foto"
+                  value={currentTestimonio?.foto || ''}
+                  onChange={(e) => setCurrentTestimonio({ ...currentTestimonio, foto: e.target.value })}
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="activo"
+                  checked={currentTestimonio?.activo || false}
+                  onChange={(e) => setCurrentTestimonio({ ...currentTestimonio, activo: e.target.checked })}
+                />
+                <label htmlFor="activo">Activo</label>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={handleAutorrellenar}>Autorrellenar</Button>
+                <Button type="submit" disabled={loading}>{loading ? 'Guardando...' : 'Guardar Cambios'}</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
   );
-}
+};
+
+export default AdminTestimonios;

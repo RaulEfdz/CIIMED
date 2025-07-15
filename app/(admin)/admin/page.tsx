@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Newspaper, Image, Briefcase } from "lucide-react";
+import { Newspaper, Briefcase } from "lucide-react";
 
 export default function AdminDashboard() {
   return (
@@ -11,7 +11,7 @@ export default function AdminDashboard() {
             <CardTitle className="text-sm font-medium">
               Banners Activos
             </CardTitle>
-            <Image className="h-4 w-4 text-muted-foreground" />
+            <Newspaper className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">5</div>

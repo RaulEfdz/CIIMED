@@ -1,194 +1,263 @@
 "use client";
+import React, { useState, useEffect } from 'react';
 import { Sucursal } from '@prisma/client';
-import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import Link from 'next/link';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/toast';
+import SucursalCard from '@/components/customs/Cards/SucursalCard';
+import { PlusCircle, Edit, Trash2, Home, CheckCircle, XCircle } from 'lucide-react';
+import { faker } from '@faker-js/faker';
 
-function SucursalItem({ sucursal, onChange, onDelete }: {
-  sucursal: Sucursal,
-  onChange: (s: Sucursal) => void,
-  onDelete: (id: number) => void,
-}) {
-  const [editando, setEditando] = useState(false);
-  const [form, setForm] = useState({ nombre: sucursal.nombre, direccion: sucursal.direccion, telefono: sucursal.telefono || '', horario: sucursal.horario || '', mapaUrl: sucursal.mapaUrl || '', activo: sucursal.activo });
-  const [loading, setLoading] = useState(false);
-
-  const handleEdit = () => setEditando(true);
-  const handleCancel = () => {
-    setEditando(false);
-    setForm({ nombre: sucursal.nombre, direccion: sucursal.direccion, telefono: sucursal.telefono || '', horario: sucursal.horario || '', mapaUrl: sucursal.mapaUrl || '', activo: sucursal.activo });
-  };
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setForm({ ...form, [name]: type === 'checkbox' ? checked : value });
-  };
-  const handleSave = async () => {
-    setLoading(true);
-    const res = await fetch('/api/admin/sucursales', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: sucursal.id,
-        ...form
-      })
-    });
-    const data = await res.json();
-    setEditando(false);
-    setLoading(false);
-    onChange(data);
-  };
-  const handleDelete = async () => {
-    if (!window.confirm('¿Eliminar esta sucursal?')) return;
-    setLoading(true);
-    await fetch('/api/admin/sucursales', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: sucursal.id })
-    });
-    setLoading(false);
-    onDelete(sucursal.id);
-  };
-  if (editando) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Editando Sucursal</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <Input name="nombre" value={form.nombre} onChange={handleChange} placeholder="Nombre" />
-          <Input name="direccion" value={form.direccion} onChange={handleChange} placeholder="Dirección" />
-          <Input name="telefono" value={form.telefono} onChange={handleChange} placeholder="Teléfono" />
-          <Input name="horario" value={form.horario} onChange={handleChange} placeholder="Horario" />
-          <Input name="mapaUrl" value={form.mapaUrl} onChange={handleChange} placeholder="URL de mapa" />
-          <label className="flex items-center gap-2">
-            <input type="checkbox" name="activo" checked={form.activo} onChange={handleChange} /> Activo
-          </label>
-        </CardContent>
-        <CardFooter className="flex gap-2">
-          <Button onClick={handleSave} disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</Button>
-          <Button onClick={handleCancel} disabled={loading} variant="outline">Cancelar</Button>
-        </CardFooter>
-      </Card>
-    );
-  }
-  return (
-    <div className="flex items-start gap-4">
-      <div>
-        <p className="font-bold">{sucursal.nombre}</p>
-        <p>{sucursal.direccion}</p>
-        <p>{sucursal.telefono}</p>
-        <p>{sucursal.horario}</p>
-        {sucursal.mapaUrl && <a href={sucursal.mapaUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500">Ver Mapa</a>}
-        <p className="text-sm text-gray-500">{sucursal.activo ? 'Activo' : 'Inactivo'}</p>
-      </div>
-      <div className="flex flex-col gap-2 ml-auto">
-        <Button onClick={handleEdit}>Editar</Button>
-        <Button onClick={handleDelete} disabled={loading} variant="destructive">Eliminar</Button>
-      </div>
-    </div>
-  );
-}
-
-export default function AdminSucursales() {
+const AdminSucursales = () => {
   const [sucursales, setSucursales] = useState<Sucursal[]>([]);
-  const [nueva, setNueva] = useState({ nombre: '', direccion: '', telefono: '', horario: '', mapaUrl: '', activo: true });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentSucursal, setCurrentSucursal] = useState<Partial<Sucursal> | null>(null);
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
+
+  const fetchSucursales = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/sucursales');
+      if (!res.ok) throw new Error('Error al cargar las sucursales');
+      const data = await res.json();
+      setSucursales(data);
+    } catch (error) {
+      showToast((error as Error).message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch('/api/admin/sucursales')
-      .then(res => res.json())
-      .then(data => setSucursales(data));
+    fetchSucursales();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setNueva({ ...nueva, [name]: type === 'checkbox' ? checked : value });
+  const handleOpenModal = (sucursal: Partial<Sucursal> | null = null) => {
+    setCurrentSucursal(sucursal);
+    setModalOpen(true);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setCurrentSucursal(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!currentSucursal || !currentSucursal.nombre || !currentSucursal.direccion) {
+      showToast('El nombre y la dirección son obligatorios.', 'error');
+      return;
+    }
+
     setLoading(true);
-    await fetch('/api/admin/sucursales', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(nueva)
-    });
-    setNueva({ nombre: '', direccion: '', telefono: '', horario: '', mapaUrl: '', activo: true });
-    fetch('/api/admin/sucursales')
-      .then(res => res.json())
-      .then(data => setSucursales(data));
-    setLoading(false);
+    const method = currentSucursal.id ? 'PUT' : 'POST';
+    const endpoint = '/api/admin/sucursales';
+    
+    try {
+      const res = await fetch(endpoint, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentSucursal),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || `Error al ${currentSucursal.id ? 'actualizar' : 'crear'} la sucursal`);
+      }
+
+      showToast(`Sucursal ${currentSucursal.id ? 'actualizada' : 'creada'} correctamente.`, 'success');
+      
+      fetchSucursales();
+      handleCloseModal();
+
+    } catch (error) {
+      showToast((error as Error).message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('¿Estás seguro de que quieres eliminar esta sucursal?')) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/sucursales', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Error al eliminar la sucursal');
+      }
+
+      showToast('Sucursal eliminada correctamente.', 'success');
+      
+      fetchSucursales();
+
+    } catch (error) {
+      showToast((error as Error).message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAutorrellenar = () => {
+    setCurrentSucursal(prev => ({
+      ...prev,
+      nombre: `Sucursal ${faker.location.city()}`,
+      direccion: faker.location.streetAddress(),
+      telefono: faker.phone.number(),
+      horario: 'Lunes a Viernes de 9:00 a 18:00',
+      mapaUrl: faker.internet.url(),
+      activo: faker.datatype.boolean(),
+    }));
+  };
+
+  const stats = {
+    total: sucursales.length,
+    activas: sucursales.filter(s => s.activo).length,
+    inactivas: sucursales.filter(s => !s.activo).length,
   };
 
   return (
-    <div className="container mx-auto py-10">
-      <Link href="/admin">
-        <Button variant="outline" className="mb-4">Volver al Dashboard</Button>
-      </Link>
-      <h1 className="text-4xl font-bold mb-4">Administrar Sucursales</h1>
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Agregar Nueva Sucursal</CardTitle>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="flex flex-col gap-4">
-            <Input
-              name="nombre"
-              placeholder="Nombre"
-              value={nueva.nombre}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              name="direccion"
-              placeholder="Dirección"
-              value={nueva.direccion}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              name="telefono"
-              placeholder="Teléfono"
-              value={nueva.telefono}
-              onChange={handleChange}
-            />
-            <Input
-              name="horario"
-              placeholder="Horario"
-              value={nueva.horario}
-              onChange={handleChange}
-            />
-            <Input
-              name="mapaUrl"
-              placeholder="URL de mapa"
-              value={nueva.mapaUrl}
-              onChange={handleChange}
-            />
-            <label className="flex items-center gap-2">
-              <input type="checkbox" name="activo" checked={nueva.activo} onChange={handleChange} /> Activo
-            </label>
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Guardando...' : 'Agregar Sucursal'}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
-      <h2 className="text-2xl font-bold mb-4">Lista de Sucursales</h2>
-      <ul className="space-y-4">
-        {sucursales.map(s => (
-          <li key={s.id} className="p-4 border rounded-md">
-            <SucursalItem sucursal={s} onChange={sc => {
-              setSucursales(sucursales.map(ss => ss.id === sc.id ? sc : ss));
-            }} onDelete={id => {
-              setSucursales(sucursales.filter(ss => ss.id !== id));
-            }} />
-          </li>
-        ))}
-      </ul>
-    </div>
+      <div className="container mx-auto py-10">
+        <header className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold">Administrar Sucursales</h1>
+          <Button onClick={() => handleOpenModal({})}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Agregar Sucursal
+          </Button>
+        </header>
+
+        {/* Estadísticas */}
+        <div className="grid gap-4 md:grid-cols-3 mb-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total de Sucursales</CardTitle>
+              <Home className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.total}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Activas</CardTitle>
+              <CheckCircle className="h-4 w-4 text-green-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.activas}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Inactivas</CardTitle>
+              <XCircle className="h-4 w-4 text-red-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.inactivas}</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Lista de Sucursales */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sucursales.map(sucursal => (
+            <div key={sucursal.id} className="relative group">
+              <div className="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button size="icon" variant="outline" onClick={() => handleOpenModal(sucursal)}>
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button size="icon" variant="destructive" onClick={() => handleDelete(sucursal.id)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+              <SucursalCard
+                nombre={sucursal.nombre}
+                direccion={sucursal.direccion}
+                telefono={sucursal.telefono}
+                horario={sucursal.horario}
+                activo={sucursal.activo}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Modal de Edición/Creación */}
+        <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>{currentSucursal?.id ? 'Editar' : 'Crear'} Sucursal</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="grid gap-4 py-4">
+              <div>
+                <label htmlFor="nombre">Nombre <span className="text-red-500">*</span></label>
+                <Input
+                  id="nombre"
+                  value={currentSucursal?.nombre || ''}
+                  onChange={(e) => setCurrentSucursal({ ...currentSucursal, nombre: e.target.value })}
+                  className={!currentSucursal?.nombre ? 'border-red-500' : ''}
+                />
+              </div>
+              <div>
+                <label htmlFor="direccion">Dirección <span className="text-red-500">*</span></label>
+                <Textarea
+                  id="direccion"
+                  value={currentSucursal?.direccion || ''}
+                  onChange={(e) => setCurrentSucursal({ ...currentSucursal, direccion: e.target.value })}
+                  className={!currentSucursal?.direccion ? 'border-red-500' : ''}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label htmlFor="telefono">Teléfono</label>
+                <Input
+                  id="telefono"
+                  value={currentSucursal?.telefono || ''}
+                  onChange={(e) => setCurrentSucursal({ ...currentSucursal, telefono: e.target.value })}
+                />
+              </div>
+              <div>
+                <label htmlFor="horario">Horario</label>
+                <Input
+                  id="horario"
+                  value={currentSucursal?.horario || ''}
+                  onChange={(e) => setCurrentSucursal({ ...currentSucursal, horario: e.target.value })}
+                />
+              </div>
+              <div>
+                <label htmlFor="mapaUrl">URL de Google Maps</label>
+                <Input
+                  id="mapaUrl"
+                  value={currentSucursal?.mapaUrl || ''}
+                  onChange={(e) => setCurrentSucursal({ ...currentSucursal, mapaUrl: e.target.value })}
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="activo"
+                  checked={currentSucursal?.activo || false}
+                  onChange={(e) => setCurrentSucursal({ ...currentSucursal, activo: e.target.checked })}
+                />
+                <label htmlFor="activo">Activa</label>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={handleAutorrellenar}>Autorrellenar</Button>
+                <Button type="submit" disabled={loading}>{loading ? 'Guardando...' : 'Guardar Cambios'}</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
   );
-}
+};
+
+export default AdminSucursales;

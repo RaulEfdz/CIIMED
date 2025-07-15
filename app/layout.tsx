@@ -1,5 +1,5 @@
 "use client";
-import type { Metadata } from "next";
+
 import "./globals.css";
 import { Footer, Header } from "./config/inital";
 import RobotipaAW from "@/app/tools/robotipa-agente-web/RobotipaAW";

@@ -2,7 +2,7 @@
 import React from "react";
 import NewsContainer from "@/components/customs/Features/News";
 import { motion } from "framer-motion"; // Importación de Framer Motion
-import { db } from "../data/db";
+import { News } from "@/app/data/news";
 import { VideoGallery } from "./VideoGallery";
 import { InstagramGallery } from "./InstagramGallery";
 import { SpotifyGallery } from "./SpotifyGallery";
@@ -29,7 +29,7 @@ export default function scientificDisseminationPage() {
 
         <VideoGallery />
         <InstagramGallery />
-        <NewsContainer news={db.news} />
+        <NewsContainer news={News} />
       </motion.section>
       </main>
       </motion.main>

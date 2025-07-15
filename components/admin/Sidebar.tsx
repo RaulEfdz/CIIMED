@@ -11,7 +11,6 @@ import {
   Briefcase,
   Tags,
   MapPin,
-  MessageSquare,
   LogOut,
   Home,
   BookUser,

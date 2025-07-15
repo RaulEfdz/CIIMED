@@ -1,24 +1,16 @@
-import { NewsCardProps } from "@/components/customs/Cards/NewsCard";
-import { Events } from "./events";
-import { News } from "./news";
-import { novelties } from "./novelties";
-import { categoriesTeam, team } from "./team";
-import { EventCardProps } from "@/components/customs/Cards/EventCard";
-import { NoveltyCardProps } from "@/components/customs/Cards/NoveltyCard";
-import { TeamMember } from "@/components/customs/Features/Teams";
 
-export interface typeDB {
-    news:  NewsCardProps[],
-    events:EventCardProps[],
-    novelties: NoveltyCardProps[],
-    team: TeamMember[],
-    categoriesTeam: string[]
+import { PrismaClient } from '@prisma/client';
+
+declare global {
+  // allow global `var` declarations
+  // eslint-disable-next-line no-var
+  var prisma: PrismaClient | undefined;
 }
 
-export const db: typeDB = {
-    news:  News,
-    events:Events,
-    novelties: novelties,
-    team: team,
-    categoriesTeam: categoriesTeam
-}
+export const prisma =
+  global.prisma ||
+  new PrismaClient({
+    log: ['query'],
+  });
+
+if (process.env.NODE_ENV !== 'production') global.prisma = prisma;

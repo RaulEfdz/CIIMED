@@ -13,22 +13,24 @@ interface Staff {
   nombre: string;
   puesto: string;
   bio: string;
-  foto: string;
+  imagenUrl: string;
   activo: boolean;
   linkedinUrl?: string;
   personalWebsite?: string;
+  categoria: string;
 }
 
 // Modal simple para edición (puedes reemplazar por un componente más avanzado si lo deseas)
 function EditStaffModal({ open, onClose, staff, onSave }: { open: boolean, onClose: () => void, staff: Staff, onSave: (s: Staff) => void }) {
   const [form, setForm] = useState({ ...staff });
   const [loading, setLoading] = useState(false);
+  const categories = ["Directivos", "Investigadores", "Colaboradores"];
 
   useEffect(() => {
     setForm({ ...staff });
   }, [staff]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const isChecked = (e.target as HTMLInputElement).checked;
     setForm({ ...form, [name]: type === 'checkbox' ? isChecked : value });
@@ -55,8 +57,11 @@ function EditStaffModal({ open, onClose, staff, onSave }: { open: boolean, onClo
         <CardContent className="flex flex-col gap-4">
           <Input name="nombre" value={form.nombre} onChange={handleChange} placeholder="Nombre" />
           <Input name="puesto" value={form.puesto} onChange={handleChange} placeholder="Puesto" />
+          <select name="categoria" value={form.categoria} onChange={handleChange} className="w-full p-2 border rounded-md">
+            {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+          </select>
           <Textarea name="bio" value={form.bio} onChange={handleChange} placeholder="Bio" />
-          <Input name="foto" value={form.foto} onChange={handleChange} placeholder="URL de foto" />
+          <Input name="imagenUrl" value={form.imagenUrl} onChange={handleChange} placeholder="URL de foto" />
           <Input name="linkedinUrl" value={form.linkedinUrl || ''} onChange={handleChange} placeholder="URL de LinkedIn" />
           <Input name="personalWebsite" value={form.personalWebsite || ''} onChange={handleChange} placeholder="Sitio personal" />
           <label className="flex items-center gap-2">
@@ -74,23 +79,15 @@ function EditStaffModal({ open, onClose, staff, onSave }: { open: boolean, onClo
 
 
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { ToastProvider, useToast } from '@/components/ui/toast';
-import { TabsProvider, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { useToast } from '@/components/ui/toast';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import ImageUpload from '@/components/admin/ImageUpload';
 
-export default function AdminStaffWrapper() {
-  return (
-    <ToastProvider>
-      <AdminStaff />
-    </ToastProvider>
-  );
-}
-
-function AdminStaff() {
+export default function AdminStaff() {
   const [staffs, setStaffs] = useState<Staff[]>([]);
-  const [nuevo, setNuevo] = useState({ nombre: '', puesto: '', bio: '', foto: '', activo: true, linkedinUrl: '', personalWebsite: '' });
+  const [nuevo, setNuevo] = useState({ nombre: '', puesto: '', bio: '', imagenUrl: '', activo: true, linkedinUrl: '', personalWebsite: '', categoria: 'Directivos' });
   const [fotoTab, setFotoTab] = useState<'url' | 'cloudinary'>('url');
-  const [uploading, setUploading] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -99,11 +96,27 @@ function AdminStaff() {
 
   useEffect(() => {
     fetch('/api/admin/staff')
-      .then(res => res.json())
-      .then(data => setStaffs(data));
-  }, []);
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Error al cargar los datos');
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (!Array.isArray(data)) {
+          console.error('Los datos no son un array:', data);
+          return [];
+        }
+        setStaffs(data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setStaffs([]);
+        showToast('Error al cargar los datos del equipo', 'error');
+      });
+  }, [showToast]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const isChecked = (e.target as HTMLInputElement).checked;
     setNuevo({ ...nuevo, [name]: type === 'checkbox' ? isChecked : value });
@@ -113,7 +126,8 @@ function AdminStaff() {
     const errors: {[key:string]: boolean} = {};
     if (!data.nombre) errors.nombre = true;
     if (!data.puesto) errors.puesto = true;
-    if (!data.foto) errors.foto = true;
+    if (!data.categoria) errors.categoria = true;
+    if (!data.imagenUrl) errors.imagenUrl = true;
     return errors;
   };
 
@@ -130,10 +144,10 @@ function AdminStaff() {
       const res = await fetch('/api/admin/staff', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(nuevo)
+        body: JSON.stringify({ ...nuevo, imagenUrl: nuevo.imagenUrl })
       });
       if (!res.ok) throw new Error('Error al guardar');
-      setNuevo({ nombre: '', puesto: '', bio: '', foto: '', activo: true, linkedinUrl: '', personalWebsite: '' });
+      setNuevo({ nombre: '', puesto: '', bio: '', imagenUrl: '', activo: true, linkedinUrl: '', personalWebsite: '', categoria: '' });
       setModalOpen(false);
       fetch('/api/admin/staff')
         .then(res => res.json())
@@ -209,6 +223,17 @@ function AdminStaff() {
                 onChange={handleChange}
                 className={fieldErrors.puesto ? 'border-red-500' : ''}
               />
+              <label className="font-medium">Categoría <span className="text-red-500">*</span></label>
+              <select
+                name="categoria"
+                value={nuevo.categoria}
+                onChange={handleChange}
+                className={`w-full p-2 border rounded-md ${fieldErrors.categoria ? 'border-red-500' : ''}`}
+              >
+                <option value="Directivos">Directivos</option>
+                <option value="Investigadores">Investigadores</option>
+                <option value="Colaboradores">Colaboradores</option>
+              </select>
               <label className="font-medium">Bio</label>
               <Textarea
                 name="bio"
@@ -217,28 +242,28 @@ function AdminStaff() {
                 onChange={handleChange}
               />
               <label className="font-medium">Foto <span className="text-red-500">*</span></label>
-              <TabsProvider value={fotoTab} onValueChange={(value) => setFotoTab(value as 'url' | 'cloudinary')}>
+              <Tabs value={fotoTab} onValueChange={(value) => setFotoTab(value as 'url' | 'cloudinary')}>
                 <TabsList>
                   <TabsTrigger value="url">Por URL</TabsTrigger>
                   <TabsTrigger value="cloudinary">Subir archivo</TabsTrigger>
                 </TabsList>
                 <TabsContent value="url">
                   <Input
-                    name="foto"
+                    name="imagenUrl"
                     placeholder="URL de foto"
-                    value={nuevo.foto}
+                    value={nuevo.imagenUrl}
                     onChange={handleChange}
-                    className={fieldErrors.foto ? 'border-red-500' : ''}
+                    className={fieldErrors.imagenUrl ? 'border-red-500' : ''}
                   />
-                   {nuevo.foto && <img src={nuevo.foto} alt="Preview" className="h-24 mt-2 rounded-md" />}
+                   {nuevo.imagenUrl && <img src={nuevo.imagenUrl} alt="Preview" className="h-24 mt-2 rounded-md" />}
                 </TabsContent>
                 <TabsContent value="cloudinary">
                   <ImageUpload
-                    onUpload={(url) => setNuevo(n => ({ ...n, foto: url }))}
-                    initialImageUrl={nuevo.foto}
+                    onUpload={(url) => setNuevo(n => ({ ...n, imagenUrl: url }))}
+                    initialImageUrl={nuevo.imagenUrl}
                   />
                 </TabsContent>
-              </TabsProvider>
+              </Tabs>
               <label className="font-medium">LinkedIn</label>
               <Input
                 name="linkedinUrl"
@@ -286,8 +311,9 @@ function AdminStaff() {
                   setNuevo({
                     nombre: nombresElegido,
                     puesto: puestoElegido,
+                    categoria: "Investigador",
                     bio: bioElegida,
-                    foto: fotoElegida,
+                    imagenUrl: fotoElegida,
                     activo: true,
                     linkedinUrl: `https://www.linkedin.com/in/${nombreURL}`,
                     personalWebsite: `https://www.${nombreURL}.com`
@@ -306,7 +332,7 @@ function AdminStaff() {
             <TeamMemberCard
               name={s.nombre}
               role={s.puesto}
-              imageUrl={s.foto}
+              imageUrl={s.imagenUrl}
               linkedinUrl={s.linkedinUrl || ''}
               personalWebsite={s.personalWebsite || ''}
               bio={s.bio}

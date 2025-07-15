@@ -1,79 +1,42 @@
-import React from 'react';
-import { Calendar } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { CldImage } from 'next-cloudinary';
+import Image from 'next/image';
+import Link from 'next/link';
 
-const teamColors = {
-  primary: "#285C4D",
-  secondary: "#F4633A",
-  dark: "#212322",
-  light: "#f2f2f2"
-};
-
-export interface NewsCardProps {
-  title: string;
-  description: string;
-  imageUrl: string;
-  imageAlt: string;
-  imgW: number;
-  imgH: number;
-  link: string;
-  author: string;
-  readTime: string;
+// Type for a single news article
+interface Noticia {
+  id: number;
+  titulo: string;
+  contenido: string;
+  imagen?: string | null;
+  createdAt: Date;
 }
 
-const NewsCard: React.FC<NewsCardProps> = ({
-  title,
-  description,
-  imageUrl,
-  imageAlt,
-  imgW,
-  imgH,
-  link,
-  author,
-  readTime
-}) => {
+// Props for the NewsCard component
+interface NewsCardProps {
+  noticia: Noticia;
+}
+
+const NewsCardComponent = ({ noticia }: NewsCardProps) => {
+  const summary = noticia.contenido.substring(0, 100) + '...'; // Simple summary
+
   return (
-    <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-200 dark:border-neutral-700 rounded-sm">
-      {/* Imagen */}
-      <div className="aspect-video relative overflow-hidden border-b">
-        <CldImage
-          className="w-full h-full absolute inset-0 object-cover transform hover:scale-105 transition-transform duration-300"
-          alt={imageAlt}
-          src={imageUrl}
-          width={imgW}
-          height={imgH}
-          crop={{ type: "auto", source: true }}
-        />
-      </div>
-
-      <CardContent className="p-6 bg-[#F2F2F2] dark:bg-neutral-900">
-        {/* Información de Autor y Tiempo de Lectura */}
-        <div className="flex items-center justify-between bg-gray-100 dark:bg-neutral-800 p-2 rounded-sm text-sm text-gray-600 dark:text-neutral-300 mb-4">
-          <p className="font-medium" style={{ color: teamColors.dark }}>{author}</p>
-          <div className="flex items-center space-x-1">
-            <Calendar className="h-4 w-4 text-gray-500 dark:text-neutral-400" />
-            <span>{readTime}</span>
-          </div>
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-1 transition-transform duration-300">
+      <Link href={`/noticias/${noticia.id}`}>
+        <div className="relative h-48 w-full">
+          <Image
+            src={noticia.imagen || '/default-news.jpg'} // Provide a default image
+            alt={`Imagen de ${noticia.titulo}`}
+            fill
+            style={{objectFit: "cover"}}
+          />
         </div>
-
-        {/* Título y Descripción */}
-        <h3 className="text-2xl font-bold mb-2 line-clamp-2" style={{ color: teamColors.primary }}>{title}</h3>
-        <p className="text-gray-700 dark:text-neutral-300 line-clamp-3">{description}</p>
-
-        {/* Botón de Leer Más */}
-        <div className="mt-4">
-          <a 
-            href={link} 
-            className="font-medium hover:underline"
-            style={{ color: teamColors.secondary }}
-          >
-            Leer más →
-          </a>
+        <div className="p-6">
+          <h3 className="text-xl font-bold mb-2">{noticia.titulo}</h3>
+          <p className="text-gray-700 mb-4">{summary}</p>
+          <p className="text-sm text-gray-500">{new Date(noticia.createdAt).toLocaleDateString()}</p>
         </div>
-      </CardContent>
-    </Card>
+      </Link>
+    </div>
   );
 };
 
-export default NewsCard;
+export default NewsCardComponent;
