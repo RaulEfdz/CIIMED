@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { CldImage } from 'next-cloudinary';
+import Image from 'next/image';
 
 const teamColors = {
   primary: "#285C4D",
@@ -15,8 +15,8 @@ export interface NewsCardProps {
   description: string;
   imageUrl: string;
   imageAlt: string;
-  imgW: number;
-  imgH: number;
+  imgW?: number;
+  imgH?: number;
   link: string;
   author: string;
   readTime: string;
@@ -27,8 +27,6 @@ const NewsCard: React.FC<NewsCardProps> = ({
   description,
   imageUrl,
   imageAlt,
-  imgW,
-  imgH,
   link,
   author,
   readTime
@@ -37,13 +35,11 @@ const NewsCard: React.FC<NewsCardProps> = ({
     <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-200 dark:border-neutral-700 rounded-sm">
       {/* Imagen */}
       <div className="aspect-video relative overflow-hidden border-b">
-        <CldImage
+        <Image
           className="w-full h-full absolute inset-0 object-cover transform hover:scale-105 transition-transform duration-300"
           alt={imageAlt}
           src={imageUrl}
-          width={imgW}
-          height={imgH}
-          crop={{ type: "auto", source: true }}
+          fill
         />
       </div>
 

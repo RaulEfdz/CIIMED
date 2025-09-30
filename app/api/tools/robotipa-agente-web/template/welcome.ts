@@ -1,2 +1,0 @@
-// app/api/tools/robotipa-agente-web/template/welcome.ts
-export const WELCOME_MESSAGE = "¡Bienvenido al asistente virtual de [Nombre]! Somos referentes en políticas de salud mediante innovación científica. ¿En qué tema de [área de especialización] puedo ayudarte hoy?";

@@ -1,6 +1,7 @@
 // data.ts
 
 import { Dna, FlaskConical, GraduationCap, HeartPulse, Users } from "lucide-react";
+import { UPLOADTHING_IMAGES } from "@/lib/uploadthing-utils";
 
 export interface Achievement {
     icon: React.ElementType;
@@ -63,7 +64,7 @@ export interface Achievement {
       description:
         "Nuestra misión es impulsar la innovación y la excelencia en el sector médico, proporcionando soluciones efectivas y avanzadas.",
       icon: HeartPulse,
-      imageUrl: "https://res.cloudinary.com/doyfs0fiu/image/upload/v1738373133/kjc0pnawxekjyvmoga4a.jpg",
+      imageUrl: UPLOADTHING_IMAGES.ABOUT_IMAGE,
     },
     {
       id: "2",
@@ -71,7 +72,7 @@ export interface Achievement {
       description:
         "Nuestra visión es ser líderes en la investigación y desarrollo de nuevas tecnologías para mejorar la calidad de vida de las personas.",
       icon: Dna,
-      imageUrl: "https://res.cloudinary.com/doyfs0fiu/image/upload/v1738280298/jcue8atmcjfv9aea2sw0.jpg",
+      imageUrl: UPLOADTHING_IMAGES.ABOUT_IMAGE,
     },
   ];
   
@@ -87,7 +88,7 @@ export interface Achievement {
   export const heroData = {
     title: "Sobre Nosotros",
     subtitle: "CIIMED es un centro de investigación líder en el desarrollo de innovaciones médicas y científicas.",
-    imageUrl: "https://res.cloudinary.com/doyfs0fiu/image/upload/v1738280298/jcue8atmcjfv9aea2sw0.jpg",
+    imageUrl: UPLOADTHING_IMAGES.ABOUT_IMAGE,
     primaryButton: { text: "Comenzar ahora", link: "#", disabled: true },
     secondaryButton: { text: "Ver tour", link: "#", disabled: true },
     overlayColor: "#285C4D",

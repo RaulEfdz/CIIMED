@@ -1,12 +1,13 @@
 // events.ts
 
 import { EventCardProps } from "@/components/customs/Cards/EventCard";
+import { UPLOADTHING_IMAGES } from "@/lib/uploadthing-utils";
 
 export const Events: EventCardProps[] = [
   {
     title: "Workshop de Investigación",
     description: "Un workshop interactivo sobre metodologías de investigación.",
-    imageUrl: "events/bjaqclh8hntkmz3ultwn",
+    imageUrl: UPLOADTHING_IMAGES.EVENT_IMAGE,
     imageAlt: "Workshop de Investigación",
     imgW: 400,
     imgH: 300,
@@ -20,7 +21,7 @@ export const Events: EventCardProps[] = [
   {
     title: "Workshop de Investigación",
     description: "Un workshop interactivo sobre metodologías de investigación.",
-    imageUrl: "events/bjaqclh8hntkmz3ultwn",
+    imageUrl: UPLOADTHING_IMAGES.EVENT_IMAGE,
     imageAlt: "Workshop de Investigación",
     imgW: 400,
     imgH: 300,

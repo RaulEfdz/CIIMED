@@ -1,5 +1,5 @@
 // components/customs/Features/SingleImage.tsx
-import { CldImage } from "next-cloudinary";
+import Image from "next/image";
 import { ReactNode } from "react";
 
 interface Feature {
@@ -33,11 +33,11 @@ export const SingleImage: React.FC<SingleImageProps> = ({
   return (
     <div className="w-full px-6 py-12 lg:py-16 bg-transparent">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-        <CldImage
+        <Image
           alt={imageAlt}
           src={imageUrl}
-          width="2048"
-          height="1365"
+          width={2048}
+          height={1365}
           className="rounded-sm shadow-md"
         />
         <div className="space-y-6">

@@ -1,6 +1,5 @@
 import React from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
-import { PoweredBy } from "@/common/powerBy";
 
 interface NavLinkProps {
   label: string;
@@ -71,8 +70,6 @@ export const FooterContact: React.FC<FooterProps> = ({ navLinks, contact }) => {
           </div>
         </div>
       </div>
-      {/* Etiqueta Power by Robotipa */}
-      <PoweredBy />
     </footer>
   );
 };

@@ -10,7 +10,7 @@ import { ResearchLine } from "./ResearchLine";
 const ResearchSections = () => {
   // Si cada subcomponente maneja su propio estado de carga, puedes eliminar este loading,
   // o dejarlo en false para mostrar el contenido inmediatamente.
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   const containerVariants = {
     hidden: {},

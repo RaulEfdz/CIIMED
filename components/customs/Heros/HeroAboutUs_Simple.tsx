@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Briefcase, Building2 } from "lucide-react";
-import { CldImage } from "next-cloudinary";
+import Image from "next/image";
 
 // Definición de las propiedades del componente
 interface AboutUsProps {
@@ -80,7 +80,7 @@ const AboutUs: React.FC<AboutUsProps> = ({
 
           {/* Imagen destacada con animación de entrada */}
           <div className="lg:w-1/2">
-            <CldImage
+            <Image
               className="w-full h-auto rounded-sm shadow-lg transition-transform duration-300 hover:scale-105 opacity-0 animate-fade-in"
               src={imageUrl}
               alt={imageAlt}

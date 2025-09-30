@@ -1,4 +1,4 @@
-import { CldImage } from "next-cloudinary";
+import Image from "next/image";
 import React from "react";
 
 export interface HorizCardProps {
@@ -26,16 +26,12 @@ const HorizCard: React.FC<HorizCardProps> = ({
       className="block border border-gray-200 rounded-sm hover:shadow-sm focus:outline-none dark:border-neutral-700"
     >
       <div className="relative flex items-center overflow-hidden">
-        <CldImage
+        <Image
           className="w-32 sm:w-48 h-full absolute inset-0 object-cover rounded-s-lg"
           alt={imageAlt}
-          src={imageUrl} // Use this sample image or upload your own via the Media Explorer
+          src={imageUrl}
           width={imgW}
           height={imgH}
-          crop={{
-            type: "auto",
-            source: true,
-          }}
         />
 
         <div className="grow p-4 ms-32 sm:ms-48">

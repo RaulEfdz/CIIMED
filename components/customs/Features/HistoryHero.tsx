@@ -2,7 +2,7 @@
 
 import React from "react";
 import { History } from "lucide-react";
-import { CldImage } from "next-cloudinary";
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 interface HistoryHeroProps {
@@ -73,13 +73,12 @@ const HistoryHero: React.FC<HistoryHeroProps> = ({
           transition={{ duration: 0.8 }}
           className="rounded-sm overflow-hidden shadow-xl"
         >
-          <CldImage
+          <Image
             className="w-full h-auto rounded-none"
             src={imageUrl}
             alt={imageAlt}
             width={imgW}
             height={imgH}
-            layout="responsive"
             priority
           />
         </motion.div>

@@ -2,6 +2,7 @@
 import { Microscope, Users } from "lucide-react";
 import { ReactNode } from "react";
 import { SiInstagram, SiLinkedin, SiSpotify, SiYoutube } from "react-icons/si";
+import { UPLOADTHING_IMAGES } from "@/lib/uploadthing-utils";
 
 export interface FeatureItem {
   text: string;
@@ -36,7 +37,7 @@ export interface HeroBannerData {
 }
 
 export const featureInitData: FeatureData = {
-  imageUrl: "jcue8atmcjfv9aea2sw0",
+  imageUrl: UPLOADTHING_IMAGES.ABOUT_IMAGE,
   imageAlt: "medialImage",
   title: "CIIMED | Centro de Investigación e Innovación Médica",
   description:
@@ -56,7 +57,7 @@ export const featureInitData: FeatureData = {
 };
 
 export const heroSectionData: HeroBannerData = {
-  imageUrl: "ozy6ruruqgqnxgcaqjwh",
+  imageUrl: UPLOADTHING_IMAGES.ABOUT_IMAGE,
   imageAlt: "CIIMED Banner",
   imgW: 2080,
   imgH: 1365,

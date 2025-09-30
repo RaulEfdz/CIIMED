@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Footer, Header } from "./config/inital";
-import RobotipaAW from "@/app/tools/robotipa-agente-web/RobotipaAW";
 
 export const metadata: Metadata = {
   title: "CIIMED",
@@ -19,7 +18,6 @@ export default function RootLayout({
       <body>
         <Header />
         {children}
-       <RobotipaAW/>
         <Footer />
       </body>
     </html>
