@@ -76,3 +76,38 @@ enum MessageRole {
   ASSISTANT
   SYSTEM
 }
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  name        String
+  position    String
+  department  String
+  email       String?
+  phone       String?
+  bio         String?
+  avatar      String?
+  linkedIn    String?
+  website     String?
+  specialties String[] // Array de especialidades
+  status      TeamMemberStatus @default(ACTIVE)
+  type        TeamMemberType
+  order       Int      @default(0) // Para ordenar en la página
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("team_members")
+  @@index([type, order])
+  @@index([status])
+}
+
+enum TeamMemberStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum TeamMemberType {
+  DIRECTOR     // Directivos
+  RESEARCHER   // Investigadores  
+  COLLABORATOR // Colaboradores
+  STAFF        // Personal administrativo
+}

@@ -19,7 +19,7 @@ const About = () => {
         title="Historia"
         subtitle="Centro de Investigación e Innovación Médica"
         description="Somos un centro líder en investigación médica, comprometido con la excelencia científica y la innovación en salud pública."
-        imageUrl="jcue8atmcjfv9aea2sw0"
+        imageUrl="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80"
         imageAlt="CIIMED Instalaciones"
         imgW={800}
         imgH={600}

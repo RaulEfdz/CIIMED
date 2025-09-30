@@ -33,10 +33,8 @@ export default function HeroImagen({
       <Image 
         src={imageUrl}
         alt={title}
-        layout="fill"
-        objectFit="cover"
-        objectPosition="center"
-        className="absolute inset-0"
+        fill
+        className="absolute inset-0 object-cover object-center"
         priority
       />
       {/* Image - end */}

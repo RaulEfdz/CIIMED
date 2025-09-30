@@ -80,7 +80,8 @@ export default function AdminPanel() {
             </div>
 
             {/* Content Management */}
-            <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 cursor-pointer opacity-50">
+            <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 cursor-pointer"
+                 onClick={() => router.push('/admin/content')}>
               <div className="flex items-center mb-4">
                 <FileText className="h-8 w-8 text-purple-600" />
                 <h3 className="text-xl font-semibold text-gray-900 ml-3">Gestión de Contenido</h3>
@@ -88,8 +89,11 @@ export default function AdminPanel() {
               <p className="text-gray-600 mb-4">
                 Administra el contenido del sitio web, noticias y publicaciones.
               </p>
-              <div className="flex items-center text-gray-400 font-medium">
-                <span>Próximamente</span>
+              <div className="flex items-center text-purple-600 font-medium">
+                <span>Acceder</span>
+                <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </div>
             </div>
 
