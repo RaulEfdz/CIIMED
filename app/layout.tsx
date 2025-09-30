@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Footer, Header } from "./config/inital";
+import ChatWidget from "@/components/ChatWidget";
+import ConditionalLayout from "./components/ConditionalLayout";
 
 export const metadata: Metadata = {
   title: "CIIMED",
@@ -16,9 +18,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body>
-        <Header />
-        {children}
-        <Footer />
+        <ConditionalLayout>
+          {children}
+        </ConditionalLayout>
       </body>
     </html>
   );

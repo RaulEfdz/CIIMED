@@ -2,7 +2,32 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["images.unsplash.com", "yt3.googleusercontent.com", "cdn.pixabay.com", "unsplash.com", "utfs.io", "2dprahnec4.ufs.sh"], // Added UploadThing domain, removed Cloudinary
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'yt3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.pixabay.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'utfs.io',
+      },
+      {
+        protocol: 'https',
+        hostname: '2dprahnec4.ufs.sh',
+      },
+    ],
   },
 };
 
