@@ -41,14 +41,14 @@ export default function ContentManagement() {
       status: 'Disponible'
     },
     {
-      id: 'about',
+      id: 'institutional',
       title: 'Información Institucional',
       description: 'Datos sobre el centro, misión, visión y valores',
       icon: Building2,
       color: 'bg-emerald-600',
       hoverColor: 'hover:bg-emerald-700',
       items: 0,
-      status: 'Próximamente'
+      status: 'Disponible'
     },
     {
       id: 'news',
@@ -215,7 +215,7 @@ export default function ContentManagement() {
                     </div>
 
                     <div className="flex space-x-2">
-                      {section.id === 'team' ? (
+                      {(section.id === 'team' || section.id === 'institutional') ? (
                         <>
                           <button
                             onClick={() => router.push(`/admin/content/${section.id}`)}

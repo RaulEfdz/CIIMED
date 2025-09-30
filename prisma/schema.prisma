@@ -111,3 +111,57 @@ enum TeamMemberType {
   COLLABORATOR // Colaboradores
   STAFF        // Personal administrativo
 }
+
+model InstitutionalInfo {
+  id           String   @id @default(cuid())
+  name         String   // Nombre de la institución
+  description  String   // Descripción breve
+  subtitle     String?  // Subtítulo para hero section
+  mission      String   // Misión
+  vision       String   // Visión
+  values       String[] // Array de valores
+  history      String?  // Historia (opcional)
+  address      String?  // Dirección
+  phone        String?  // Teléfono
+  email        String?  // Email
+  website      String?  // Sitio web
+  foundingYear Int      // Año de fundación
+  logo         String?  // URL del logo
+  image        String?  // URL de imagen principal
+  
+  // Redes sociales
+  instagramUrl String?  // URL de Instagram
+  linkedinUrl  String?  // URL de LinkedIn
+  youtubeUrl   String?  // URL de YouTube
+  spotifyUrl   String?  // URL de Spotify
+  
+  // Características principales
+  feature1Title String? // Título característica 1 (ej: "Investigación Avanzada")
+  feature1Text  String? // Descripción característica 1
+  feature2Title String? // Título característica 2 (ej: "Colaboraciones Estratégicas")
+  feature2Text  String? // Descripción característica 2
+  
+  // Configuración visual
+  overlayColor String?  // Color del overlay para hero section
+  
+  // Configuración del Footer
+  footerBrand        String?  // Nombre de la marca en el footer
+  footerEmail        String?  // Email de contacto en footer
+  footerPhone        String?  // Teléfono de contacto en footer
+  footerAddress      String?  // Dirección en footer
+  footerCopyright    String?  // Texto de copyright personalizado
+  footerBackgroundColor String? // Color de fondo del footer
+  footerTextColor    String?  // Color del texto del footer
+  footerAccentColor  String?  // Color de acento para links/iconos
+  
+  status       InstitutionalStatus @default(ACTIVE)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@map("institutional_info")
+}
+
+enum InstitutionalStatus {
+  ACTIVE
+  INACTIVE
+}

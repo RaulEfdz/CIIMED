@@ -1,27 +1,31 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'tu-secreto-jwt-super-seguro'
-
-const f = createUploadthing();
+const f = createUploadthing({
+  errorFormatter: (err) => {
+    console.log("UploadThing Error:", err.message, err.code);
+    return { message: err.message };
+  },
+});
 
 // FileRouter para la aplicación
 export const ourFileRouter = {
   // Uploader para imágenes de equipo
   teamAvatars: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
     .middleware(async () => {
-      // Simplificar - quitar autenticación por ahora para debug
+      console.log("UploadThing middleware - starting");
+      
+      // For now, allow all uploads for debugging
+      // TODO: Add proper authentication later
       return { userId: "admin" };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // Este código se ejecuta en el servidor después de que la subida se complete
       console.log("Upload complete for userId:", metadata.userId);
-      console.log("file url", file.url);
+      console.log("file details:", { name: file.name, size: file.size, key: file.key });
 
-      // Aquí podrías guardar la información del archivo en tu base de datos
-      return { uploadedBy: metadata.userId, url: file.url };
+      // Return metadata about the uploaded file
+      return { uploadedBy: metadata.userId, fileKey: file.key };
     }),
 } satisfies FileRouter;
 
