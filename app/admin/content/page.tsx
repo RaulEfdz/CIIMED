@@ -71,14 +71,14 @@ export default function ContentManagement() {
       status: 'Disponible'
     },
     {
-      id: 'research',
+      id: 'research-projects',
       title: 'Proyectos de Investigación',
       description: 'Gestionar líneas de investigación y proyectos activos',
       icon: FileText,
       color: 'bg-orange-600',
       hoverColor: 'hover:bg-orange-700',
-      items: 0,
-      status: 'Próximamente'
+      items: 5,
+      status: 'Disponible'
     },
     {
       id: 'media',
@@ -91,14 +91,14 @@ export default function ContentManagement() {
       status: 'Próximamente'
     },
     {
-      id: 'settings',
+      id: 'site-config',
       title: 'Configuración del Sitio',
       description: 'Configuraciones generales y metadatos',
       icon: Settings,
       color: 'bg-gray-600',
       hoverColor: 'hover:bg-gray-700',
-      items: 0,
-      status: 'Próximamente'
+      items: 1,
+      status: 'Disponible'
     }
   ]
 
@@ -167,7 +167,7 @@ export default function ContentManagement() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Proyectos</p>
-                  <p className="text-2xl font-bold text-gray-900">0</p>
+                  <p className="text-2xl font-bold text-gray-900">5</p>
                 </div>
               </div>
             </div>
@@ -225,7 +225,7 @@ export default function ContentManagement() {
                     </div>
 
                     <div className="flex space-x-2">
-                      {(section.id === 'team' || section.id === 'institutional' || section.id === 'news' || section.id === 'events') ? (
+                      {(section.id === 'team' || section.id === 'institutional' || section.id === 'news' || section.id === 'events' || section.id === 'research-projects' || section.id === 'site-config') ? (
                         <>
                           <button
                             onClick={() => router.push(`/admin/content/${section.id}`)}

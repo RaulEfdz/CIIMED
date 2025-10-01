@@ -17,9 +17,13 @@ const NewsContainer: React.FC<NewsContainerProps> = ({
   search, 
   useDynamicData = true 
 }) => {
-  // Hook para obtener datos dinámicos
+  // ALL HOOKS MUST BE CALLED AT THE TOP - NO CONDITIONAL HOOKS
   const { news: dynamicNews, isLoading, error } = useNews();
-  
+  const [visibleNews, setVisibleNews] = useState(6);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
   // Determinar qué datos usar
   const newsData = useMemo(() => {
     if (useDynamicData) {
@@ -27,65 +31,6 @@ const NewsContainer: React.FC<NewsContainerProps> = ({
     }
     return propNews || [];
   }, [useDynamicData, dynamicNews, propNews]);
-
-  // Si está cargando datos dinámicos, mostrar loading
-  if (useDynamicData && isLoading) {
-    return (
-      <div className="h-auto bg-transparent p-6 pb-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-16 text-center">
-            <span className="inline-block px-4 py-1 rounded-full text-sm bg-[#285C4D] text-white mb-4">
-              Informacion
-            </span>
-            <h1 className="text-4xl sm:text-5xl mb-4 font-gogh-extrabold">
-              Noticias y Actualizaciones
-            </h1>
-            <div className="w-24 h-1 bg-[#285C4D] mx-auto rounded-full"></div>
-          </div>
-          
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="ml-3 text-gray-600">Cargando noticias...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Si hay error cargando datos dinámicos, mostrar error
-  if (useDynamicData && error) {
-    return (
-      <div className="h-auto bg-transparent p-6 pb-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-16 text-center">
-            <span className="inline-block px-4 py-1 rounded-full text-sm bg-[#285C4D] text-white mb-4">
-              Informacion
-            </span>
-            <h1 className="text-4xl sm:text-5xl mb-4 font-gogh-extrabold">
-              Noticias y Actualizaciones
-            </h1>
-            <div className="w-24 h-1 bg-[#285C4D] mx-auto rounded-full"></div>
-          </div>
-          
-          <div className="text-center py-8">
-            <p className="text-red-600 mb-4">Error al cargar noticias: {error}</p>
-            <p className="text-gray-500">Mostrando contenido por defecto...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  const [visibleNews, setVisibleNews] = useState(6);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showScrollTop, setShowScrollTop] = useState(false);
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 300);
-    return () => clearTimeout(handler);
-  }, [searchTerm]);
 
   const filteredNews = useMemo(() => {
     if (!debouncedSearchTerm) return newsData;
@@ -117,9 +62,12 @@ const NewsContainer: React.FC<NewsContainerProps> = ({
     [filteredNews, visibleNews]
   );
 
-  const handleShowMore = () => {
-    setVisibleNews((prev) => prev + 6);
-  };
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
   const handleScroll = useCallback(() => {
     setShowScrollTop(window.scrollY > 300);
@@ -129,6 +77,39 @@ const NewsContainer: React.FC<NewsContainerProps> = ({
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
+
+  // Si está cargando datos dinámicos, mostrar loading
+  if (useDynamicData && isLoading) {
+    return (
+      <div className="h-auto bg-transparent p-6 pb-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-16 text-center">
+            <span className="inline-block px-4 py-1 rounded-full text-sm bg-[#285C4D] text-white mb-4">
+              Informacion
+            </span>
+            <h1 className="text-4xl sm:text-5xl mb-4 font-gogh-extrabold">
+              Noticias y Actualizaciones
+            </h1>
+            <div className="w-24 h-1 bg-[#285C4D] mx-auto rounded-full"></div>
+          </div>
+          
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p className="ml-3 text-gray-600">Cargando noticias...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Si hay error cargando datos dinámicos, no mostrar la sección
+  if (useDynamicData && error) {
+    return null; // No mostrar nada si hay error
+  }
+
+  const handleShowMore = () => {
+    setVisibleNews((prev) => prev + 6);
+  };
 
   return (
     <div className="h-auto bg-transparent p-6 pb-10">

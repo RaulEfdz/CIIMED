@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Calendar } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
@@ -31,17 +31,23 @@ const NewsCard: React.FC<NewsCardProps> = ({
   author,
   readTime
 }) => {
+  const [imageError, setImageError] = useState(false);
+  const showImage = imageUrl && !imageError;
+
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-200 dark:border-neutral-700 rounded-sm">
       {/* Imagen */}
-      <div className="aspect-video relative overflow-hidden border-b">
-        <Image
-          className="w-full h-full absolute inset-0 object-cover transform hover:scale-105 transition-transform duration-300"
-          alt={imageAlt}
-          src={imageUrl}
-          fill
-        />
-      </div>
+      {showImage && (
+        <div className="aspect-video relative overflow-hidden border-b">
+          <Image
+            className="w-full h-full absolute inset-0 object-cover transform hover:scale-105 transition-transform duration-300"
+            alt={imageAlt}
+            src={imageUrl}
+            fill
+            onError={() => setImageError(true)}
+          />
+        </div>
+      )}
 
       <CardContent className="p-6 bg-[#F2F2F2] dark:bg-neutral-900">
         {/* Información de Autor y Tiempo de Lectura */}

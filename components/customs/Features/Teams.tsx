@@ -2,8 +2,7 @@
 // components/customs/Features/Teams.tsx
 "use client"
 import Image from "next/image";
-import { db } from "@/app/data/db";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 // models/TeamModel.ts
 
@@ -46,8 +45,28 @@ const teamColors = {
   light: "#f2f2f2"
 };
 
+// Componente interno para manejar imágenes con error
+const TeamMemberImage: React.FC<{ imageUrl: string; name: string }> = ({ imageUrl, name }) => {
+  const [imageError, setImageError] = useState(false);
+  
+  if (!imageUrl || imageError) {
+    return null;
+  }
+  
+  return (
+    <Image
+      src={imageUrl}
+      alt={`Imagen de ${name}`}
+      width={80}
+      height={80}
+      className="rounded-full object-cover"
+      onError={() => setImageError(true)}
+    />
+  );
+};
+
 export default function Team() {
-  const [teamData, setTeamData] = useState<TeamMember[]>(db.team);
+  const [teamData, setTeamData] = useState<TeamMember[]>([]);
   const [categories] = useState<string[]>(["Directivos", "Investigadores", "Colaboradores"]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -67,18 +86,15 @@ export default function Team() {
           const convertedTeam = convertDBToTeamFormat(data.teamMembers);
           setTeamData(convertedTeam);
         } else {
-          // Fallback to static data if no members
-          setTeamData(db.team);
+          setTeamData([]);
         }
       } else {
-        // Fallback to static data
-        console.log('API error, using static team data as fallback');
-        setTeamData(db.team);
+        console.log('API error, no team data available');
+        setTeamData([]);
       }
     } catch (error) {
       console.error('Error fetching team data:', error);
-      // Fallback to static data
-      setTeamData(db.team);
+      setTeamData([]);
     } finally {
       setIsLoading(false);
     }
@@ -92,7 +108,7 @@ export default function Team() {
     return dbMembers.map(member => ({
       name: member?.name || 'Nombre no disponible',
       role: member?.position || 'Posición no disponible',
-      imageUrl: member?.avatar || `https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80`,
+      imageUrl: member?.avatar || '', // Solo usar imagen de Supabase, sin placeholder
       category: typeToCategory(member?.type || 'STAFF'),
       linkedinUrl: member?.linkedIn && member.linkedIn.trim() ? member.linkedIn : '#',
       personalWebsite: member?.website && member.website.trim() ? member.website : '#',
@@ -139,13 +155,7 @@ export default function Team() {
                   className="flex flex-col  dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-sm p-6 shadow-md "
                 >
                   <div className="flex items-center gap-4">
-                    <Image
-                      src={member.imageUrl}
-                      alt={`Imagen de ${member.name}`}
-                      width={80}
-                      height={80}
-                      className="rounded-full object-cover"
-                    />
+                    <TeamMemberImage imageUrl={member.imageUrl} name={member.name} />
                     <div>
                       <h3 className="font-medium" style={{ color: teamColors.dark }}>{member.name}</h3>
                       <p className="text-xs uppercase text-gray-500 dark:text-neutral-400">

@@ -3,48 +3,28 @@
 import { FooterContact } from "@/components/customs/Footer/FooterContact";
 import { ResponsiveHeader } from "@/components/customs/Headers/ResponsiveHeader";
 import { useInstitutionalInfo } from "@/hooks/useInstitutionalInfo";
+import { useSiteConfig, getNavLinks, getBranding } from "@/hooks/useSiteConfig";
 
 export const Header = () => {
+    const { siteConfig, isLoading } = useSiteConfig();
+    
+    // Obtener datos dinámicos con fallbacks
+    const navLinks = getNavLinks(siteConfig);
+    const branding = getBranding(siteConfig);
+
+    if (isLoading) {
+      return (
+        <div className="w-full h-16 bg-white shadow-sm flex items-center justify-center">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
+        </div>
+      );
+    }
+
     return (
       <ResponsiveHeader
-        logoUrl={"/logo.png"}
+        logoUrl={branding.primaryLogo}
         logoHref="/"
-        navLinks={[
-          {
-            label: "Inicio",
-            href: "/",
-          },
-          {
-            label: "Sobre Nosotros",
-            href: "/about",
-          },
-          {
-            label: "Áreas de Investigación",
-            href: "/research-areas",
-          },
-          {
-            label: "Formación y Capacitación",
-            href: "/training",
-          },
-          {
-            label: "Alianzas Estratégicas",
-            href: "/partnerships",
-          },
-          {
-            label: "Participa con Nosotros",
-            href: "/get-involved",
-          },
-          {
-            label:"Divulgación Cientifica",
-            href:"/scientificDissemination"
-          },
-          {
-            label: "Contacto",
-            href: "/contact",
-          },
-
-        ]}
-        
+        navLinks={navLinks}
       />
     );
   };

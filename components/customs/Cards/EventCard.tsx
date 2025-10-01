@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Calendar, Clock, MapPin } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
@@ -37,21 +37,34 @@ const EventCard: React.FC<EventCardProps> = ({
   speaker,
   category
 }) => {
+  const [imageError, setImageError] = useState(false);
+  const showImage = imageUrl && !imageError;
+
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-200 dark:border-neutral-700 rounded-sm">
-      <div className="relative h-48">
-        <Image
-          className="w-full h-full absolute inset-0 object-cover transform hover:scale-105 transition-transform duration-300"
-          alt={imageAlt}
-          src={imageUrl}
-          fill
-        />
-        {category && (
-          <span className="absolute top-2 right-2 bg-secondary text-white px-3 py-1 rounded-sm text-sm" style={{ backgroundColor: teamColors.secondary }}>
+      {showImage && (
+        <div className="relative h-48">
+          <Image
+            className="w-full h-full absolute inset-0 object-cover transform hover:scale-105 transition-transform duration-300"
+            alt={imageAlt}
+            src={imageUrl}
+            fill
+            onError={() => setImageError(true)}
+          />
+          {category && (
+            <span className="absolute top-2 right-2 bg-secondary text-white px-3 py-1 rounded-sm text-sm" style={{ backgroundColor: teamColors.secondary }}>
+              {category}
+            </span>
+          )}
+        </div>
+      )}
+      {!showImage && category && (
+        <div className="relative h-12 flex items-center justify-end pr-4 pt-2">
+          <span className="bg-secondary text-white px-3 py-1 rounded-sm text-sm" style={{ backgroundColor: teamColors.secondary }}>
             {category}
           </span>
-        )}
-      </div>
+        </div>
+      )}
       
       <CardContent className="p-6 bg-[#F2F2F2] dark:bg-neutral-900">
         <h3 className="text-2xl font-bold mb-2 line-clamp-2" style={{ color: teamColors.primary }}>{title}</h3>

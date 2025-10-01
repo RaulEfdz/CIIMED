@@ -1,7 +1,6 @@
 "use client";
 
 import News from "@/components/customs/Features/News";
-import { db } from "../data/db";
 import EventsContainer from "@/components/customs/Features/Events";
 import Team from "@/components/customs/Features/Teams";
 import { motion } from "framer-motion";
@@ -27,7 +26,7 @@ export default function Home() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
-        <News news={db.news} />
+        <News />
       </motion.section>
       <motion.section
         className=""
@@ -35,7 +34,7 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <EventsContainer events={db.events} />
+        <EventsContainer />
       </motion.section>
     </div>
   );

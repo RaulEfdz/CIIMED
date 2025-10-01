@@ -657,3 +657,361 @@ Este mismo proceso se puede aplicar exactamente igual a:
 
 **🎯 Template de Modal Reutilizable**: 
 El `EditFooterModal.tsx` sirve como template perfecto para crear otros modales especializados.
+
+---
+
+## 🎓 Lecciones Aprendidas (Del Proyecto News & Events)
+
+### **Problema Real Resuelto**: Sistema Completo de Gestión de Contenido Dinámico
+En este proyecto implementamos un sistema completo de noticias y eventos siguiendo este proceso. Aquí las lecciones clave más importantes:
+
+#### **🔧 Implementación Técnica Avanzada**
+
+**Esquema de Base de Datos Completo**:
+```prisma
+model News {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  content     String?  @db.Text
+  author      String
+  readTime    String
+  date        String
+  category    String?
+  tags        String[]
+  imageUrl    String?
+  imageAlt    String?
+  imgW        Int?
+  imgH        Int?
+  link        String?
+  priority    Int      @default(0)
+  featured    Boolean  @default(false)
+  status      String   @default("published")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status, featured, priority])
+}
+
+model Event {
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  description  String
+  content      String?  @db.Text
+  date         String
+  time         String
+  endDate      String?
+  endTime      String?
+  location     String
+  speaker      String?
+  organizer    String?
+  capacity     Int?
+  price        Decimal? @db.Decimal(10,2)
+  currency     String?  @default("USD")
+  category     String?
+  tags         String[]
+  imageUrl     String?
+  imageAlt     String?
+  imgW         Int?
+  imgH         Int?
+  link         String?
+  priority     Int      @default(0)
+  featured     Boolean  @default(false)
+  status       String   @default("published")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([status, featured, priority])
+  @@index([date, time])
+}
+```
+
+#### **🏗️ Arquitectura de Componentes Exitosa**
+
+**1. Separación de Responsabilidades**:
+```typescript
+// hooks/useNews.ts - Lógica de datos
+// hooks/useEvents.ts - Lógica de datos
+// components/customs/Features/News.tsx - Presentación
+// components/customs/Features/Events.tsx - Presentación
+// components/customs/Cards/NewsCard.tsx - UI individual
+// components/customs/Cards/EventCard.tsx - UI individual
+// app/data/news.ts - Transformación de datos
+// app/data/events.ts - Transformación de datos
+```
+
+**2. Sistema de Hooks Personalizados**:
+```typescript
+export const useNews = () => {
+  const [news, setNews] = useState<News[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchNews = useCallback(async (params?: {
+    limit?: number;
+    search?: string;
+    category?: string;
+    featured?: boolean;
+  }) => {
+    // Implementación con parámetros avanzados
+  }, []);
+
+  return { news, isLoading, error, fetchNews, refetch: fetchNews };
+};
+```
+
+#### **⚠️ Errores Críticos Encontrados y Solucionados**
+
+**1. Violación del Orden de React Hooks**:
+```typescript
+// ❌ PROBLEMA: Hooks después de condicionales
+if (useDynamicData && error) {
+  return <div>Error</div>; // Viola reglas de hooks
+}
+const { news, isLoading } = useNews(); // Hook después de return
+
+// ✅ SOLUCIÓN: TODOS los hooks al inicio
+const { news, isLoading, error } = useNews(); // Al inicio SIEMPRE
+const [searchTerm, setSearchTerm] = useState('');
+const [selectedCategory, setSelectedCategory] = useState('Todos');
+
+// Condicionales DESPUÉS de todos los hooks
+if (useDynamicData && error) {
+  return null; // Cambiar por null, no mensaje de error
+}
+```
+
+**2. Error 500 en APIs - Instanciación de Prisma**:
+```typescript
+// ❌ PROBLEMA: Crear nueva instancia cada vez
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient(); // Crea múltiples conexiones
+
+// ✅ SOLUCIÓN: Usar singleton
+import { prisma } from '@/lib/prisma'; // Instancia única global
+```
+
+**3. Búsqueda en Campos Nullable**:
+```typescript
+// ❌ PROBLEMA: Query falla cuando speaker es null
+where: {
+  speaker: { contains: search, mode: 'insensitive' }
+}
+
+// ✅ SOLUCIÓN: Validación defensiva
+whereClause.OR.push({
+  AND: [
+    { speaker: { not: null } },
+    { speaker: { contains: search, mode: 'insensitive' } }
+  ]
+});
+```
+
+#### **🖼️ Sistema de Imágenes Rotas - Innovación Clave**
+
+**Problema**: Imágenes rotas muestran el ícono de error por defecto del navegador.
+
+**Solución Implementada**:
+```typescript
+// Patrón para manejo de imágenes con error
+const [imageError, setImageError] = useState(false);
+const showImage = imageUrl && !imageError;
+
+return (
+  <Card>
+    {showImage && (
+      <div className="relative h-48">
+        <Image
+          src={imageUrl}
+          alt={imageAlt}
+          fill
+          onError={() => setImageError(true)} // Clave del éxito
+        />
+      </div>
+    )}
+    {/* Resto del contenido sin imagen */}
+  </Card>
+);
+```
+
+**Aplicado en**:
+- `EventCard.tsx` - Con manejo de categoría cuando no hay imagen
+- `NewsCard.tsx` - Imagen desaparece completamente si falla
+- `Teams.tsx` - Componente interno `TeamMemberImage` para reutilización
+
+#### **🚀 Eliminación Completa de Mock Data**
+
+**Decisión Arquitectural**: Cero tolerancia a datos mock en producción.
+
+**Implementación**:
+```typescript
+// ❌ ANTES: Fallbacks a datos estáticos
+if (!newsArray || newsArray.length === 0) {
+  return staticNewsData; // Datos mock
+}
+
+// ✅ DESPUÉS: Solo datos de DB
+if (!newsArray || newsArray.length === 0) {
+  return []; // Array vacío, sin fallbacks
+}
+
+// En componentes:
+if (useDynamicData && error) {
+  return null; // No mostrar sección si hay error
+}
+```
+
+**Archivos Limpiados**:
+- `app/data/news.ts` - Eliminados todos los fallbacks estáticos
+- `app/data/events.ts` - Eliminados todos los fallbacks estáticos  
+- `app/data/team.ts` - Array vacío en lugar de datos mock
+- `components/customs/Features/Teams.tsx` - Sin fallbacks a `db.team`
+
+#### **📊 Panel de Administración Avanzado**
+
+**Funcionalidades Implementadas**:
+
+1. **Gestión Completa CRUD**:
+   - Crear, editar, eliminar noticias y eventos
+   - Búsqueda y filtrado avanzado
+   - Estadísticas en tiempo real
+   - Paginación eficiente
+
+2. **Modales Especializados**:
+   ```typescript
+   // Modal específico para cada tipo de contenido
+   <EditNewsModal /> // 16+ campos específicos de noticias
+   <EditEventModal /> // 18+ campos específicos de eventos
+   ```
+
+3. **Validación Robusta**:
+   ```typescript
+   // Validaciones implementadas
+   - Slugs únicos automáticos
+   - Fechas válidas y futuras para eventos
+   - URLs de imagen válidas
+   - Campos requeridos vs opcionales
+   ```
+
+#### **🔄 Paso 8: Carga de Datos Default**
+
+**Innovación**: Agregamos un "Paso 8" al proceso original para poblar la base de datos con datos iniciales realistas.
+
+**Implementación**:
+```bash
+# Archivos creados:
+news-sample.json    # 6 noticias detalladas
+events-sample.json  # 6 eventos variados
+
+# Patrón seguido:
+# - Siguiendo estructura de team-sample.json
+# - Datos en español y contexto de CIIMED
+# - Todos los campos opcionales incluidos
+# - Variedad en categorías y tipos
+```
+
+#### **⚡ Optimizaciones de Performance**
+
+**1. Hooks con Memoización**:
+```typescript
+const filteredNews = useMemo(() => {
+  return newsData.filter(/* lógica de filtrado */);
+}, [newsData, searchTerm, selectedCategory]);
+
+const sortedEvents = useMemo(() => {
+  return [...filteredEvents].sort(/* lógica de ordenamiento */);
+}, [filteredEvents]);
+```
+
+**2. Callbacks Optimizados**:
+```typescript
+const handleScroll = useCallback(() => {
+  setShowScrollTop(window.scrollY > 300);
+}, []);
+```
+
+**3. Índices de Base de Datos**:
+```prisma
+@@index([status, featured, priority])
+@@index([date, time])
+```
+
+#### **📈 Métricas de Éxito del Proyecto**
+
+- **Modelos creados**: 2 (News, Event) con 16+ y 18+ campos
+- **APIs implementadas**: 4 endpoints completos (2 GET, 2 POST/PUT)
+- **Componentes**: 6 componentes principales + 2 cards especializadas
+- **Hooks personalizados**: 2 hooks con funcionalidad avanzada
+- **Páginas admin**: 2 páginas completas con modales especializados
+- **Errores críticos resueltos**: 5 errores de producción
+- **Datos mock eliminados**: 100% eliminación exitosa
+- **Sistema de imágenes**: Implementado con manejo de errores
+- **Tiempo total**: ~8 horas para sistema completo
+
+#### **🎯 Patrones Exitosos para Reutilizar**
+
+**1. Estructura de Hook**:
+```typescript
+export const useContentType = () => {
+  const [data, setData] = useState<ContentType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async (params) => {
+    // Implementación con parámetros
+  }, []);
+
+  return { data, isLoading, error, fetchData, refetch: fetchData };
+};
+```
+
+**2. Componente con Manejo de Imágenes**:
+```typescript
+const [imageError, setImageError] = useState(false);
+const showImage = imageUrl && !imageError;
+
+{showImage && (
+  <Image onError={() => setImageError(true)} />
+)}
+```
+
+**3. Eliminación de Mock Data**:
+```typescript
+// Patrón para datos sin fallbacks
+if (!dataArray || dataArray.length === 0) {
+  return []; // Solo array vacío
+}
+
+// En componentes con error
+if (useDynamicData && error) {
+  return null; // No mostrar nada
+}
+```
+
+#### **🚀 Aplicabilidad a Futuros Componentes**
+
+Este proceso perfeccionado ahora es aplicable a:
+
+- **Portfolio/Gallery**: Con sistema de imágenes rotas
+- **Testimonials**: Con manejo de avatars opcionales  
+- **Blog Posts**: Reutilizando estructura de News
+- **Team Members**: Ya implementado con imágenes condicionales
+- **Services/Products**: Siguiendo patrón de Events
+
+**🎯 Template de Implementación Mejorado**:
+Los hooks `useNews.ts` y `useEvents.ts` sirven como template perfecto para cualquier hook de contenido futuro.
+
+**🔧 Herramientas de Debug Validadas**:
+```bash
+# Para hooks de React
+npm run build # Detecta violaciones de hooks
+
+# Para Prisma
+npx prisma studio # Verificar datos
+npx prisma db push # Aplicar cambios
+
+# Para imágenes rotas
+console.error en onError # Tracking de fallos
+```

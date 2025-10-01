@@ -240,3 +240,140 @@ model Event {
   @@index([category])
   @@index([slug])
 }
+
+model SiteConfig {
+  id          String   @id @default(cuid())
+  
+  // Metadatos básicos del sitio
+  siteName         String?  @default("CIIMED") // Nombre del sitio
+  siteDescription  String?  @default("Centro de Investigación e Innovación en Medicina") // Descripción general
+  siteKeywords     String[] @default(["medicina", "investigación", "salud", "ciencia"]) // Keywords SEO
+  siteUrl          String?  @default("https://ciimed.pa") // URL principal
+  
+  // SEO y metadatos específicos
+  metaTitle        String?  @default("CIIMED - Centro de Investigación e Innovación en Medicina") // Title para <head>
+  metaDescription  String?  @default("Ubicado en la Ciudad de la Salud, este centro es un referente en investigación y desarrollo en el ámbito de la salud en Panamá.") // Meta description
+  ogImage          String?  // Imagen para Open Graph
+  ogDescription    String?  // Descripción para redes sociales
+  
+  // Información de contacto global
+  globalEmail      String?  @default("info@ciimed.pa") // Email principal
+  globalPhone      String?  @default("+507 123-4567") // Teléfono principal  
+  globalAddress    String?  @default("Ciudad de la Salud, Panamá") // Dirección principal
+  emergencyContact String?  // Contacto de emergencia
+  
+  // Branding y logos
+  primaryLogo      String?  @default("/logo.png") // Logo principal
+  secondaryLogo    String?  @default("/logo_blanco.png") // Logo alternativo
+  favicon          String?  @default("/favicon.ico") // Favicon
+  
+  // Colores del tema
+  primaryColor     String?  @default("#285C4D") // Color primario
+  secondaryColor   String?  @default("#F4633A") // Color secundario
+  accentColor      String?  @default("#212322") // Color de acento
+  lightColor       String?  @default("#f2f2f2") // Color claro
+  
+  // Redes sociales
+  facebookUrl      String?  // URL de Facebook
+  twitterUrl       String?  // URL de Twitter/X
+  linkedinUrl      String?  // URL de LinkedIn
+  instagramUrl     String?  // URL de Instagram
+  youtubeUrl       String?  // URL de YouTube
+  
+  // Navegación principal (JSON array)
+  mainNavLinks     Json?    @default("[{\"label\":\"Inicio\",\"href\":\"/\"},{\"label\":\"Sobre Nosotros\",\"href\":\"/about\"},{\"label\":\"Áreas de Investigación\",\"href\":\"/research-areas\"},{\"label\":\"Formación y Capacitación\",\"href\":\"/training\"},{\"label\":\"Alianzas Estratégicas\",\"href\":\"/partnerships\"},{\"label\":\"Participa con Nosotros\",\"href\":\"/get-involved\"},{\"label\":\"Divulgación Científica\",\"href\":\"/scientificDissemination\"},{\"label\":\"Contacto\",\"href\":\"/contact\"}]") // Links de navegación
+  
+  // Mensajes del sistema
+  notFoundTitle    String?  @default("Página no encontrada") // Título 404
+  notFoundMessage  String?  @default("No se pudo encontrar el recurso solicitado.") // Mensaje 404
+  notFoundButton   String?  @default("Volver a la página principal") // Botón 404
+  
+  // Configuración técnica
+  isActive         Boolean  @default(true) // Solo una configuración activa
+  version          String?  @default("1.0.0") // Versión de configuración
+  
+  // Fechas de control
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  @@map("site_config")
+  @@index([isActive])
+}
+
+model ResearchProject {
+  id          String   @id @default(cuid())
+  
+  // Información básica
+  title       String   // Título del proyecto
+  slug        String   @unique // URL amigable
+  description String   // Descripción corta
+  abstract    String?  @db.Text // Resumen ejecutivo detallado
+  objectives  String[] // Objetivos específicos del proyecto
+  
+  // Clasificación y organización
+  researchLine     String?  // Línea de investigación principal
+  category         String?  // Categoría general (Clínica, Básica, Epidemiológica, etc.)
+  area             String?  // Área específica (Cardiología, Oncología, etc.)
+  status           String   @default("planning") // planning, active, paused, completed, cancelled
+  priority         Int      @default(0) // 0-10 prioridad del proyecto
+  tags             String[] // Etiquetas para búsqueda y categorización
+  
+  // Información temporal
+  startDate        String?  // Fecha de inicio (formato: "2025-01-15")
+  endDate          String?  // Fecha de finalización estimada
+  actualEndDate    String?  // Fecha real de finalización
+  estimatedDuration String? // Duración estimada en texto (ej: "18 meses")
+  currentProgress   Int     @default(0) // Progreso actual 0-100%
+  
+  // Recursos y financiamiento
+  principalInvestigator String?  // Investigador principal
+  coInvestigators      String[] // Co-investigadores
+  budget               Decimal? @db.Decimal(12,2) // Presupuesto total
+  fundingSource        String?  // Fuente de financiamiento
+  currency             String?  @default("USD") // Moneda del presupuesto
+  currentFunding       Decimal? @db.Decimal(12,2) // Financiamiento actual obtenido
+  
+  // Documentación y multimedia
+  imageUrl        String?  // Imagen principal del proyecto
+  imageAlt        String?  // Texto alternativo de la imagen
+  imgW            Int?     // Ancho de imagen
+  imgH            Int?     // Alto de imagen
+  documentsUrls   String[] // URLs de documentos relacionados
+  publicationsUrls String[] // URLs de publicaciones resultantes
+  presentationsUrls String[] // URLs de presentaciones
+  
+  // Resultados e impacto
+  expectedResults  String?  @db.Text // Resultados esperados
+  currentResults   String?  @db.Text // Resultados actuales obtenidos
+  impactMeasures   String[] // Métricas de impacto
+  publications     Int?     @default(0) // Número de publicaciones generadas
+  citations        Int?     @default(0) // Citas recibidas
+  
+  // Colaboraciones y participación
+  institutionalPartners String[] // Socios institucionales
+  internationalPartners String[] // Socios internacionales
+  studentParticipants   Int?     @default(0) // Estudiantes participantes
+  
+  // Configuración y metadatos
+  featured        Boolean  @default(false) // Si es proyecto destacado
+  published       Boolean  @default(true)  // Si está publicado públicamente
+  allowPublicView Boolean  @default(true)  // Permitir vista pública
+  link            String?  // Enlace a página específica del proyecto
+  
+  // Información técnica
+  methodology     String?  @db.Text // Metodología del proyecto
+  ethicsApproval  String?  // Aprobación ética (número/referencia)
+  equipment       String[] // Equipos necesarios/utilizados
+  software        String[] // Software utilizado
+  
+  // Fechas de control
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("research_projects")
+  @@index([status, priority])
+  @@index([published, featured])
+  @@index([researchLine, category])
+  @@index([slug])
+  @@index([startDate, endDate])
+}

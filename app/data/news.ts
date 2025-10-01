@@ -4,49 +4,15 @@ import { News as NewsType } from "@/hooks/useNews";
 
 // Función para convertir datos de la DB al formato del componente NewsCard
 export const generateNewsCardData = (newsArray: NewsType[]): NewsCardProps[] => {
+  // Solo retornar datos de la base de datos - NO HAY FALLBACKS
   if (!newsArray || newsArray.length === 0) {
-    // Datos por defecto si no hay noticias en la DB
-    return [
-      {
-        title: "Noticia 1",
-        description: "Descripción breve de la noticia 1.",
-        imageUrl: UPLOADTHING_IMAGES.NEWS_IMAGE,
-        imageAlt: "Imagen de noticia 1",
-        imgW: 800,
-        imgH: 800,
-        link: "#",
-        author: "Autor",
-        readTime: "5 min",
-      },
-      {
-        title: "Noticia 2",
-        description: "Descripción breve de la noticia 2.",
-        imageUrl: UPLOADTHING_IMAGES.NEWS_IMAGE,
-        imageAlt: "Imagen de noticia 2",
-        imgW: 800,
-        imgH: 800,
-        link: "#",
-        author: "Autor",
-        readTime: "5 min",
-      },
-      {
-        title: "Noticia 2",
-        description: "Descripción breve de la noticia 2.",
-        imageUrl: UPLOADTHING_IMAGES.NEWS_IMAGE,
-        imageAlt: "Imagen de noticia 2",
-        imgW: 800,
-        imgH: 800,
-        link: "#",
-        author: "Autor",
-        readTime: "5 min",
-      },
-    ];
+    return [];
   }
 
   return newsArray.map((news) => ({
     title: news.title,
     description: news.description,
-    imageUrl: news.imageUrl || UPLOADTHING_IMAGES.NEWS_IMAGE,
+    imageUrl: news.imageUrl || '', // Solo imagen de Supabase, sin placeholder
     imageAlt: news.imageAlt || news.title,
     imgW: news.imgW || 800,
     imgH: news.imgH || 800,
@@ -56,39 +22,4 @@ export const generateNewsCardData = (newsArray: NewsType[]): NewsCardProps[] => 
   }));
 };
 
-// Datos estáticos como fallback (mantener compatibilidad)
-export const News: NewsCardProps[] = [
-  {
-    title: "Noticia 1",
-    description: "Descripción breve de la noticia 1.",
-    imageUrl: UPLOADTHING_IMAGES.NEWS_IMAGE,
-    imageAlt: "Imagen de noticia 1",
-    imgW: 800,
-    imgH: 800,
-    link: "#",
-    author: "Autor",
-    readTime: "5 min",
-  },
-  {
-    title: "Noticia 2",
-    description: "Descripción breve de la noticia 2.",
-    imageUrl: UPLOADTHING_IMAGES.NEWS_IMAGE,
-    imageAlt: "Imagen de noticia 2",
-    imgW: 800,
-    imgH: 800,
-    link: "#",
-    author: "Autor",
-    readTime: "5 min",
-  },
-  {
-    title: "Noticia 2",
-    description: "Descripción breve de la noticia 2.",
-    imageUrl: UPLOADTHING_IMAGES.NEWS_IMAGE,
-    imageAlt: "Imagen de noticia 2",
-    imgW: 800,
-    imgH: 800,
-    link: "#",
-    author: "Autor",
-    readTime: "5 min",
-  },
-];
+// Ya no hay datos estáticos - todo viene de la base de datos

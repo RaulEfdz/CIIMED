@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@/lib/generated/prisma';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 // GET - Obtener todos los eventos
 export async function GET(request: NextRequest) {
@@ -38,9 +36,18 @@ export async function GET(request: NextRequest) {
       whereClause.OR = [
         { title: { contains: search, mode: 'insensitive' } },
         { description: { contains: search, mode: 'insensitive' } },
-        { location: { contains: search, mode: 'insensitive' } },
-        { speaker: { contains: search, mode: 'insensitive' } }
+        { location: { contains: search, mode: 'insensitive' } }
       ];
+      
+      // Only add speaker search if speaker field exists
+      if (search) {
+        whereClause.OR.push({
+          AND: [
+            { speaker: { not: null } },
+            { speaker: { contains: search, mode: 'insensitive' } }
+          ]
+        });
+      }
     }
 
     const events = await prisma.event.findMany({

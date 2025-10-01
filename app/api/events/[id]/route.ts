@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@/lib/generated/prisma';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 // GET - Obtener un evento específico
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const event = await prisma.event.findUnique({
-      where: { id: params.id }
+      where: { id }
     });
 
     if (!event) {
@@ -33,8 +32,9 @@ export async function GET(
 // PUT - Actualizar un evento específico
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const {
       title,
@@ -64,7 +64,7 @@ export async function PUT(
 
     // Verificar que el evento existe
     const existingEvent = await prisma.event.findUnique({
-      where: { id: params.id }
+      where: { id }
     });
 
     if (!existingEvent) {
@@ -102,7 +102,7 @@ export async function PUT(
     if (registrationEnd !== undefined) updateData.registrationEnd = registrationEnd ? new Date(registrationEnd) : null;
 
     const updatedEvent = await prisma.event.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData
     });
 
@@ -132,12 +132,13 @@ export async function PUT(
 // DELETE - Eliminar un evento específico
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     // Verificar que el evento existe
     const existingEvent = await prisma.event.findUnique({
-      where: { id: params.id }
+      where: { id }
     });
 
     if (!existingEvent) {
@@ -148,7 +149,7 @@ export async function DELETE(
     }
 
     await prisma.event.delete({
-      where: { id: params.id }
+      where: { id }
     });
 
     return NextResponse.json({ 

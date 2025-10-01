@@ -1,0 +1,65 @@
+{
+  "siteName": "CIIMED",
+  "siteDescription": "Centro de Investigación e Innovación en Medicina ubicado en la Ciudad de la Salud. Líder en investigación médica, formación académica y desarrollo científico en Panamá.",
+  "siteKeywords": ["medicina", "investigación", "salud", "ciencia", "panamá", "ciudad de la salud", "innovación médica", "formación académica", "desarrollo científico"],
+  "siteUrl": "https://ciimed.pa",
+  "metaTitle": "CIIMED - Centro de Investigación e Innovación en Medicina",
+  "metaDescription": "Ubicado en la Ciudad de la Salud, CIIMED es un centro de referencia en investigación y desarrollo en el ámbito de la salud en Panamá. Ofrecemos formación académica, investigación médica y divulgación científica.",
+  "ogImage": "/logo.png",
+  "ogDescription": "Centro líder en investigación médica e innovación en salud ubicado en Panamá. Formación académica, investigación científica y desarrollo tecnológico en medicina.",
+  "globalEmail": "info@ciimed.pa",
+  "globalPhone": "+507 123-4567",
+  "globalAddress": "Ciudad de la Salud, Ancón, Panamá",
+  "emergencyContact": "+507 911-0000",
+  "primaryLogo": "/logo.png",
+  "secondaryLogo": "/logo_blanco.png",
+  "favicon": "/favicon.ico",
+  "primaryColor": "#285C4D",
+  "secondaryColor": "#F4633A", 
+  "accentColor": "#212322",
+  "lightColor": "#f2f2f2",
+  "facebookUrl": "https://facebook.com/ciimed.panama",
+  "twitterUrl": "https://twitter.com/ciimed_panama",
+  "linkedinUrl": "https://linkedin.com/company/ciimed-panama",
+  "instagramUrl": "https://instagram.com/ciimed.panama",
+  "youtubeUrl": "https://youtube.com/@CIIMEDPanama",
+  "mainNavLinks": [
+    {
+      "label": "Inicio",
+      "href": "/"
+    },
+    {
+      "label": "Sobre Nosotros", 
+      "href": "/about"
+    },
+    {
+      "label": "Áreas de Investigación",
+      "href": "/research-areas"
+    },
+    {
+      "label": "Formación y Capacitación",
+      "href": "/training"
+    },
+    {
+      "label": "Alianzas Estratégicas",
+      "href": "/partnerships"
+    },
+    {
+      "label": "Participa con Nosotros",
+      "href": "/get-involved"
+    },
+    {
+      "label": "Divulgación Científica",
+      "href": "/scientificDissemination"
+    },
+    {
+      "label": "Contacto",
+      "href": "/contact"
+    }
+  ],
+  "notFoundTitle": "Página no encontrada",
+  "notFoundMessage": "Lo sentimos, no pudimos encontrar la página que estás buscando. Puede que haya sido movida, eliminada o que la URL sea incorrecta.",
+  "notFoundButton": "Volver a la página principal",
+  "isActive": true,
+  "version": "1.0.0"
+}
