@@ -43,7 +43,7 @@ export const useInstitutionalInfo = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchInstitutionalInfo = async () => {
+  const fetchInstitutionalInfo = async (retryCount = 0) => {
     try {
       setIsLoading(true)
       setError(null)
@@ -51,6 +51,12 @@ export const useInstitutionalInfo = () => {
       const response = await fetch('/api/institutional')
       
       if (!response.ok) {
+        // Si es un error 500 y es el primer intento, reintenta una vez más
+        if (response.status === 500 && retryCount === 0) {
+          console.warn('Institutional API returned 500, retrying once...');
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Esperar 1 segundo
+          return fetchInstitutionalInfo(1);
+        }
         throw new Error(`Failed to fetch institutional info: ${response.status}`)
       }
       

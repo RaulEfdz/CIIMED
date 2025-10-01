@@ -66,7 +66,7 @@ export const useSiteConfig = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchSiteConfig = useCallback(async () => {
+  const fetchSiteConfig = useCallback(async (retryCount = 0) => {
     try {
       setIsLoading(true);
       setError(null);
@@ -80,6 +80,12 @@ export const useSiteConfig = () => {
       });
 
       if (!response.ok) {
+        // Si es un error 500 y es el primer intento, reintenta una vez más
+        if (response.status === 500 && retryCount === 0) {
+          console.warn('API returned 500, retrying once...');
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Esperar 1 segundo
+          return fetchSiteConfig(1);
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 

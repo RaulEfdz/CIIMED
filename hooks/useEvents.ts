@@ -52,7 +52,7 @@ export function useEvents(options: UseEventsOptions = {}): UseEventsReturn {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchEvents = async () => {
+  const fetchEvents = async (retryCount = 0) => {
     try {
       setIsLoading(true)
       setError(null)
@@ -69,6 +69,12 @@ export function useEvents(options: UseEventsOptions = {}): UseEventsReturn {
       const response = await fetch(`/api/events?${params.toString()}`)
       
       if (!response.ok) {
+        // Si es un error 500 y es el primer intento, reintenta una vez más
+        if (response.status === 500 && retryCount === 0) {
+          console.warn('Events API returned 500, retrying once...');
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Esperar 1 segundo
+          return fetchEvents(1);
+        }
         throw new Error(`Error ${response.status}: ${response.statusText}`)
       }
 

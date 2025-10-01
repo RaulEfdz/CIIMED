@@ -25,32 +25,37 @@ function createPrismaClient() {
   return client
 }
 
-// Function to get a fresh connection when needed
+// Function to get a stable connection with retry logic
 export async function getPrismaClient() {
-  globalForPrisma.connectionAttempts++
-  console.log(`🔄 Creating fresh Prisma connection (attempt ${globalForPrisma.connectionAttempts})`)
-  
-  // Always disconnect existing client to avoid prepared statement conflicts
-  if (globalForPrisma.prisma) {
-    try {
-      await globalForPrisma.prisma.$disconnect()
-    } catch (e) {
-      // Ignore disconnect errors
-    }
-    globalForPrisma.prisma = undefined
-  }
-  
-  // Always create a fresh client to avoid prepared statement caching
-  const newClient = createPrismaClient()
-  globalForPrisma.prisma = newClient
-  
   try {
-    // Test the connection
-    await newClient.$queryRaw`SELECT 1`
-    console.log(`✅ Fresh Prisma connection successful`)
+    // If we have a global client, test it first
+    if (globalForPrisma.prisma) {
+      try {
+        await globalForPrisma.prisma.$queryRaw`SELECT 1`
+        return globalForPrisma.prisma
+      } catch (error) {
+        console.log(`🔄 Existing connection failed, creating new one:`, error)
+        // Disconnect the failed client
+        try {
+          await globalForPrisma.prisma.$disconnect()
+        } catch (e) {
+          // Ignore disconnect errors
+        }
+        globalForPrisma.prisma = undefined
+      }
+    }
+    
+    // Create new client if none exists or previous failed
+    globalForPrisma.connectionAttempts++
+    console.log(`🔄 Creating new Prisma connection (attempt ${globalForPrisma.connectionAttempts})`)
+    
+    const newClient = createPrismaClient()
+    await newClient.$queryRaw`SELECT 1` // Test the new connection
+    globalForPrisma.prisma = newClient
+    console.log(`✅ New Prisma connection successful`)
     return newClient
   } catch (error) {
-    console.error(`❌ Fresh connection test failed:`, error)
+    console.error(`❌ Prisma connection failed:`, error)
     throw error
   }
 }
