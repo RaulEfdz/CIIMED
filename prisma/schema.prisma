@@ -165,3 +165,78 @@ enum InstitutionalStatus {
   ACTIVE
   INACTIVE
 }
+
+model News {
+  id          String   @id @default(cuid())
+  title       String   // Título de la noticia
+  description String   // Descripción breve/resumen
+  content     String?  // Contenido completo (opcional por ahora)
+  imageUrl    String?  // URL de la imagen principal
+  imageAlt    String?  // Texto alternativo de la imagen
+  imgW        Int?     // Ancho de imagen
+  imgH        Int?     // Alto de imagen
+  link        String?  // Enlace externo (si aplica)
+  author      String   // Autor de la noticia
+  readTime    String   // Tiempo de lectura estimado (ej: "5 min")
+  
+  // Metadatos y configuración
+  slug        String   @unique // URL amigable (ej: "nueva-investigacion-2024")
+  featured    Boolean  @default(false) // Si es noticia destacada
+  published   Boolean  @default(true)  // Si está publicada
+  tags        String[] // Etiquetas para categorización
+  
+  // SEO y metadatos
+  metaTitle       String? // Título para SEO
+  metaDescription String? // Descripción para SEO
+  
+  // Fechas
+  publishedAt DateTime @default(now()) // Fecha de publicación
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("news")
+  @@index([published, publishedAt])
+  @@index([featured])
+  @@index([slug])
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String   // Título del evento
+  description String   // Descripción del evento
+  content     String?  // Descripción detallada (opcional)
+  imageUrl    String?  // URL de la imagen del evento
+  imageAlt    String?  // Texto alternativo de la imagen
+  imgW        Int?     // Ancho de imagen
+  imgH        Int?     // Alto de imagen
+  link        String?  // Enlace a más información o registro
+  
+  // Información específica del evento
+  date        String   // Fecha del evento (formato: "2025-02-15")
+  time        String   // Hora del evento (formato: "14:00 - 17:00")
+  location    String   // Ubicación física o virtual
+  speaker     String?  // Ponente principal (opcional)
+  speakers    String[] // Lista de ponentes (si hay varios)
+  category    String?  // Categoría del evento (Workshop, Conferencia, etc.)
+  
+  // Configuración y metadatos
+  slug        String   @unique // URL amigable
+  featured    Boolean  @default(false) // Si es evento destacado
+  published   Boolean  @default(true)  // Si está publicado
+  capacity    Int?     // Capacidad máxima (opcional)
+  price       Float?   // Precio (0 para gratuito, null si no aplica)
+  currency    String   @default("USD") // Moneda
+  tags        String[] // Etiquetas para categorización
+  
+  // Fechas de control
+  eventDate   DateTime // Fecha real del evento para ordenamiento
+  registrationEnd DateTime? // Fecha límite de registro
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("events")
+  @@index([published, eventDate])
+  @@index([featured])
+  @@index([category])
+  @@index([slug])
+}

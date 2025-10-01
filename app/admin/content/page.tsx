@@ -58,7 +58,17 @@ export default function ContentManagement() {
       color: 'bg-purple-600',
       hoverColor: 'hover:bg-purple-700',
       items: 0,
-      status: 'Próximamente'
+      status: 'Disponible'
+    },
+    {
+      id: 'events',
+      title: 'Eventos y Actividades',
+      description: 'Workshops, conferencias y eventos del CIIMED',
+      icon: Calendar,
+      color: 'bg-indigo-600',
+      hoverColor: 'hover:bg-indigo-700',
+      items: 0,
+      status: 'Disponible'
     },
     {
       id: 'research',
@@ -215,7 +225,7 @@ export default function ContentManagement() {
                     </div>
 
                     <div className="flex space-x-2">
-                      {(section.id === 'team' || section.id === 'institutional') ? (
+                      {(section.id === 'team' || section.id === 'institutional' || section.id === 'news' || section.id === 'events') ? (
                         <>
                           <button
                             onClick={() => router.push(`/admin/content/${section.id}`)}

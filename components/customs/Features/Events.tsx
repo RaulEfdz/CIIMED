@@ -3,13 +3,66 @@ import React, { useState, useMemo } from 'react';
 import { Search, Filter } from 'lucide-react';
 import EventCard, { EventCardProps } from '../Cards/EventCard';
 import { TopScroll } from '../TopScroll';
+import { useEvents } from "@/hooks/useEvents";
+import { generateEventCardData } from "@/app/data/events";
 
 interface EventsContainerProps {
-  events: EventCardProps[];
-  search? : boolean
+  events?: EventCardProps[]; // Opcional ahora
+  search?: boolean;
+  useDynamicData?: boolean; // Nuevo: controla si usar datos dinámicos
 }
 
-const EventsContainer: React.FC<EventsContainerProps> = ({ events, search }) => {
+const EventsContainer: React.FC<EventsContainerProps> = ({ 
+  events: propEvents, 
+  search, 
+  useDynamicData = true 
+}) => {
+  // Hook para obtener datos dinámicos de eventos próximos
+  const { events: dynamicEvents, isLoading, error } = useEvents({ upcoming: true });
+  
+  // Determinar qué datos usar
+  const eventsData = useMemo(() => {
+    if (useDynamicData) {
+      return generateEventCardData(dynamicEvents);
+    }
+    return propEvents || [];
+  }, [useDynamicData, dynamicEvents, propEvents]);
+
+  // Si está cargando datos dinámicos, mostrar loading
+  if (useDynamicData && isLoading) {
+    return (
+      <div className="h-auto bg-transparent p-6 pb-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8 space-y-4">
+            <h2 className="text-3xl font-bold text-gray-900">Próximos Eventos</h2>
+          </div>
+          
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p className="ml-3 text-gray-600">Cargando eventos...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Si hay error cargando datos dinámicos, mostrar error
+  if (useDynamicData && error) {
+    return (
+      <div className="h-auto bg-transparent p-6 pb-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8 space-y-4">
+            <h2 className="text-3xl font-bold text-gray-900">Próximos Eventos</h2>
+          </div>
+          
+          <div className="text-center py-8">
+            <p className="text-red-600 mb-4">Error al cargar eventos: {error}</p>
+            <p className="text-gray-500">Mostrando contenido por defecto...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const [visibleEvents, setVisibleEvents] = useState(6);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
@@ -17,13 +70,13 @@ const EventsContainer: React.FC<EventsContainerProps> = ({ events, search }) => 
 
   // Obtener categorías únicas
   const categories = useMemo(() => {
-    const uniqueCategories = new Set(events.map(event => event.category).filter(Boolean));
+    const uniqueCategories = new Set(eventsData.map(event => event.category).filter(Boolean));
     return ['Todos', ...Array.from(uniqueCategories)];
-  }, [events]);
+  }, [eventsData]);
 
   // Filtrar eventos
   const filteredEvents = useMemo(() => {
-    return events.filter((event) => {
+    return eventsData.filter((event) => {
       const matchesSearch = 
         event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -32,7 +85,7 @@ const EventsContainer: React.FC<EventsContainerProps> = ({ events, search }) => 
         selectedCategory === 'Todos' || event.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [events, searchTerm, selectedCategory]);
+  }, [eventsData, searchTerm, selectedCategory]);
 
   // Ordenar eventos por fecha
   const sortedEvents = useMemo(() => {
