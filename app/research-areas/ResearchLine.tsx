@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { JSX } from "react";
-import { selectSingle } from "../api/tools/actions/selectSingle";
+import { selectSingleSafe } from "../api/tools/actions/selectSingleSafe";
 
 interface Feature {
   title: string;
@@ -46,10 +46,10 @@ export const ResearchLine = ({
   useEffect(() => {
     async function fetchData() {
       // Se obtiene el registro donde page === "Research Focus"
-      const record = await selectSingle<ResearchLineRecord>(
+      const record = await selectSingleSafe<ResearchLineRecord>(
         "cms",
         "page",
-        "Research Focus"
+        "ResearchLine"
       );
       if (record) {
         console.log(record);

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
+import SafeImage from "@/components/admin/SafeImage";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Feature } from "./data";
@@ -20,11 +20,13 @@ const AboutUsMissionVision: React.FC<AboutUsMissionVisionProps> = ({ features })
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Image Section - Made larger */}
             <div className="relative w-full h-[600px]  overflow-hidden rounded-sm">
-              <Image
+              <SafeImage
                 src={activeFeature.imageUrl}
                 alt={activeFeature.title}
-                fill
-                className="object-cover"
+                width={600}
+                height={600}
+                className="absolute inset-0 w-full h-full object-cover"
+                fallbackSrc="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80"
               />
             </div>
 

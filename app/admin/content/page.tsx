@@ -229,14 +229,7 @@ export default function ContentManagement() {
                         <>
                           <button
                             onClick={() => router.push(`/admin/content/${section.id}`)}
-                            className={`flex-1 ${section.color} ${section.hoverColor} text-white px-3 py-2 rounded-md text-sm flex items-center justify-center`}
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            Ver
-                          </button>
-                          <button
-                            onClick={() => router.push(`/admin/content/${section.id}`)}
-                            className={`flex-1 ${section.color} ${section.hoverColor} text-white px-3 py-2 rounded-md text-sm flex items-center justify-center`}
+                            className={`w-full ${section.color} ${section.hoverColor} text-white px-3 py-2 rounded-md text-sm flex items-center justify-center`}
                           >
                             <Edit className="h-4 w-4 mr-1" />
                             Gestionar
@@ -246,14 +239,7 @@ export default function ContentManagement() {
                         <>
                           <button
                             disabled
-                            className="flex-1 bg-gray-300 text-gray-500 px-3 py-2 rounded-md text-sm flex items-center justify-center cursor-not-allowed"
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            Ver
-                          </button>
-                          <button
-                            disabled
-                            className="flex-1 bg-gray-300 text-gray-500 px-3 py-2 rounded-md text-sm flex items-center justify-center cursor-not-allowed"
+                            className="w-full bg-gray-300 text-gray-500 px-3 py-2 rounded-md text-sm flex items-center justify-center cursor-not-allowed"
                           >
                             <Edit className="h-4 w-4 mr-1" />
                             Gestionar

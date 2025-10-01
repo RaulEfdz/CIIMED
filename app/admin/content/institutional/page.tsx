@@ -17,7 +17,8 @@ import {
   Lightbulb,
   Heart,
   Palette,
-  Copyright
+  Copyright,
+  TrendingUp
 } from 'lucide-react'
 
 import { InstitutionalInfo } from './components/types'
@@ -25,6 +26,9 @@ import EditInstitutionalModal from './components/EditInstitutionalModal'
 import EditFooterModal from './components/EditFooterModal'
 import AboutMultimediaPreview from './components/AboutMultimediaPreview'
 import EditImageModal from './components/EditImageModal'
+import EditAchievementsModal from './components/EditAchievementsModal'
+import DatabaseStatus from '@/components/admin/DatabaseStatus'
+import SafeImage from '@/components/admin/SafeImage'
 
 export default function InstitutionalManagement() {
   const router = useRouter()
@@ -32,6 +36,7 @@ export default function InstitutionalManagement() {
   const [isLoading, setIsLoading] = useState(true)
   const [showEditModal, setShowEditModal] = useState(false)
   const [showFooterModal, setShowFooterModal] = useState(false)
+  const [showAchievementsModal, setShowAchievementsModal] = useState(false)
   const [showImageModal, setShowImageModal] = useState<'logo' | 'heroImage' | 'image' | 'historyImage' | null>(null)
 
   useEffect(() => {
@@ -157,6 +162,9 @@ export default function InstitutionalManagement() {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Database Status */}
+          <DatabaseStatus />
+          
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -239,9 +247,11 @@ export default function InstitutionalManagement() {
                               Editar
                             </button>
                           </div>
-                          <img 
+                          <SafeImage 
                             src={institutionalInfo.logo} 
                             alt="Logo institucional"
+                            width={128}
+                            height={128}
                             className="w-32 h-32 object-contain border border-gray-200 rounded-lg"
                           />
                         </div>
@@ -334,9 +344,11 @@ export default function InstitutionalManagement() {
                       {institutionalInfo.image && (
                         <div>
                           <h4 className="text-sm font-medium text-gray-700 mb-2">Imagen Principal</h4>
-                          <img 
+                          <SafeImage 
                             src={institutionalInfo.image} 
                             alt="Imagen institucional"
+                            width={600}
+                            height={192}
                             className="w-full h-48 object-cover border border-gray-200 rounded-lg"
                           />
                         </div>
@@ -384,6 +396,52 @@ export default function InstitutionalManagement() {
                   info={institutionalInfo} 
                   onEditImage={(imageType) => setShowImageModal(imageType)}
                 />
+              </div>
+
+              {/* Achievements Statistics Card */}
+              <div className="bg-white shadow rounded-lg mt-8">
+                <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                  <h3 className="text-lg font-medium text-gray-900 flex items-center">
+                    <TrendingUp className="h-5 w-5 mr-2" />
+                    Estadísticas de Logros
+                  </h3>
+                  <button
+                    onClick={() => setShowAchievementsModal(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center text-sm"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Editar
+                  </button>
+                </div>
+                
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">
+                        {institutionalInfo?.achievementResearchValue || '150+'}
+                      </div>
+                      <div className="text-sm text-gray-600 mt-1">
+                        {institutionalInfo?.achievementResearchDesc || 'Proyectos de investigación completados'}
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">
+                        {institutionalInfo?.achievementPatientsValue || '10000+'}
+                      </div>
+                      <div className="text-sm text-gray-600 mt-1">
+                        {institutionalInfo?.achievementPatientsDesc || 'Personas beneficiadas'}
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">
+                        {institutionalInfo?.achievementPublicationsValue || '75+'}
+                      </div>
+                      <div className="text-sm text-gray-600 mt-1">
+                        {institutionalInfo?.achievementPublicationsDesc || 'Artículos científicos publicados'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Footer Configuration Card */}
@@ -567,6 +625,19 @@ export default function InstitutionalManagement() {
             onClose={() => setShowFooterModal(false)}
             onSuccess={() => {
               setShowFooterModal(false)
+              fetchInstitutionalInfo()
+            }}
+            setInstitutionalInfo={setInstitutionalInfo}
+          />
+        )}
+
+        {/* Achievements Modal */}
+        {showAchievementsModal && institutionalInfo && (
+          <EditAchievementsModal 
+            info={institutionalInfo}
+            onClose={() => setShowAchievementsModal(false)}
+            onSuccess={() => {
+              setShowAchievementsModal(false)
               fetchInstitutionalInfo()
             }}
             setInstitutionalInfo={setInstitutionalInfo}

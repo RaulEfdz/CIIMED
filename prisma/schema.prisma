@@ -156,6 +156,14 @@ model InstitutionalInfo {
   footerTextColor    String?  // Color del texto del footer
   footerAccentColor  String?  // Color de acento para links/iconos
   
+  // Estadísticas de logros
+  achievementResearchValue String?  // Valor para proyectos de investigación (ej: "150+")
+  achievementResearchDesc  String?  // Descripción de investigaciones
+  achievementPatientsValue String?  // Valor para pacientes beneficiados (ej: "10000+")
+  achievementPatientsDesc  String?  // Descripción de pacientes
+  achievementPublicationsValue String? // Valor para publicaciones (ej: "75+")
+  achievementPublicationsDesc  String? // Descripción de publicaciones
+  
   status       InstitutionalStatus @default(ACTIVE)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

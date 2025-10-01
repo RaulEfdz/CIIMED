@@ -3,88 +3,50 @@ import "./globals.css";
 import { Footer, Header } from "./config/inital";
 import ChatWidget from "@/components/ChatWidget";
 import ConditionalLayout from "./components/ConditionalLayout";
-import { prisma } from '@/lib/prisma';
+import { getSiteConfigSafe } from '@/lib/prisma-wrapper';
 
-// Función para generar metadatos dinámicos
+// Función para generar metadatos dinámicos (simplificada para evitar problemas de DB)
 export async function generateMetadata(): Promise<Metadata> {
-  try {
-    // Obtener configuración del sitio desde la BD
-    const siteConfig = await prisma.siteConfig.findFirst({
-      where: { isActive: true },
-      select: {
-        siteName: true,
-        metaTitle: true,
-        metaDescription: true,
-        siteKeywords: true,
-        ogImage: true,
-        ogDescription: true,
-        siteUrl: true,
-        favicon: true
-      }
-    });
+  // Usar metadatos estáticos mientras se resuelve la conectividad de DB
+  const title = "CIIMED";
+  const description = "Ubicado en la Ciudad de la Salud, este centro es un referente en investigación y desarrollo en el ámbito de la salud en Panamá.";
+  const siteUrl = "https://ciimed.pa";
 
-    // Fallbacks si no hay configuración
-    const title = siteConfig?.metaTitle || siteConfig?.siteName || "CIIMED";
-    const description = siteConfig?.metaDescription || "Ubicado en la Ciudad de la Salud, este centro es un referente en investigación y desarrollo en el ámbito de la salud en Panamá.";
-    const keywords = siteConfig?.siteKeywords || ["medicina", "investigación", "salud", "ciencia"];
-    const ogImage = siteConfig?.ogImage;
-    const ogDescription = siteConfig?.ogDescription || description;
-    const siteUrl = siteConfig?.siteUrl || "https://ciimed.pa";
-
-    return {
+  return {
+    title,
+    description,
+    keywords: "medicina, investigación, salud, ciencia, CIIMED, Panamá",
+    authors: [{ name: "CIIMED" }],
+    creator: "CIIMED",
+    publisher: "CIIMED",
+    openGraph: {
       title,
       description,
-      keywords: keywords.join(", "),
-      authors: [{ name: "CIIMED" }],
-      creator: "CIIMED",
-      publisher: "CIIMED",
-      openGraph: {
-        title,
-        description: ogDescription,
-        url: siteUrl,
-        siteName: title,
-        images: ogImage ? [
-          {
-            url: ogImage,
-            width: 1200,
-            height: 630,
-            alt: title,
-          }
-        ] : [],
-        locale: 'es_ES',
-        type: 'website',
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title,
-        description: ogDescription,
-        images: ogImage ? [ogImage] : [],
-      },
-      robots: {
+      url: siteUrl,
+      siteName: title,
+      locale: 'es_ES',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
         index: true,
         follow: true,
-        googleBot: {
-          index: true,
-          follow: true,
-          'max-video-preview': -1,
-          'max-image-preview': 'large',
-          'max-snippet': -1,
-        },
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
       },
-      icons: {
-        icon: siteConfig?.favicon || '/favicon.ico',
-      },
-    };
-  } catch (error) {
-    console.error('Error generating metadata:', error);
-    
-    // Fallback metadata en caso de error
-    return {
-      title: "CIIMED",
-      description: "Ubicado en la Ciudad de la Salud, este centro es un referente en investigación y desarrollo en el ámbito de la salud en Panamá.",
-      keywords: "medicina, investigación, salud, ciencia",
-    };
-  }
+    },
+    icons: {
+      icon: '/favicon.ico',
+    },
+  };
 }
 
 export default function RootLayout({

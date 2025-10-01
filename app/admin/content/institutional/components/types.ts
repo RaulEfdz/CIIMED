@@ -33,6 +33,12 @@ export interface InstitutionalInfo {
   footerBackgroundColor?: string
   footerTextColor?: string
   footerAccentColor?: string
+  achievementResearchValue?: string
+  achievementResearchDesc?: string
+  achievementPatientsValue?: string
+  achievementPatientsDesc?: string
+  achievementPublicationsValue?: string
+  achievementPublicationsDesc?: string
   status: 'ACTIVE' | 'INACTIVE'
   createdAt: string
   updatedAt: string

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { getNewsSafe } from '@/lib/prisma-wrapper';
 
 // GET - Obtener todas las noticias
 export async function GET(request: NextRequest) {
@@ -10,38 +10,22 @@ export async function GET(request: NextRequest) {
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
     const search = searchParams.get('search');
 
-    let whereClause: any = {};
-    
-    if (!includeUnpublished) {
-      whereClause.published = true;
-    }
-    
-    if (featured) {
-      whereClause.featured = true;
-    }
-    
-    if (search) {
-      whereClause.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
-        { author: { contains: search, mode: 'insensitive' } }
-      ];
-    }
-
-    const news = await prisma.news.findMany({
-      where: whereClause,
-      orderBy: [
-        { featured: 'desc' },
-        { publishedAt: 'desc' }
-      ],
-      take: limit
+    // Usar función segura que maneja el fallback
+    const { news, error, usingFallback } = await getNewsSafe({
+      includeUnpublished,
+      featured,
+      limit,
+      search
     });
+
+    // Agregar header para indicar si se están usando datos de respaldo
+    const headers = usingFallback ? { 'X-Using-Fallback': 'true' } : {}
 
     return NextResponse.json({ 
       success: true, 
       news,
       count: news.length 
-    });
+    }, { headers });
   } catch (error) {
     console.error('Error fetching news:', error);
     return NextResponse.json(

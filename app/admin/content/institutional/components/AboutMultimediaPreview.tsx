@@ -2,7 +2,7 @@
 
 import { InstitutionalInfo } from './types'
 import { Monitor, Image as ImageIcon, FileImage, Edit } from 'lucide-react'
-import Image from 'next/image'
+import SafeImage from '@/components/admin/SafeImage'
 
 interface AboutMultimediaPreviewProps {
   info: InstitutionalInfo
@@ -92,11 +92,13 @@ export default function AboutMultimediaPreview({ info, onEditImage }: AboutMulti
               <div className={`relative bg-gray-200 rounded-lg overflow-hidden ${
                 section.aspectRatio === '16:9' ? 'aspect-video' : 'aspect-[4/3]'
               }`}>
-                <Image
+                <SafeImage
                   src={section.imageUrl}
                   alt={`Vista previa de ${section.title}`}
-                  fill
-                  className="object-cover"
+                  width={400}
+                  height={300}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  fallbackSrc={defaultImage}
                 />
                 
                 {/* Overlay con estado */}

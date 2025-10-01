@@ -118,15 +118,39 @@ export default function TeamManagement() {
     }
   }
 
-  const filteredMembers = teamMembers.filter(member => {
-    const matchesSearch = member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         member.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         member.department.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesFilter = filterType === 'all' || member.type === filterType
-    
-    return matchesSearch && matchesFilter
-  })
+  // Función para ordenamiento inteligente por jerarquía
+  const getTypeOrder = (type: string) => {
+    switch (type) {
+      case 'director': return 1
+      case 'researcher': return 2
+      case 'staff': return 3
+      case 'admin': return 4
+      default: return 5
+    }
+  }
+
+  const filteredMembers = teamMembers
+    .filter(member => {
+      const matchesSearch = member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           member.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           member.department.toLowerCase().includes(searchTerm.toLowerCase())
+      
+      const matchesFilter = filterType === 'all' || member.type === filterType
+      
+      return matchesSearch && matchesFilter
+    })
+    .sort((a, b) => {
+      // Primero ordenar por tipo (jerarquía)
+      const typeOrderA = getTypeOrder(a.type)
+      const typeOrderB = getTypeOrder(b.type)
+      
+      if (typeOrderA !== typeOrderB) {
+        return typeOrderA - typeOrderB
+      }
+      
+      // Si son del mismo tipo, ordenar alfabéticamente por nombre
+      return a.name.localeCompare(b.name)
+    })
 
   const getTypeColor = (type: string) => {
     switch (type) {
@@ -281,6 +305,9 @@ export default function TeamManagement() {
               <h3 className="text-lg font-medium text-gray-900">
                 Miembros del Equipo ({filteredMembers.length})
               </h3>
+              <p className="text-sm text-gray-500 mt-1">
+                Ordenados por jerarquía organizacional y nombre
+              </p>
             </div>
             
             {isLoading ? (
@@ -293,8 +320,29 @@ export default function TeamManagement() {
                 {searchTerm ? 'No se encontraron miembros' : 'No hay miembros del equipo aún'}
               </div>
             ) : (
-              <div className="divide-y divide-gray-200">
-                {filteredMembers.map((member) => (
+              <div>
+                {/* Renderizar miembros agrupados por tipo */}
+                {['director', 'researcher', 'staff', 'admin'].map(currentType => {
+                  const membersOfType = filteredMembers.filter(member => member.type === currentType)
+                  
+                  if (membersOfType.length === 0) return null
+                  
+                  return (
+                    <div key={currentType}>
+                      {/* Separador de sección */}
+                      <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
+                        <h4 className="text-sm font-medium text-gray-700 uppercase tracking-wide">
+                          {currentType === 'director' && '👔 Directivos'}
+                          {currentType === 'researcher' && '🔬 Investigadores'}
+                          {currentType === 'staff' && '👥 Personal'}
+                          {currentType === 'admin' && '📋 Colaboradores'}
+                          <span className="text-gray-500 ml-2">({membersOfType.length})</span>
+                        </h4>
+                      </div>
+                      
+                      {/* Miembros de este tipo */}
+                      <div className="divide-y divide-gray-200">
+                        {membersOfType.map((member) => (
                   <div key={member.id} className="p-6 hover:bg-gray-50">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -404,9 +452,13 @@ export default function TeamManagement() {
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
+                        </div>
+                      </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>

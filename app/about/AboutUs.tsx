@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import AboutUsHero from "./AboutUsHero";
 import { themeColors } from "./data";
 import AboutUsMissionVision from "./AboutUsMissionVision";
 import { useInstitutionalInfo, getFeaturesFromInstitutional } from "@/hooks/useInstitutionalInfo";
@@ -35,7 +34,7 @@ const AboutUs: React.FC = () => {
 
   return (
     <div className="bg-gradient-to-b from-[#f2f2f2] via-white to-[#f2f2f2]" style={{ backgroundColor: themeColors.light }}>
-      <AboutUsHero />
+      {/* AboutUsHero removido para evitar duplicación con Hero principal */}
       <AboutUsMissionVision features={dynamicFeatures} />
     </div>
   );

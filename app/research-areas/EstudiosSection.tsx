@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import ResearchCard from "@/app/research-areas/ResearchCard";
 import { motion } from "framer-motion";
 import { ResearchItem } from "./ProyectosSection"; // Reutilizamos la misma interfaz
-import { selectSingle } from "../api/tools/actions/selectSingle";
+import { selectSingleSafe } from "../api/tools/actions/selectSingleSafe";
 
 interface ResearchSectionRecord {
   id: string;
@@ -28,7 +28,7 @@ const EstudiosSection = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const record = await selectSingle<ResearchSectionRecord>(
+      const record = await selectSingleSafe<ResearchSectionRecord>(
         "cms",
         "page",
         "Estudios"

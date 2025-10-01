@@ -111,6 +111,21 @@ export default function EditImageModal({
         
         setInstitutionalInfo(updatedInfo)
         onSuccess()
+      } else if (response.status === 503) {
+        // Error de base de datos no disponible - actualizar localmente
+        const error = await response.json()
+        console.warn('Database unavailable, updating locally:', error.error)
+        
+        // Actualizar estado local aunque la DB no esté disponible
+        const updatedInfo: InstitutionalInfo = {
+          ...info,
+          [imageType]: imageUrl,
+          updatedAt: new Date().toISOString()
+        }
+        
+        setInstitutionalInfo(updatedInfo)
+        alert('Base de datos no disponible. Los cambios se han aplicado temporalmente y se guardarán cuando se restablezca la conexión.')
+        onSuccess()
       } else {
         const error = await response.json()
         console.error('Error updating image:', error.error || 'Error desconocido')
@@ -144,6 +159,7 @@ export default function EditImageModal({
             label={config.title}
             description={`${config.description}. ${config.recommendations}`}
             className="w-full"
+            endpoint={config.endpoint}
           />
 
           <div className="flex justify-end space-x-3 pt-6 border-t">

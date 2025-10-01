@@ -2,7 +2,7 @@
 
 import React from "react";
 import { History } from "lucide-react";
-import Image from "next/image";
+import SafeImage from "@/components/admin/SafeImage";
 import { motion } from "framer-motion";
 
 interface HistoryHeroProps {
@@ -73,13 +73,13 @@ const HistoryHero: React.FC<HistoryHeroProps> = ({
           transition={{ duration: 0.8 }}
           className="rounded-sm overflow-hidden shadow-xl"
         >
-          <Image
+          <SafeImage
             className="w-full h-auto rounded-none"
             src={imageUrl}
             alt={imageAlt}
             width={imgW}
             height={imgH}
-            priority
+            fallbackSrc="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=675&q=80"
           />
         </motion.div>
       </div>

@@ -35,6 +35,12 @@ export interface InstitutionalInfo {
   footerBackgroundColor?: string
   footerTextColor?: string
   footerAccentColor?: string
+  achievementResearchValue?: string
+  achievementResearchDesc?: string
+  achievementPatientsValue?: string
+  achievementPatientsDesc?: string
+  achievementPublicationsValue?: string
+  achievementPublicationsDesc?: string
   status: 'ACTIVE' | 'INACTIVE'
   createdAt: string
   updatedAt: string
@@ -93,20 +99,20 @@ export const getAchievementsFromInstitutional = (info: InstitutionalInfo | null)
     {
       icon: 'FlaskConical',
       title: 'Investigaciones',
-      value: '150+', // Este valor podría venir de otra API en el futuro
-      description: 'Proyectos de investigación completados',
+      value: info.achievementResearchValue || '150+',
+      description: info.achievementResearchDesc || 'Proyectos de investigación completados',
     },
     {
       icon: 'Users',
       title: 'Pacientes',
-      value: '10000+', // Este valor podría venir de otra API en el futuro
-      description: 'Personas beneficiadas',
+      value: info.achievementPatientsValue || '10000+',
+      description: info.achievementPatientsDesc || 'Personas beneficiadas',
     },
     {
       icon: 'GraduationCap',
       title: 'Publicaciones',
-      value: '75+', // Este valor podría venir de otra API en el futuro
-      description: 'Artículos científicos publicados',
+      value: info.achievementPublicationsValue || '75+',
+      description: info.achievementPublicationsDesc || 'Artículos científicos publicados',
     },
   ]
 }
@@ -148,7 +154,7 @@ export const getHeroDataFromInstitutional = (info: InstitutionalInfo | null) => 
     imageUrl: info.heroImage || defaultHeroImage,
     primaryButton: { text: 'Comenzar ahora', link: '#', disabled: true },
     secondaryButton: { text: 'Ver tour', link: '#', disabled: true },
-    overlayColor: info.overlayColor || '#285C4D',
+    overlayColor: (info.overlayColor && info.overlayColor !== '#ffffff') ? info.overlayColor : '#285C4D',
     highlight: '/highlights/Nosotros.png',
   }
 }

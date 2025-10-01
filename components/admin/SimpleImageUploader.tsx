@@ -2,7 +2,9 @@
 
 import { useState, useRef } from 'react'
 import { Upload, X, Image as ImageIcon, Eye, Trash2 } from 'lucide-react'
-import Image from 'next/image'
+import SafeImage from './SafeImage'
+
+type UploadEndpoint = 'institutionalImages' | 'backgroundImages' | 'teamAvatars' | 'mediaGallery'
 
 interface SimpleImageUploaderProps {
   value?: string
@@ -10,6 +12,7 @@ interface SimpleImageUploaderProps {
   label?: string
   description?: string
   className?: string
+  endpoint?: UploadEndpoint
 }
 
 export default function SimpleImageUploader({
@@ -17,10 +20,12 @@ export default function SimpleImageUploader({
   onChange,
   label = 'Subir imagen',
   description = 'Selecciona una imagen para subir',
-  className = ''
+  className = '',
+  endpoint = 'institutionalImages'
 }: SimpleImageUploaderProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [showPreviewModal, setShowPreviewModal] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,40 +35,82 @@ export default function SimpleImageUploader({
     console.log('File selected:', file.name, file.type, file.size)
 
     setIsUploading(true)
+    setUploadError(null)
+    
     try {
-      // Create FormData
+      console.log(`Uploading file to ${endpoint} endpoint...`)
+
       const formData = new FormData()
       formData.append('files', file)
 
-      console.log('Uploading to institutionalImages endpoint...')
+      // Try UploadThing first, fallback to local upload
+      let response: Response
+      let useLocalUpload = false
 
-      // Upload using fetch
-      const response = await fetch('/api/uploadthing', {
-        method: 'POST',
-        body: formData,
-      })
+      try {
+        console.log('Trying UploadThing...')
+        response = await fetch(`/api/uploadthing?slug=${endpoint}`, {
+          method: 'POST',
+          body: formData,
+        })
 
-      console.log('Upload response status:', response.status)
+        if (!response.ok) {
+          console.log('UploadThing failed, trying local upload...')
+          useLocalUpload = true
+        }
+      } catch (uploadthingError) {
+        console.log('UploadThing error, using local upload:', uploadthingError)
+        useLocalUpload = true
+      }
+
+      if (useLocalUpload) {
+        console.log('Using local upload...')
+        response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        })
+      }
+
+      console.log('Upload response status:', response.status, response.statusText)
 
       if (!response.ok) {
         const errorText = await response.text()
         console.error('Upload failed:', errorText)
-        throw new Error(`Upload failed: ${response.status}`)
+        throw new Error(`Error ${response.status}: ${errorText || 'Error de conexión'}`)
       }
 
       const result = await response.json()
       console.log('Upload result:', result)
 
-      if (result && result.url) {
-        console.log('Setting image URL:', result.url)
-        onChange(result.url)
+      let uploadedUrl: string | null = null
+      
+      if (result) {
+        // Handle local upload response
+        if (result.url) {
+          uploadedUrl = result.url
+        }
+        // Handle UploadThing response formats
+        else if (Array.isArray(result) && result.length > 0) {
+          uploadedUrl = result[0].url || result[0].fileUrl
+        }
+        else if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+          uploadedUrl = result.data[0].url || result.data[0].fileUrl
+        }
+      }
+
+      if (uploadedUrl) {
+        console.log('Setting image URL:', uploadedUrl)
+        onChange(uploadedUrl)
+        setUploadError(null)
       } else {
-        throw new Error('No URL received from upload')
+        console.error('No URL found in result:', result)
+        throw new Error('No se recibió la URL de la imagen subida.')
       }
 
     } catch (error) {
       console.error('Error uploading file:', error)
-      alert('Error al subir la imagen: ' + (error as Error).message)
+      const errorMessage = (error as Error).message || 'Error desconocido al subir la imagen'
+      setUploadError(errorMessage)
     } finally {
       setIsUploading(false)
       // Reset file input
@@ -75,9 +122,11 @@ export default function SimpleImageUploader({
 
   const handleRemove = () => {
     onChange('')
+    setUploadError(null)
   }
 
   const handleButtonClick = () => {
+    setUploadError(null)
     fileInputRef.current?.click()
   }
 
@@ -116,11 +165,12 @@ export default function SimpleImageUploader({
           </div>
           
           <div className="relative w-full h-32 bg-gray-100 rounded-lg overflow-hidden">
-            <Image
+            <SafeImage
               src={value}
               alt="Vista previa"
-              fill
-              className="object-cover"
+              width={300}
+              height={128}
+              className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
           
@@ -130,36 +180,87 @@ export default function SimpleImageUploader({
         </div>
       )}
 
-      {/* Área de subida */}
-      <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6">
-        {isUploading ? (
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-sm text-gray-600">Subiendo imagen...</p>
+      {/* Error display */}
+      {uploadError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <X className="h-5 w-5 text-red-400" />
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                Error al subir la imagen
+              </h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>{uploadError}</p>
+              </div>
+              <div className="mt-3">
+                <button
+                  type="button"
+                  onClick={() => setUploadError(null)}
+                  className="bg-red-100 hover:bg-red-200 text-red-800 px-3 py-1 rounded-md text-xs font-medium"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className="text-center">
-            <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <p className="text-sm text-gray-600 mb-4">
-              Selecciona una imagen para subir
-            </p>
-            <button
-              type="button"
-              onClick={handleButtonClick}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
-            >
-              Seleccionar archivo
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileSelect}
-              className="hidden"
-            />
-          </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* Área de subida - Solo mostrar si no hay imagen o está subiendo */}
+      {(!value || isUploading) && (
+        <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6">
+          {isUploading ? (
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-sm text-gray-600">Subiendo imagen...</p>
+            </div>
+          ) : (
+            <div className="text-center">
+              <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <p className="text-sm text-gray-600 mb-4">
+                Selecciona una imagen para subir
+              </p>
+              <button
+                type="button"
+                onClick={handleButtonClick}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
+              >
+                Seleccionar archivo
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Botón de cambiar cuando ya hay imagen */}
+      {value && !isUploading && (
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={handleButtonClick}
+            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm flex items-center"
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            Cambiar imagen
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileSelect}
+            className="hidden"
+          />
+        </div>
+      )}
 
       {/* Modal de vista previa */}
       {showPreviewModal && value && (
@@ -176,7 +277,7 @@ export default function SimpleImageUploader({
             </div>
             <div className="p-4">
               <div className="relative max-w-full max-h-[70vh]">
-                <Image
+                <SafeImage
                   src={value}
                   alt="Vista previa completa"
                   width={800}

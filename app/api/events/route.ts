@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { getEventsSafe } from '@/lib/prisma-wrapper';
 
 // GET - Obtener todos los eventos
 export async function GET(request: NextRequest) {
@@ -12,58 +12,24 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category');
     const upcoming = searchParams.get('upcoming') === 'true';
 
-    let whereClause: any = {};
-    
-    if (!includeUnpublished) {
-      whereClause.published = true;
-    }
-    
-    if (featured) {
-      whereClause.featured = true;
-    }
-    
-    if (category && category !== 'Todos') {
-      whereClause.category = category;
-    }
-    
-    if (upcoming) {
-      whereClause.eventDate = {
-        gte: new Date()
-      };
-    }
-    
-    if (search) {
-      whereClause.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
-        { location: { contains: search, mode: 'insensitive' } }
-      ];
-      
-      // Only add speaker search if speaker field exists
-      if (search) {
-        whereClause.OR.push({
-          AND: [
-            { speaker: { not: null } },
-            { speaker: { contains: search, mode: 'insensitive' } }
-          ]
-        });
-      }
-    }
-
-    const events = await prisma.event.findMany({
-      where: whereClause,
-      orderBy: [
-        { featured: 'desc' },
-        { eventDate: 'asc' }
-      ],
-      take: limit
+    // Usar función segura que maneja el fallback
+    const { events, error, usingFallback } = await getEventsSafe({
+      includeUnpublished,
+      featured,
+      limit,
+      search,
+      category,
+      upcoming
     });
+
+    // Agregar header para indicar si se están usando datos de respaldo
+    const headers = usingFallback ? { 'X-Using-Fallback': 'true' } : {}
 
     return NextResponse.json({ 
       success: true, 
       events,
       count: events.length 
-    });
+    }, { headers });
   } catch (error) {
     console.error('Error fetching events:', error);
     return NextResponse.json(

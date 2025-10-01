@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import ResearchCard from "@/app/research-areas/ResearchCard";
 import { motion } from "framer-motion";
-import { selectSingle } from "../api/tools/actions/selectSingle";
+import { selectSingleSafe } from "../api/tools/actions/selectSingleSafe";
 
 // Se reutiliza la interfaz ResearchItem (puedes ajustar los campos según lo que necesite ResearchCard)
 export interface ResearchItem {
@@ -39,7 +39,7 @@ const ProyectosSection = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const record = await selectSingle<ResearchSectionRecord>(
+      const record = await selectSingleSafe<ResearchSectionRecord>(
         "cms",
         "page",
         "Proyectos"

@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import HeroImagen from "@/components/customs/Features/HeroImage";
-import { selectSingle } from "../api/tools/actions/selectSingle";
+import { selectSingleSafe } from "../api/tools/actions/selectSingleSafe";
 
 // Definición del tipo que representa el registro obtenido de Supabase
 interface HighlightRecord {
@@ -26,7 +26,7 @@ const HighlightHero = () => {
   useEffect(() => {
     async function fetchHighlight() {
       // Se utiliza la función selectSingle para obtener el registro con page === "Highlight"
-      const result = await selectSingle<HighlightRecord>("cms", "page", "Highlight");
+      const result = await selectSingleSafe<HighlightRecord>("cms", "page", "Highlight");
       setHighlight(result);
       setLoading(false);
     }

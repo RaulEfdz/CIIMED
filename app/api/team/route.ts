@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { verifyAdminToken } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { getTeamSafe } from '@/lib/prisma-wrapper'
 
 // GET - Obtener todos los miembros del equipo (público)
 export async function GET(req: NextRequest) {
@@ -10,24 +10,16 @@ export async function GET(req: NextRequest) {
     const type = searchParams.get('type')
     const includeInactive = searchParams.get('includeInactive') === 'true'
     
-    const where: any = {}
-    
-    // Filtrar por tipo si se especifica
-    if (type && type !== 'all') {
-      where.type = type.toUpperCase()
-    }
-    
-    // Solo mostrar activos por defecto, a menos que se solicite incluir inactivos
-    if (!includeInactive) {
-      where.status = 'ACTIVE'
-    }
-
-    const teamMembers = await prisma.teamMember.findMany({
-      where,
-      orderBy: { createdAt: 'asc' }
+    // Usar función segura que maneja el fallback
+    const { teamMembers, error, usingFallback } = await getTeamSafe({
+      type,
+      includeInactive
     })
 
-    return NextResponse.json({ teamMembers })
+    // Agregar header para indicar si se están usando datos de respaldo
+    const headers = usingFallback ? { 'X-Using-Fallback': 'true' } : {}
+
+    return NextResponse.json({ teamMembers }, { headers })
 
   } catch (error) {
     console.error('Get team members error:', error)

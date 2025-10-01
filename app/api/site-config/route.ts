@@ -1,29 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getSiteConfigSafe } from '@/lib/prisma-wrapper';
 
 // GET - Obtener configuración del sitio
 export async function GET() {
   try {
-    // Buscar la configuración activa
-    let siteConfig = await prisma.siteConfig.findFirst({
-      where: { isActive: true },
-      orderBy: { updatedAt: 'desc' }
-    });
+    const { siteConfig, error, usingFallback } = await getSiteConfigSafe();
 
-    // Si no existe configuración, crear una por defecto
-    if (!siteConfig) {
-      siteConfig = await prisma.siteConfig.create({
-        data: {
-          isActive: true,
-          // Los valores por defecto ya están en el schema
-        }
-      });
-    }
+    // Agregar header para indicar si se están usando datos de respaldo
+    const headers = usingFallback ? { 'X-Using-Fallback': 'true' } : {}
 
     return NextResponse.json({
       success: true,
-      siteConfig
-    });
+      siteConfig,
+      usingFallback
+    }, { headers });
 
   } catch (error) {
     console.error('Error fetching site config:', error);
