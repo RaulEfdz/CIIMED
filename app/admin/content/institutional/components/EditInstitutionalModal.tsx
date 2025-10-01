@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Building2, Upload } from 'lucide-react'
+import { Building2 } from 'lucide-react'
 import { InstitutionalInfo, EditModalProps } from './types'
 
 export default function EditInstitutionalModal({ 
@@ -23,8 +23,6 @@ export default function EditInstitutionalModal({
     email: info.email || '',
     website: info.website || '',
     foundingYear: info.foundingYear.toString(),
-    logo: '',
-    image: '',
     instagramUrl: info.instagramUrl || '',
     linkedinUrl: info.linkedinUrl || '',
     youtubeUrl: info.youtubeUrl || '',
@@ -36,60 +34,6 @@ export default function EditInstitutionalModal({
     overlayColor: info.overlayColor || '#ffffff'
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selectedLogoFile, setSelectedLogoFile] = useState<File | null>(null)
-  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null)
-  const [logoPreview, setLogoPreview] = useState<string | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
-
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setSelectedLogoFile(file)
-      const url = URL.createObjectURL(file)
-      setLogoPreview(url)
-    }
-  }
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setSelectedImageFile(file)
-      const url = URL.createObjectURL(file)
-      setImagePreview(url)
-    }
-  }
-
-  const uploadImage = async (file: File): Promise<string> => {
-    try {
-      const { uploadFiles } = await import('@/lib/useUpload')
-      
-      const result = await uploadFiles('teamAvatars', {
-        files: [file]
-      })
-      
-      console.log('Upload result:', result)
-      
-      if (result && result.length > 0) {
-        const uploadedFile = result[0]
-        console.log('File object:', uploadedFile)
-        
-        if (uploadedFile.key) {
-          const uploadThingUrl = `https://utfs.io/f/${uploadedFile.key}`
-          console.log('Constructed URL:', uploadThingUrl)
-          return uploadThingUrl
-        } else if (uploadedFile.url) {
-          return uploadedFile.url
-        } else {
-          throw new Error('No se recibió URL de la imagen subida')
-        }
-      } else {
-        throw new Error('No se recibió resultado de la subida')
-      }
-    } catch (error) {
-      console.error('Error uploading image:', error)
-      throw error
-    }
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -99,17 +43,7 @@ export default function EditInstitutionalModal({
 
     setIsSubmitting(true)
     try {
-      let logoUrl = formData.logo
-      let imageUrl = formData.image
-      
-      if (selectedLogoFile) {
-        logoUrl = await uploadImage(selectedLogoFile)
-      }
-      
-      if (selectedImageFile) {
-        imageUrl = await uploadImage(selectedImageFile)
-      }
-
+      // Mantener las imágenes existentes, no se modifican en este modal
       const response = await fetch('/api/institutional', {
         method: 'PUT',
         headers: {
@@ -128,8 +62,11 @@ export default function EditInstitutionalModal({
           email: formData.email,
           website: formData.website,
           foundingYear: parseInt(formData.foundingYear),
-          logo: logoUrl,
-          image: imageUrl,
+          // Mantener imágenes existentes
+          logo: info.logo,
+          image: info.image,
+          heroImage: info.heroImage,
+          historyImage: info.historyImage,
           instagramUrl: formData.instagramUrl,
           linkedinUrl: formData.linkedinUrl,
           youtubeUrl: formData.youtubeUrl,
@@ -184,66 +121,6 @@ export default function EditInstitutionalModal({
         <h2 className="text-xl font-bold mb-6">Editar Información Institucional</h2>
         
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Logo and Image Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Logo Institucional
-              </label>
-              <div className="flex items-center space-x-4">
-                <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
-                  {logoPreview ? (
-                    <img src={logoPreview} alt="Logo Preview" className="w-full h-full object-contain" />
-                  ) : info.logo ? (
-                    <img src={info.logo} alt="Logo actual" className="w-full h-full object-contain" />
-                  ) : (
-                    <Building2 className="w-8 h-8 text-gray-500" />
-                  )}
-                </div>
-                <div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoChange}
-                    className="mb-2"
-                  />
-                  <p className="text-xs text-gray-500">
-                    Formatos: JPG, PNG, SVG. Máximo 4MB.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Imagen Principal
-              </label>
-              <div className="flex items-center space-x-4">
-                <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden">
-                  {imagePreview ? (
-                    <img src={imagePreview} alt="Image Preview" className="w-full h-full object-cover" />
-                  ) : info.image ? (
-                    <img src={info.image} alt="Imagen actual" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-500">
-                      <Upload className="w-8 h-8" />
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="mb-2"
-                  />
-                  <p className="text-xs text-gray-500">
-                    Formatos: JPG, PNG. Máximo 4MB.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

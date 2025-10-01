@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getPrismaClient } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 export async function POST() {
   try {
     console.log('🔄 Resetting database connection...');
 
-    // Get fresh Prisma client
-    const prisma = await getPrismaClient();
+    // Use the prisma client
     
     // Test the connection with a simple query
     const testResult = await prisma.researchProject.count();

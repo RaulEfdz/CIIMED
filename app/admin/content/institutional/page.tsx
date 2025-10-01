@@ -23,6 +23,8 @@ import {
 import { InstitutionalInfo } from './components/types'
 import EditInstitutionalModal from './components/EditInstitutionalModal'
 import EditFooterModal from './components/EditFooterModal'
+import AboutMultimediaPreview from './components/AboutMultimediaPreview'
+import EditImageModal from './components/EditImageModal'
 
 export default function InstitutionalManagement() {
   const router = useRouter()
@@ -30,6 +32,7 @@ export default function InstitutionalManagement() {
   const [isLoading, setIsLoading] = useState(true)
   const [showEditModal, setShowEditModal] = useState(false)
   const [showFooterModal, setShowFooterModal] = useState(false)
+  const [showImageModal, setShowImageModal] = useState<'logo' | 'heroImage' | 'image' | 'historyImage' | null>(null)
 
   useEffect(() => {
     fetchInstitutionalInfo()
@@ -226,7 +229,16 @@ export default function InstitutionalManagement() {
                       {/* Logo */}
                       {institutionalInfo.logo && (
                         <div>
-                          <h4 className="text-sm font-medium text-gray-700 mb-2">Logo</h4>
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="text-sm font-medium text-gray-700">Logo</h4>
+                            <button
+                              onClick={() => setShowImageModal('logo')}
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs flex items-center"
+                            >
+                              <Edit className="h-3 w-3 mr-1" />
+                              Editar
+                            </button>
+                          </div>
                           <img 
                             src={institutionalInfo.logo} 
                             alt="Logo institucional"
@@ -364,6 +376,14 @@ export default function InstitutionalManagement() {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Multimedia Preview Card */}
+              <div className="mt-8">
+                <AboutMultimediaPreview 
+                  info={institutionalInfo} 
+                  onEditImage={(imageType) => setShowImageModal(imageType)}
+                />
               </div>
 
               {/* Footer Configuration Card */}
@@ -547,6 +567,20 @@ export default function InstitutionalManagement() {
             onClose={() => setShowFooterModal(false)}
             onSuccess={() => {
               setShowFooterModal(false)
+              fetchInstitutionalInfo()
+            }}
+            setInstitutionalInfo={setInstitutionalInfo}
+          />
+        )}
+
+        {/* Image Modal */}
+        {showImageModal && institutionalInfo && (
+          <EditImageModal 
+            info={institutionalInfo}
+            imageType={showImageModal}
+            onClose={() => setShowImageModal(null)}
+            onSuccess={() => {
+              setShowImageModal(null)
               fetchInstitutionalInfo()
             }}
             setInstitutionalInfo={setInstitutionalInfo}

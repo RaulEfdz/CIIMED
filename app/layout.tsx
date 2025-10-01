@@ -3,13 +3,12 @@ import "./globals.css";
 import { Footer, Header } from "./config/inital";
 import ChatWidget from "@/components/ChatWidget";
 import ConditionalLayout from "./components/ConditionalLayout";
-import { getPrismaClient } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 // Función para generar metadatos dinámicos
 export async function generateMetadata(): Promise<Metadata> {
   try {
     // Obtener configuración del sitio desde la BD
-    const prisma = await getPrismaClient();
     const siteConfig = await prisma.siteConfig.findFirst({
       where: { isActive: true },
       select: {

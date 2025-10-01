@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPrismaClient } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 // GET - Obtener proyectos de investigación con filtros avanzados
 export async function GET(req: NextRequest) {
@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Get fresh Prisma client
-    const prisma = await getPrismaClient();
+    // Using global prisma client
 
     // Ejecutar consultas
     const [projects, totalCount] = await Promise.all([
@@ -136,7 +136,7 @@ export async function GET(req: NextRequest) {
 // POST - Crear nuevo proyecto de investigación
 export async function POST(req: NextRequest) {
   try {
-    const prisma = await getPrismaClient();
+    // Using global prisma client
     const {
       title,
       slug,
@@ -289,7 +289,7 @@ export async function POST(req: NextRequest) {
 // PUT - Actualizar múltiples proyectos (operaciones en lote)
 export async function PUT(req: NextRequest) {
   try {
-    const prisma = await getPrismaClient();
+    // Using global prisma client
     const { action, projectIds, updates } = await req.json();
 
     if (!action || !projectIds || !Array.isArray(projectIds)) {
@@ -375,7 +375,7 @@ export async function PUT(req: NextRequest) {
 // DELETE - Eliminar múltiples proyectos
 export async function DELETE(req: NextRequest) {
   try {
-    const prisma = await getPrismaClient();
+    // Using global prisma client
     const { projectIds } = await req.json();
 
     if (!projectIds || !Array.isArray(projectIds)) {

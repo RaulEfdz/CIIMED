@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPrismaClient } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 // GET - Obtener un proyecto de investigación específico
 export async function GET(
@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const { id } = await params;
   try {
-    const prisma = await getPrismaClient();
+    // Using global prisma client
     const project = await prisma.researchProject.findUnique({
       where: { id }
     });
@@ -85,7 +85,7 @@ export async function PUT(
       software
     } = await request.json();
 
-    const prisma = await getPrismaClient();
+    // Using global prisma client
     
     // Verificar que el proyecto existe
     const existingProject = await prisma.researchProject.findUnique({
@@ -186,7 +186,7 @@ export async function DELETE(
 ) {
   const { id } = await params;
   try {
-    const prisma = await getPrismaClient();
+    // Using global prisma client
     
     // Verificar que el proyecto existe
     const existingProject = await prisma.researchProject.findUnique({

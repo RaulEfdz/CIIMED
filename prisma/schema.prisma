@@ -128,6 +128,8 @@ model InstitutionalInfo {
   foundingYear Int      // Año de fundación
   logo         String?  // URL del logo
   image        String?  // URL de imagen principal
+  heroImage    String?  // URL de imagen de fondo del hero
+  historyImage String?  // URL de imagen para sección de historia
   
   // Redes sociales
   instagramUrl String?  // URL de Instagram
@@ -376,4 +378,104 @@ model ResearchProject {
   @@index([researchLine, category])
   @@index([slug])
   @@index([startDate, endDate])
+}
+
+model MediaGallery {
+  id          String   @id @default(cuid())
+  
+  // Información básica
+  title       String   // Título del elemento multimedia
+  slug        String   @unique // URL amigable
+  description String   // Descripción del elemento
+  alt         String?  // Texto alternativo (importante para accesibilidad)
+  
+  // Tipo y categorización
+  type        MediaType // Tipo de medio: IMAGE, VIDEO, DOCUMENT, AUDIO
+  category    String?  // Categoría general (Investigación, Eventos, Institucional, etc.)
+  subcategory String?  // Subcategoría específica
+  tags        String[] // Etiquetas para búsqueda y filtrado
+  
+  // URLs y archivos
+  fileUrl     String   // URL principal del archivo
+  thumbnailUrl String? // URL de miniatura/preview
+  previewUrl   String? // URL de vista previa (para videos)
+  
+  // Metadatos del archivo
+  fileName    String?  // Nombre original del archivo
+  fileSize    Int?     // Tamaño en bytes
+  mimeType    String?  // Tipo MIME (image/jpeg, video/mp4, etc.)
+  duration    Int?     // Duración en segundos (para videos/audio)
+  
+  // Dimensiones (para imágenes y videos)
+  width       Int?     // Ancho en píxeles
+  height      Int?     // Alto en píxeles
+  aspectRatio String?  // Ratio de aspecto (16:9, 4:3, etc.)
+  
+  // Información de contexto
+  author      String?  // Autor o fotógrafo
+  source      String?  // Fuente original
+  copyright   String?  // Información de derechos de autor
+  license     String?  // Tipo de licencia (Creative Commons, etc.)
+  
+  // Ubicación y fecha
+  location    String?  // Ubicación donde se tomó/grabó
+  capturedAt  DateTime? // Fecha cuando se capturó el medio
+  eventDate   String?  // Fecha del evento relacionado (formato: "2025-01-15")
+  
+  // Configuración y estado
+  featured    Boolean  @default(false) // Si es elemento destacado
+  published   Boolean  @default(true)  // Si está publicado
+  allowDownload Boolean @default(false) // Permitir descarga directa
+  quality     MediaQuality @default(HIGH) // Calidad del archivo
+  
+  // Organización y ordenamiento
+  collection  String?  // Colección a la que pertenece
+  albumId     String?  // ID del álbum si forma parte de uno
+  order       Int      @default(0) // Orden dentro de la galería
+  priority    Int      @default(0) // Prioridad de mostrado (0-10)
+  
+  // Enlaces relacionados
+  relatedLink String?  // Enlace relacionado (noticia, evento, etc.)
+  externalUrl String?  // URL externa si aplica
+  
+  // SEO y metadatos
+  metaTitle       String? // Título para SEO
+  metaDescription String? // Descripción para SEO
+  keywords        String[] // Palabras clave específicas
+  
+  // Configuración de visualización
+  showInGallery   Boolean @default(true)  // Mostrar en galería principal
+  showInSlideshow Boolean @default(false) // Incluir en slideshow
+  allowComments   Boolean @default(false) // Permitir comentarios
+  
+  // Estadísticas
+  views       Int      @default(0) // Número de visualizaciones
+  downloads   Int      @default(0) // Número de descargas
+  
+  // Fechas de control
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("media_gallery")
+  @@index([type, published])
+  @@index([category, subcategory])
+  @@index([featured, priority])
+  @@index([collection, order])
+  @@index([tags])
+  @@index([capturedAt, eventDate])
+  @@index([slug])
+}
+
+enum MediaType {
+  IMAGE     // Imágenes (JPG, PNG, GIF, SVG, WebP)
+  VIDEO     // Videos (MP4, WebM, MOV, AVI)
+  DOCUMENT  // Documentos (PDF, DOC, PPT, XLS)
+  AUDIO     // Audio (MP3, WAV, OGG)
+}
+
+enum MediaQuality {
+  LOW       // Baja calidad/comprimido
+  MEDIUM    // Calidad media
+  HIGH      // Alta calidad
+  ORIGINAL  // Calidad original sin comprimir
 }

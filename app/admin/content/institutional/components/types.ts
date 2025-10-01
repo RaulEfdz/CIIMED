@@ -14,6 +14,8 @@ export interface InstitutionalInfo {
   foundingYear: number
   logo?: string
   image?: string
+  heroImage?: string
+  historyImage?: string
   instagramUrl?: string
   linkedinUrl?: string
   youtubeUrl?: string

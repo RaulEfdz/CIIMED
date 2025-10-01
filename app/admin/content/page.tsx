@@ -81,14 +81,14 @@ export default function ContentManagement() {
       status: 'Disponible'
     },
     {
-      id: 'media',
+      id: 'media-gallery',
       title: 'Galería de Medios',
       description: 'Imágenes, videos y recursos multimedia',
       icon: Image,
       color: 'bg-pink-600',
       hoverColor: 'hover:bg-pink-700',
       items: 0,
-      status: 'Próximamente'
+      status: 'Disponible'
     },
     {
       id: 'site-config',
@@ -225,7 +225,7 @@ export default function ContentManagement() {
                     </div>
 
                     <div className="flex space-x-2">
-                      {(section.id === 'team' || section.id === 'institutional' || section.id === 'news' || section.id === 'events' || section.id === 'research-projects' || section.id === 'site-config') ? (
+                      {(section.id === 'team' || section.id === 'institutional' || section.id === 'news' || section.id === 'events' || section.id === 'research-projects' || section.id === 'media-gallery' || section.id === 'site-config') ? (
                         <>
                           <button
                             onClick={() => router.push(`/admin/content/${section.id}`)}

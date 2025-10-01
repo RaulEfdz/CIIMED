@@ -81,7 +81,19 @@ export default function SiteConfigPage() {
             <Link className="h-8 w-8 text-green-600 mr-3" />
             <div>
               <p className="text-sm text-gray-600">Enlaces Nav</p>
-              <p className="text-lg font-semibold">{siteConfig?.mainNavLinks ? JSON.parse(siteConfig.mainNavLinks as string).length : 0}</p>
+              <p className="text-lg font-semibold">{siteConfig?.mainNavLinks ? (() => {
+                try {
+                  if (Array.isArray(siteConfig.mainNavLinks)) {
+                    return siteConfig.mainNavLinks.length;
+                  } else if (typeof siteConfig.mainNavLinks === 'string') {
+                    return JSON.parse(siteConfig.mainNavLinks).length;
+                  }
+                  return 0;
+                } catch (e) {
+                  console.warn('Error parsing mainNavLinks:', e);
+                  return 0;
+                }
+              })() : 0}</p>
             </div>
           </div>
         </div>
@@ -310,15 +322,27 @@ export default function SiteConfigPage() {
           </div>
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {siteConfig?.mainNavLinks && JSON.parse(siteConfig.mainNavLinks as string).map((link: any, index: number) => (
-                <div key={index} className="flex items-center p-3 border border-gray-200 rounded-md">
-                  <Link className="h-4 w-4 text-gray-400 mr-2" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{link.label}</p>
-                    <p className="text-xs text-gray-500">{link.href}</p>
-                  </div>
-                </div>
-              ))}
+              {siteConfig?.mainNavLinks && (() => {
+                try {
+                  const navLinks = Array.isArray(siteConfig.mainNavLinks) 
+                    ? siteConfig.mainNavLinks 
+                    : typeof siteConfig.mainNavLinks === 'string' 
+                      ? JSON.parse(siteConfig.mainNavLinks) 
+                      : [];
+                  return navLinks.map((link: any, index: number) => (
+                    <div key={index} className="flex items-center p-3 border border-gray-200 rounded-md">
+                      <Link className="h-4 w-4 text-gray-400 mr-2" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{link.label}</p>
+                        <p className="text-xs text-gray-500">{link.href}</p>
+                      </div>
+                    </div>
+                  ));
+                } catch (e) {
+                  console.warn('Error parsing mainNavLinks for display:', e);
+                  return <div className="text-red-500 p-3">Error cargando enlaces de navegación</div>;
+                }
+              })()}
             </div>
           </div>
         </div>
