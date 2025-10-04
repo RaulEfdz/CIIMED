@@ -29,6 +29,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Reduce noise in development logs
+  logging: {
+    fetches: {
+      fullUrl: false,
+    },
+  },
+  // Handle source maps better in development
+  productionBrowserSourceMaps: false,
 };
 
 export default nextConfig;

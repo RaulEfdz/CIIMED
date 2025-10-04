@@ -24,6 +24,7 @@ import { TeamMember } from './components/types'
 import AddMemberModal from './components/AddMemberModal'
 import EditMemberModal from './components/EditMemberModal'
 import ImportModal from './components/ImportModal'
+import { NavigationHelper, AdminBreadcrumb } from '../../../../components/admin/NavigationHelper'
 
 export default function TeamManagement() {
   const router = useRouter()
@@ -204,6 +205,17 @@ export default function TeamManagement() {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Breadcrumb */}
+          <AdminBreadcrumb 
+            items={[
+              { label: 'Gestión de Contenido', href: '/admin/content' },
+              { label: 'Equipo de Trabajo' }
+            ]} 
+          />
+
+          {/* Navigation Helper */}
+          <NavigationHelper currentSection="team" />
+
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div className="bg-white p-6 rounded-lg shadow">

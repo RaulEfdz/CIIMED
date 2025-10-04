@@ -21,7 +21,7 @@ const fallbackCMSData: Record<string, any> = {
           title: 'Análisis de Salud Pública',
           category: 'Salud Pública',
           description: 'Estudio epidemiológico sobre el impacto de factores ambientales en la salud comunitaria.',
-          mainImage: 'https://images.unsplash.com/photo-1576669801820-4cc8b8b7c11a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80'
+          mainImage: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80'
         },
         {
           title: 'Investigación en Biotecnología',
@@ -49,7 +49,7 @@ const fallbackCMSData: Record<string, any> = {
           title: 'Investigación Clínica',
           category: 'Clínica',
           description: 'Ensayos clínicos para el desarrollo de nuevos tratamientos médicos.',
-          mainImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80'
+          mainImage: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80'
         }
       ]
     }
@@ -78,7 +78,7 @@ const fallbackCMSData: Record<string, any> = {
       title: 'Áreas de Investigación',
       subtitle: 'Explorando nuevas fronteras en medicina e investigación científica',
       description: 'En CIIMED nos dedicamos a desarrollar investigación de vanguardia en diversas áreas de la medicina para mejorar la salud de nuestra comunidad.',
-      imageUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80',
       logoUrl: '/logo.png'
     }
   },

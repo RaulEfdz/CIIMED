@@ -21,9 +21,9 @@ export const fallbackInstitutionalInfo = {
   website: 'https://ciimed.pa',
   foundingYear: 2020,
   logo: '/logo.png',
-  image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80',
-  heroImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80',
-  historyImage: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=675&q=80',
+  image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80',
+  heroImage: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80',
+  historyImage: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=675&q=80',
   instagramUrl: 'https://instagram.com/ciimed',
   linkedinUrl: 'https://linkedin.com/company/ciimed',
   youtubeUrl: 'https://youtube.com/@ciimed',
@@ -54,14 +54,65 @@ export const fallbackInstitutionalInfo = {
 
 export const fallbackSiteConfig = {
   id: 'fallback-config-1',
+  
+  // Metadatos básicos del sitio
   siteName: 'CIIMED',
   siteDescription: 'Centro de Investigación e Innovación Médica - Panamá',
+  siteKeywords: ['medicina', 'investigación', 'salud', 'ciencia'],
   siteUrl: 'https://ciimed.pa',
-  logoUrl: '/highlights/Logo.png',
-  faviconUrl: '/favicon.ico',
+  
+  // SEO y metadatos específicos
+  metaTitle: 'CIIMED - Centro de Investigación e Innovación en Medicina',
+  metaDescription: 'Ubicado en la Ciudad de la Salud, este centro es un referente en investigación y desarrollo en el ámbito de la salud en Panamá.',
+  ogImage: '',
+  ogDescription: '',
+  
+  // Información de contacto global
+  globalEmail: 'info@ciimed.pa',
+  globalPhone: '+507 123-4567',
+  globalAddress: 'Ciudad de la Salud, Panamá',
+  emergencyContact: '',
+  
+  // Branding y logos
+  primaryLogo: '/highlights/Logo.png',
+  secondaryLogo: '/logo_blanco.png',
+  favicon: '/favicon.ico',
+  
+  // Colores del tema
   primaryColor: '#285C4D',
   secondaryColor: '#F4633A',
-  status: 'ACTIVE' as const,
+  accentColor: '#212322',
+  lightColor: '#f2f2f2',
+  
+  // Redes sociales
+  facebookUrl: '',
+  twitterUrl: '',
+  linkedinUrl: '',
+  instagramUrl: '',
+  youtubeUrl: '',
+  
+  // Navegación principal
+  mainNavLinks: [
+    { label: "Inicio", href: "/" },
+    { label: "Sobre Nosotros", href: "/about" },
+    { label: "Áreas de Investigación", href: "/research-areas" },
+    { label: "Formación y Capacitación", href: "/training" },
+    { label: "Alianzas Estratégicas", href: "/partnerships" },
+    { label: "Participa con Nosotros", href: "/get-involved" },
+    { label: "Divulgación Científica", href: "/scientificDissemination" },
+    { label: "Contacto", href: "/contact" }
+  ],
+  
+  // Mensajes del sistema
+  notFoundTitle: 'Página no encontrada',
+  notFoundMessage: 'No se pudo encontrar el recurso solicitado.',
+  notFoundButton: 'Volver a la página principal',
+  
+  // Configuración técnica
+  isActive: true,
+  version: '1.0.0',
+  
+  // Fechas de control
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString()
 }

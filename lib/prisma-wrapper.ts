@@ -152,6 +152,17 @@ export async function getSiteConfigSafe() {
     const config = await prisma.siteConfig.findFirst({
       orderBy: { createdAt: 'desc' }
     })
+    
+    // Si no hay configuración en la base de datos, usar fallback
+    if (!config) {
+      console.log('No site config found in database, using fallback data')
+      return { 
+        siteConfig: fallbackSiteConfig, 
+        error: null, 
+        usingFallback: true 
+      }
+    }
+    
     return { siteConfig: config, error: null, usingFallback: false }
   } catch (error) {
     console.warn('Database connection failed, using fallback site config:', error)

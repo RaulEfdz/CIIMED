@@ -14,8 +14,11 @@ import {
   Plus,
   Eye,
   Edit,
-  Calendar
+  Calendar,
+  Tag,
+  ExternalLink
 } from 'lucide-react'
+import { adminSectionsConfig, getPublicSectionsForAdmin } from '../../../config/sections-mapping'
 
 export default function ContentManagement() {
   const router = useRouter()
@@ -29,78 +32,24 @@ export default function ContentManagement() {
     }
   }
 
-  const contentSections = [
-    {
-      id: 'team',
-      title: 'Equipo de Trabajo',
-      description: 'Gestionar staff, investigadores y personal del CIIMED',
-      icon: Users,
-      color: 'bg-blue-600',
-      hoverColor: 'hover:bg-blue-700',
-      items: 3,
-      status: 'Disponible'
-    },
-    {
-      id: 'institutional',
-      title: 'Información Institucional',
-      description: 'Datos sobre el centro, misión, visión y valores',
-      icon: Building2,
-      color: 'bg-emerald-600',
-      hoverColor: 'hover:bg-emerald-700',
-      items: 0,
-      status: 'Disponible'
-    },
-    {
-      id: 'news',
-      title: 'Noticias y Publicaciones',
-      description: 'Artículos, noticias y comunicados del CIIMED',
-      icon: Newspaper,
-      color: 'bg-purple-600',
-      hoverColor: 'hover:bg-purple-700',
-      items: 0,
-      status: 'Disponible'
-    },
-    {
-      id: 'events',
-      title: 'Eventos y Actividades',
-      description: 'Workshops, conferencias y eventos del CIIMED',
-      icon: Calendar,
-      color: 'bg-indigo-600',
-      hoverColor: 'hover:bg-indigo-700',
-      items: 0,
-      status: 'Disponible'
-    },
-    {
-      id: 'research-projects',
-      title: 'Proyectos de Investigación',
-      description: 'Gestionar líneas de investigación y proyectos activos',
-      icon: FileText,
-      color: 'bg-orange-600',
-      hoverColor: 'hover:bg-orange-700',
-      items: 5,
-      status: 'Disponible'
-    },
-    {
-      id: 'media-gallery',
-      title: 'Galería de Medios',
-      description: 'Imágenes, videos y recursos multimedia',
-      icon: Image,
-      color: 'bg-pink-600',
-      hoverColor: 'hover:bg-pink-700',
-      items: 0,
-      status: 'Disponible'
-    },
-    {
-      id: 'site-config',
-      title: 'Configuración del Sitio',
-      description: 'Configuraciones generales y metadatos',
-      icon: Settings,
-      color: 'bg-gray-600',
-      hoverColor: 'hover:bg-gray-700',
-      items: 1,
-      status: 'Disponible'
-    }
-  ]
+  // Mapear iconos de string a componentes
+  const iconMap: Record<string, React.ComponentType<any>> = {
+    Users,
+    Building2,
+    Newspaper,
+    Calendar,
+    FileText,
+    Image,
+    Settings
+  }
+
+  // Usar configuración del mapeo con datos dinámicos
+  const contentSections = adminSectionsConfig.map(section => ({
+    ...section,
+    icon: iconMap[section.icon],
+    items: section.id === 'team' ? 3 : section.id === 'research-projects' ? 5 : section.id === 'site-config' ? 1 : 0,
+    status: 'Disponible'
+  }))
 
   return (
     <ProtectedRoute>
@@ -189,6 +138,8 @@ export default function ContentManagement() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {contentSections.map((section) => {
               const IconComponent = section.icon
+              const publicSections = getPublicSectionsForAdmin(section.id)
+              
               return (
                 <div
                   key={section.id}
@@ -215,6 +166,50 @@ export default function ContentManagement() {
                     <p className="text-gray-600 text-sm mb-4">
                       {section.description}
                     </p>
+
+                    {/* Etiquetas */}
+                    <div className="mb-3">
+                      <div className="flex items-center mb-2">
+                        <Tag className="h-3 w-3 text-gray-400 mr-1" />
+                        <span className="text-xs text-gray-500">Etiquetas:</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {section.tags.slice(0, 3).map((tag, index) => (
+                          <span
+                            key={index}
+                            className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                        {section.tags.length > 3 && (
+                          <span className="text-xs text-gray-400">
+                            +{section.tags.length - 3} más
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Secciones públicas relacionadas */}
+                    {publicSections.length > 0 && (
+                      <div className="mb-4">
+                        <div className="flex items-center mb-2">
+                          <ExternalLink className="h-3 w-3 text-gray-400 mr-1" />
+                          <span className="text-xs text-gray-500">Aparece en:</span>
+                        </div>
+                        <div className="space-y-1">
+                          {publicSections.map((pubSection, index) => (
+                            <div 
+                              key={index}
+                              className="text-xs text-blue-600 hover:text-blue-800 cursor-pointer"
+                              onClick={() => window.open(pubSection.href, '_blank')}
+                            >
+                              → {pubSection.label}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     
                     <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                       <span>{section.items} elementos</span>

@@ -104,7 +104,13 @@ export const useSiteConfig = () => {
         
         setSiteConfig(data.siteConfig);
       } else {
-        throw new Error(data.error || 'Error al obtener configuración del sitio');
+        // Si no hay success pero sí hay siteConfig, úsalo (para fallback)
+        if (data.siteConfig) {
+          console.log('Using fallback site config data');
+          setSiteConfig(data.siteConfig);
+        } else {
+          throw new Error(data.error || 'Error al obtener configuración del sitio');
+        }
       }
     } catch (err) {
       console.error('Error fetching site config:', err);
